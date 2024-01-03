@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <meta charset="UTF-8">
+    <title>Редактировать пациента</title>
+</head>
+<body>
+
+<h2>Редактировать пациента</h2>
+
+<form th:object="${patient}" th:action="@{/edit}" method="post">
+    <label>ID:</label>
+    <input type="text" th:field="*{id}" readonly="readonly"/>
+    <br/>
+    <label>Фамилия:</label>
+    <input type="text" th:field="*{lastName}"/>
+    <br/>
+    <label>Имя:</label>
+    <input type="text" th:field="*{firstName}"/>
+    <br/>
+    <label>Отчество:</label>
+    <input type="text" th:field="*{middleName}"/>
+    <!-- Добавьте остальные поля сюда -->
+    <br/>
+    <button type="submit">Сохранить</button>
+</form>
+
+</body>
+</html>

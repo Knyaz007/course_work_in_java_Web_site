@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Новое бронирование</title>
+</head>
+<body>
+<h2>Новое бронирование</h2>
+<form th:action="@{'/bookings/new'}" method="post" th:object="${booking}">
+  <!-- Форма для нового бронирования -->
+  <label>ID тура: <input type="text" th:field="*{tourId}"/></label><br/>
+  <label>ID пользователя: <input type="text" th:field="*{userId}"/></label><br/>
+  <label>ID авиабилета: <input type="text" th:field="*{flightId}"/></label><br/>
+  <label>ID отеля: <input type="text" th:field="*{hotelId}"/></label><br/>
+  <label>Количество участников: <input type="text" th:field="*{participantsCount}"/></label><br/>
+  <label>Дата бронирования: <input type="date" th:field="*{bookingDate}" /></label><br/>
+  <label>Подтверждено: <input type="checkbox" th:field="*{isConfirmed}" /></label><br/>
+  <input type="submit" value="Сохранить"/>
+</form>
+<a th:href="@{'/bookings/list'}">Назад к списку бронирований</a>
+</body>
+</html>

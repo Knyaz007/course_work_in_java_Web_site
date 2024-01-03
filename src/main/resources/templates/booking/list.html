@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Список бронирований</title>
+</head>
+<body>
+<h2>Список бронирований</h2>
+<ul>
+  <li th:each="booking : ${bookings}">
+    <span th:text="${booking.bookingId}"></span> -
+    <span th:text="${booking.tourId}"></span> -
+    <span th:text="${booking.userId}"></span> -
+    <span th:text="${booking.flightId}"></span> -
+    <span th:text="${booking.hotelId}"></span> -
+    <span th:text="${booking.participantsCount}"></span> -
+    <span th:text="${#temporals.format(booking.bookingDate, 'dd.MM.yyyy')}"></span> -
+    <span th:text="${booking.isConfirmed}"></span>
+    <a th:href="@{'/bookings/details/' + ${booking.bookingId}}">Подробнее</a>
+  </li>
+</ul>
+</body>
+</html>

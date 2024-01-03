@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Детали тура</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 20px;
+    }
+
+    h2 {
+      color: #333;
+      border-bottom: 2px solid #333;
+      padding-bottom: 5px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #555;
+    }
+
+    .readonly {
+      background-color: #eee;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .main-btn {
+      background-color: #337ab7;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .main-btn:hover {
+      background-color: #286090;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <h2>Детали тура</h2>
+
+  <form th:object="${tour}" th:action="@{/tours/details}" method="post">
+
+    <div class="form-group">
+      <label for="tourId">ID тура:</label>
+      <div class="readonly" th:text="${tour.tourId}" id="tourId"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Название:</label>
+      <div class="readonly" th:text="${tour.name}" id="name"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Описание:</label>
+      <div class="readonly" th:text="${tour.description}" id="description"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="price">Цена:</label>
+      <div class="readonly" th:text="${tour.price}" id="price"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="startDate">Дата начала:</label>
+      <div class="readonly" th:text="${tour.startDate}" id="startDate"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="endDate">Дата окончания:</label>
+      <div class="readonly" th:text="${tour.endDate}" id="endDate"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="availableSpots">Доступные места:</label>
+      <div class="readonly" th:text="${tour.availableSpots}" id="availableSpots"></div>
+    </div>
+
+    <!-- Добавьте больше только для чтения полей при необходимости -->
+
+    <button type="submit" class="btn btn-primary">Редактировать</button>
+  </form>
+  <a href="/tours/" style="text-decoration: none;">
+    <button style="background-color: #337ab7; color: #fff; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
+      Вернуться к главной форме
+    </button>
+  </a>
+
+</div>
+</body>
+
+</html>

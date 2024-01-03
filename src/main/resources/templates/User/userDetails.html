@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Заголовок, стили и мета-теги -->
+  <title>Подробности пользователя</title>
+</head>
+<body>
+<!-- Заголовок страницы -->
+<h2>Подробности пользователя</h2>
+
+<!-- Информация о пользователе -->
+<p>ID: <span th:text="${user.userId}"></span></p>
+<p>Имя: <span th:text="${user.name}"></span></p>
+<p>Фамилия: <span th:text="${user.lastName}"></span></p>
+<!-- Добавьте другие поля пользователя по необходимости -->
+
+<!-- Ссылка на редактирование пользователя -->
+<a th:href="@{/users/edit/{userId}(userId=${user.userId})}">Редактировать</a>
+|
+<!-- Ссылка на список пользователей -->
+<a th:href="@{/users/list}">Назад к списку</a>
+</body>
+</html>

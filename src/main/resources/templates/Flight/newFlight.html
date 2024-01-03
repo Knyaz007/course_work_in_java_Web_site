@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>New Flight</title>
+</head>
+<body>
+<h2>New Flight</h2>
+<form th:action="@{'/flights/new'}" th:object="${flight}" method="post">
+  <label>Flight Number: <input type="text" th:field="*{flightNumber}"/></label><br/>
+  <label>Departure: <input type="text" th:field="*{departure}"/></label><br/>
+  <label>Destination: <input type="text" th:field="*{destination}"/></label><br/>
+  <label>Departure DateTime: <input type="text" th:field="*{departureDateTime}"/></label><br/>
+  <input type="submit" value="Save"/>
+</form>
+<a th:href="@{'/flights'}">Cancel</a>
+</body>
+</html>

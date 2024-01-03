@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Заголовок, стили и мета-теги -->
+  <title>Список пользователей</title>
+</head>
+<body>
+<!-- Заголовок страницы -->
+<h2>Список пользователей</h2>
+
+<!-- Таблица с пользователями -->
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Имя</th>
+    <th>Фамилия</th>
+    <!-- Добавьте другие поля пользователя по необходимости -->
+    <th>Действия</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="user : ${users}">
+    <td th:text="${user.userId}"></td>
+    <td th:text="${user.name}"></td>
+    <td th:text="${user.lastName}"></td>
+    <!-- Добавьте другие поля пользователя по необходимости -->
+    <td>
+      <!-- Ссылки на детали, редактирование и удаление пользователя -->
+      <a th:href="@{/users/details/{userId}(userId=${user.userId})}">Подробнее</a>
+      |
+      <a th:href="@{/users/edit/{userId}(userId=${user.userId})}">Редактировать</a>
+      |
+      <a th:href="@{/users/delete/{userId}(userId=${user.userId})}">Удалить</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

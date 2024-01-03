@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Button</title>
+  <style>
+        /* styles.css */
+
+/* Пример стилей для кнопки "Обратная связь" */
+.btn-feedback {
+    /* Ваши стили для кнопки */
+    background-color: #007bff; /* Цвет фона кнопки */
+    color: #fff; /* Цвет текста кнопки */
+    border: none; /* Убираем границу кнопки */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    font-size: 16px; /* Размер шрифта */
+    cursor: pointer; /* Изменяем курсор при наведении */
+    border-radius: 5px; /* Скругление углов */
+}
+
+.btn-feedback:hover {
+    /* Стили при наведении на кнопку */
+    background-color: #0056b3; /* Новый цвет фона при наведении */
+}
+
+    </style>
+  <!-- Добавьте ссылки на ваши стили и скрипты, если необходимо -->
+</head>
+<body>
+
+<!-- Ваш контент страницы -->
+
+<button onclick="window.location.href='/feedback'" type="button" class="btn btn-primary ml-2">
+  Обратная связь
+</button>
+
+<!-- Возможно, у вас также есть другой контент на странице -->
+
+</body>
+</html>

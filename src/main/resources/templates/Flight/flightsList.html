@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List of Flights</title>
+</head>
+<body>
+<h2>List of Flights</h2>
+<table border="1">
+  <thead>
+  <tr>
+    <th>Flight Number</th>
+    <th>Departure</th>
+    <th>Destination</th>
+    <th>Departure DateTime</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="flight : ${flights}">
+    <td th:text="${flight.flightNumber}"></td>
+    <td th:text="${flight.departure}"></td>
+    <td th:text="${flight.destination}"></td>
+    <td th:text="${flight.departureDateTime}"></td>
+    <td>
+      <a th:href="@{'/flights/details/' + ${flight.flightId}}">Details</a>
+      <a th:href="@{'/flights/edit/' + ${flight.flightId}}">Edit</a>
+      <a th:href="@{'/flights/delete/' + ${flight.flightId}}">Delete</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<a th:href="@{'/flights/new'}">Add New Flight</a>
+</body>
+</html>

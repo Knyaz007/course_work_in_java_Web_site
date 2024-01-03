@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${hotel.name}"></title>
+</head>
+<body>
+<h2 th:text="${hotel.name}"></h2>
+<p th:text="${hotel.address}"></p>
+<p th:text="${hotel.availableRooms}"></p>
+<h3>Comments</h3>
+<ul>
+  <li th:each="comment : ${hotel.comments}" th:text="${comment.text}"></li>
+</ul>
+<a th:href="@{'/hotels/edit/' + ${hotel.id}}">Edit</a>
+<a th:href="@{'/hotels/'}">Back to List</a>
+</body>
+</html>

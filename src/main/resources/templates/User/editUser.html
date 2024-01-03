@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Заголовок, стили и мета-теги -->
+  <title>Редактирование пользователя</title>
+</head>
+<body>
+<!-- Заголовок страницы -->
+<h2>Редактирование пользователя</h2>
+
+<!-- Форма редактирования пользователя -->
+<form th:object="${user}" th:action="@{/users/edit}" method="post">
+  <!-- Скрытое поле для передачи ID пользователя -->
+  <input type="hidden" th:field="*{userId}" />
+
+  <!-- Поля для редактирования информации о пользователе -->
+  <label for="name">Имя:</label>
+  <input type="text" id="name" th:field="*{name}" />
+
+  <label for="lastName">Фамилия:</label>
+  <input type="text" id="lastName" th:field="*{lastName}" />
+
+  <!-- Добавьте другие поля пользователя по необходимости -->
+
+  <!-- Кнопка для отправки формы -->
+  <button type="submit">Сохранить</button>
+</form>
+
+<!-- Ссылка на список пользователей -->
+<a th:href="@{/users/list}">Назад к списку</a>
+</body>
+</html>

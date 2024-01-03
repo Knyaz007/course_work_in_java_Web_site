@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Главная страница</title>
+  <!-- Подключаем Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+  <!-- Навигационная панель Bootstrap -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Ваша Турфирма</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#registrationModal" data-toggle="modal">Регистрация</a>
+        </li>
+        <!-- Logout button -->
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Выход</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Список туров -->
+  <!-- Список туров -->
+  <div class="row mt-4">
+    <div class="col-md-8">
+      <h2>Список Туров</h2>
+      <ul class="list-group">
+        <!-- Loop through the list of tours -->
+        <li th:each="tour : ${tours}" class="list-group-item">
+          <!-- Display tour details -->
+          <span th:text="${tour.name}"></span>
+          <!-- Edit button -->
+          <a th:href="@{'/tours/edit/' + ${tour.id}}" class="btn btn-primary btn-sm float-right">Редактировать</a>
+          <!-- Delete button -->
+          <a th:href="@{'/tours/delete/' + ${tour.id}}" class="btn btn-danger btn-sm float-right ml-2">Удалить</a>
+        </li>
+      </ul>
+      <!-- Add new tour button -->
+      <a th:href="@{'/tours/new'}" class="btn btn-success mt-3">Добавить новый тур</a>
+    </div>
+  </div>
+
+  <!-- Модальное окно редактирования тура -->
+  <div class="modal fade" id="editTourModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editTourLabel">Редактирование тура</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Здесь можете разместить форму редактирования тура -->
+          <!-- Пример: -->
+          <form>
+            <!-- Форма редактирования тура -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно удаления тура -->
+  <div class="modal fade" id="deleteTourModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteTourLabel">Удаление тура</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Здесь можете разместить подтверждение удаления тура -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно регистрации -->
+  <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Регистрация</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Здесь можете разместить форму регистрации -->
+          <!-- Пример: -->
+          <form>
+            <div class="form-group">
+              <label for="username">Имя пользователя</label>
+              <input type="text" class="form-control" id="username" placeholder="Введите имя пользователя">
+            </div>
+            <div class="form-group">
+              <label for="password">Пароль</label>
+              <input type="password" class="form-control" id="password" placeholder="Введите пароль">
+            </div>
+            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Подключаем Bootstrap JS (необходим для работы модальных окон и других компонентов) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

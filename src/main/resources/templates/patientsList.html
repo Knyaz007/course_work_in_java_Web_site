@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script
+          src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+  <meta charset="UTF-8">
+  <title>Главная страница пациентов</title>
+</head>
+<body>
+
+<h2>Список пациентов</h2>
+
+<table border="1">
+  <tr>
+    <th>ID</th>
+    <th>Фамилия</th>
+    <th>Имя</th>
+    <!-- Добавьте остальные поля сюда -->
+    <th>Действия</th>
+  </tr>
+  <tr th:each="patient : ${patients}">
+    <td th:text="${patient.id}"></td>
+    <td th:text="${patient.lastName}"></td>
+    <td th:text="${patient.firstName}"></td>
+    <!-- Добавьте остальные поля сюда -->
+    <td>
+      <a th:href="@{/details/{id}(id=${patient.id})}">Детали</a> |
+      <a th:href="@{/edit/{id}(id=${patient.id})}">Редактировать</a> |
+      <a th:href="@{/delete/{id}(id=${patient.id})}">Удалить</a>
+    </td>
+  </tr>
+</table>
+
+<a th:href="@{/new}">Добавить нового пациента</a>
+
+</body>
+</html>
