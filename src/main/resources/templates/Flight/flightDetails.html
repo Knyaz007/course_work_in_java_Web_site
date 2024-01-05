@@ -1,17 +1,116 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="${flight.flightNumber} + ' Details'"></title>
+  <meta charset="UTF-8"/>
+  <title th:text="${flight.flightNumber} + ' Детали'"></title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    h3 {
+      color: #007bff;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #28a745;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .table {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-<h2 th:text="${flight.flightNumber} + ' Details'"></h2>
-<p>Flight Number: <span th:text="${flight.flightNumber}"></span></p>
-<p>Departure: <span th:text="${flight.departure}"></span></p>
-<p>Destination: <span th:text="${flight.destination}"></span></p>
-<p>Departure DateTime: <span th:text="${flight.departureDateTime}"></span></p>
-<a th:href="@{'/flights'}">Back to List</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">Турфирма Paradise</a>
+  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
+    Отели
+  </button>
+
+  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
+    Авибилеты
+  </button>
+
+  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
+    Туры
+  </button>
+
+  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Реестр бронирования
+  </button>
+
+  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Клиенты
+  </button>
+
+  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Работники
+  </button>
+
+  <!-- Кнопка "Обратная связь" -->
+  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
+    Обратная связь
+  </button>
+
+  <!-- Модальное окно "Обратная связь" -->
+  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- ... Ваш код модального окна ... -->
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#registrationModal" data-toggle="modal">Регистрация</a>
+      </li>
+      <!-- Logout button -->
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Вход</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<h2 th:text="${flight.flightNumber} + ' Детали'"></h2>
+<p>Номер рейса: <span th:text="${flight.flightNumber}"></span></p>
+<p>Пункт отправления: <span th:text="${flight.departure}"></span></p>
+<p>Пункт назначения: <span th:text="${flight.destination}"></span></p>
+<p>Дата и время отправления: <span th:text="${flight.departureDateTime}"></span></p>
+<a th:href="@{'/flights/list'}" class="btn btn-secondary">Назад к списку</a>
 </body>
 </html>
