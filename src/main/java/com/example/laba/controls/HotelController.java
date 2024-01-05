@@ -3,7 +3,11 @@ package com.example.laba.controls;
 import com.example.laba.models.Comment;
 import com.example.laba.models.Hotel;
 import com.example.laba.repository.HotelRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/hotels")
@@ -26,6 +31,13 @@ public class HotelController {
         List<Hotel> hotels = new ArrayList<>();
         hotelRepository.findAll().forEach(hotels::add);
         model.addAttribute("hotels", hotels);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        model.addAttribute("roles", roles);
         return "Hotel/hotelsList";
     }
 
@@ -33,6 +45,12 @@ public class HotelController {
     public String hotelDetails(@PathVariable Long hotelId, Model model) {
         Optional<Hotel> optionalHotel = hotelRepository.findById(hotelId);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        model.addAttribute("roles", roles);
         if (optionalHotel.isPresent()) {
             Hotel hotel = optionalHotel.get();
             model.addAttribute("hotel", hotel);
@@ -46,6 +64,13 @@ public class HotelController {
     @GetMapping("/edit/{id}")
     public String editHotel(Model model, @PathVariable("id") Long id) {
         Optional<Hotel> hotel = hotelRepository.findById(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        model.addAttribute("roles", roles);
         if (hotel.isPresent()) {
             model.addAttribute("hotel", hotel.get());
             return "Hotel/editHotel";
@@ -60,7 +85,12 @@ public class HotelController {
         if (hotel.getComments() != null) {
             hotel.getComments().clear();
         }
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        model.addAttribute("roles", roles);
         hotelRepository.save(hotel);
         model.addAttribute("message", "Hotel successfully edited");
         return "redirect:/hotels";
@@ -68,6 +98,13 @@ public class HotelController {
 
     @GetMapping("/delete/{id}")
     public String deleteHotel(Model model, @PathVariable("id") Long id) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        model.addAttribute("roles", roles);
         if (hotelRepository.existsById(id)) {
             hotelRepository.deleteById(id);
         }
@@ -76,6 +113,12 @@ public class HotelController {
 
     @GetMapping("/new")
     public String newHotel(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        model.addAttribute("roles", roles);
         model.addAttribute("hotel", new Hotel());
         return "Hotel/newHotel";
     }
@@ -83,6 +126,7 @@ public class HotelController {
     @PostMapping("/new")
     public String newHotel(@ModelAttribute Hotel hotel) {
         hotelRepository.save(hotel);
+
         return "redirect:/hotels";
     }
 }

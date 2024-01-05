@@ -2,34 +2,150 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
-  <title>Hotels List</title>
+  <title>Список отелей</title>
+  <!-- Подключаем Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    a {
+      text-decoration: none;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
-<h2>Hotels List</h2>
-<table>
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Address</th>
-    <th>Available Rooms</th>
-    <th>Action</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="hotel : ${hotels}">
-    <td th:text="${hotel.id}"></td>
-    <td th:text="${hotel.name}"></td>
-    <td th:text="${hotel.address}"></td>
-    <td th:text="${hotel.availableRooms}"></td>
-    <td>
-      <a th:href="@{'/hotels/details/' + ${hotel.id}}">Details</a>
-      <a th:href="@{'/hotels/edit/' + ${hotel.id}}">Edit</a>
-      <a th:href="@{'/hotels/delete/' + ${hotel.id}}">Delete</a>
-    </td>
-  </tr>
-  </tbody>
-</table>
-<a th:href="@{'/hotels/new'}">Add New Hotel</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">Турфирма Paradise</a>
+  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
+    Отели
+  </button>
+
+  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
+    Авиабилеты
+  </button>
+
+  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
+    Туры
+  </button>
+
+  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Реестр бронирования
+  </button>
+
+  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Клиенты
+  </button>
+
+  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Работники
+  </button>
+
+  <!-- Кнопка "Обратная связь" -->
+  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
+    Обратная связь
+  </button>
+
+  <!-- Модальное окно "Обратная связь" -->
+  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Форма обратной связи -->
+          <form>
+            <div class="form-group">
+              <label for="feedbackName">Ваше имя</label>
+              <input type="text" class="form-control" id="feedbackName" placeholder="Введите ваше имя">
+            </div>
+            <div class="form-group">
+              <label for="feedbackEmail">Ваш Email</label>
+              <input type="email" class="form-control" id="feedbackEmail" placeholder="Введите ваш Email">
+            </div>
+            <div class="form-group">
+              <label for="feedbackMessage">Сообщение</label>
+              <textarea class="form-control" id="feedbackMessage" rows="4" placeholder="Введите ваше сообщение"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#registrationModal" data-toggle="modal">Регистрация</a>
+      </li>
+      <!-- Logout button -->
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Вход</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+  <h2>Список отелей</h2>
+  <table class="table table-bordered">
+    <thead class="thead-light">
+    <tr>
+      <th>ID</th>
+      <th>Название</th>
+      <th>Адрес</th>
+      <th>Доступные номера</th>
+      <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="hotel : ${hotels}">
+      <td th:text="${hotel.id}"></td>
+      <td th:text="${hotel.name}"></td>
+      <td th:text="${hotel.address}"></td>
+      <td th:text="${hotel.availableRooms}"></td>
+      <td>
+        <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-info btn-sm">Подробнее</a>
+
+        <a th:href="@{'/hotels/edit/' + ${hotel.id}}" class="btn btn-warning btn-sm"
+           th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
+
+        <a th:href="@{'/hotels/delete/' + ${hotel.id}}" class="btn btn-danger btn-sm"
+           th:if="${roles.contains('ROLE_ADMIN')}">Удалить</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <a th:href="@{'/hotels/new'}" class="btn btn-success">Добавить новый отель</a>
+</div>
 </body>
 </html>

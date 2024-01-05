@@ -1,21 +1,138 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>List of Flights</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    a {
+      text-decoration: none;
+      margin-right: 10px;
+    }
+  </style>
+  <title>Список рейсов</title>
 </head>
 <body>
-<h2>List of Flights</h2>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">Турфирма Paradise</a>
+  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
+    Отели
+  </button>
+
+  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
+    Авибилеты
+  </button>
+
+  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
+    Туры
+  </button>
+
+  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Реестр бронирования
+  </button>
+
+  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Клиенты
+  </button>
+
+  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Работники
+  </button>
+
+
+
+
+
+
+
+
+
+  <!-- Кнопка "Обратная связь" -->
+  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
+    Обратная связь
+  </button>
+
+  <!-- Модальное окно "Обратная связь" -->
+  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Форма обратной связи -->
+          <form>
+            <div class="form-group">
+              <label for="feedbackName">Ваше имя</label>
+              <input type="text" class="form-control" id="feedbackName" placeholder="Введите ваше имя">
+            </div>
+            <div class="form-group">
+              <label for="feedbackEmail">Ваш Email</label>
+              <input type="email" class="form-control" id="feedbackEmail" placeholder="Введите ваш Email">
+            </div>
+            <div class="form-group">
+              <label for="feedbackMessage">Сообщение</label>
+              <textarea class="form-control" id="feedbackMessage" rows="4" placeholder="Введите ваше сообщение"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#registrationModal" data-toggle="modal">Регистрация</a>
+      </li>
+      <!-- Logout button -->
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Вход</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<h2>Список рейсов</h2>
 <table border="1">
   <thead>
   <tr>
-    <th>Flight Number</th>
-    <th>Departure</th>
-    <th>Destination</th>
-    <th>Departure DateTime</th>
-    <th>Action</th>
+    <th>Номер рейса</th>
+    <th>Пункт отправления</th>
+    <th>Пункт назначения</th>
+    <th>Дата и время отправления</th>
+    <th>Действия</th>
   </tr>
   </thead>
   <tbody>
@@ -23,15 +140,26 @@
     <td th:text="${flight.flightNumber}"></td>
     <td th:text="${flight.departure}"></td>
     <td th:text="${flight.destination}"></td>
-    <td th:text="${flight.departureDateTime}"></td>
+
+
+    <td th:text="${#temporals.format(flight.departureDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+
+
     <td>
-      <a th:href="@{'/flights/details/' + ${flight.flightId}}">Details</a>
-      <a th:href="@{'/flights/edit/' + ${flight.flightId}}">Edit</a>
-      <a th:href="@{'/flights/delete/' + ${flight.flightId}}">Delete</a>
+      <a th:href="@{'/flights/details/' + ${flight.flightId}}" class="btn btn-info btn-sm">Подробнее</a>
+
+
+      <a  th:href="@{'/flights/edit/' + ${flight.flightId}}"
+         th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-warning btn-sm">Редактировать</a>
+
+      <a  th:href="@{'/flights/delete/' + ${flight.flightId}}"
+         th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-danger btn-sm">Удалить</a>
+
+
     </td>
   </tr>
   </tbody>
 </table>
-<a th:href="@{'/flights/new'}">Add New Flight</a>
+<a th:href="@{'/flights/new'}">Добавить новый рейс</a>
 </body>
 </html>

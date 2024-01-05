@@ -5,6 +5,9 @@ import com.example.laba.models.Flight;
 
 import com.example.laba.repository.flightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/flights")
@@ -24,6 +28,13 @@ public class FlightController {
     public String listFlights(Model model) {
         List<Flight> flights = new ArrayList<>();
         flightRepository.findAll().forEach(flights::add);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        model.addAttribute("roles", roles);
         model.addAttribute("flights", flights);
         return "Flight/flightsList";
     }
@@ -31,6 +42,16 @@ public class FlightController {
     @GetMapping("/details/{flightId}")
     public String flightDetails(@PathVariable Long flightId, Model model) {
         Optional<Flight> optionalFlight = flightRepository.findById(flightId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        model.addAttribute("roles", roles);
+
+
 
         if (optionalFlight.isPresent()) {
             Flight flight = optionalFlight.get();

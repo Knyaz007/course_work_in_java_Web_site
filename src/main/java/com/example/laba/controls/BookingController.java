@@ -5,6 +5,9 @@ import com.example.laba.models.Booking;
 import com.example.laba.models.Hotel;
 import com.example.laba.repository.bookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/bookings")
@@ -26,6 +30,15 @@ public class BookingController {
 
         List<Booking> bookings = new ArrayList<>();
         BookingRepository.findAll().forEach(bookings::add);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        model.addAttribute("roles", roles);
+
         model.addAttribute("bookings", bookings);
         return "booking/list";
     }

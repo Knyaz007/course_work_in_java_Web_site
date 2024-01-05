@@ -34,7 +34,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Турфирма Paradise</a>
+  <a class="navbar-brand" href="/">Турфирма Paradise</a>
   <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
     Отели
   </button>
@@ -43,20 +43,25 @@
     Авибилеты
   </button>
 
-  <button onclick="window.location.href='/tours/new'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
     Туры
   </button>
 
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Реестр бронирования    </button>
+  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Реестр бронирования
+  </button>
 
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
     Клиенты
   </button>
 
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
     Работники
   </button>
+
 
 
 
@@ -140,8 +145,19 @@
       <td th:text="${employee.phone}"></td>
       <td>
         <a th:href="@{'/employees/details/' + ${employee.employeeId}}" class="btn btn-info btn-sm">Подробнее</a>
-        <a th:href="@{'/employees/edit/' + ${employee.employeeId}}" class="btn btn-warning btn-sm">Редактировать</a>
-        <a th:href="@{'/employees/delete/' + ${employee.employeeId}}" class="btn btn-danger btn-sm">Удалить</a>
+<!--        <a th:href="@{'/employees/edit/' + ${employee.employeeId}}" class="btn btn-warning btn-sm">Редактировать</a>-->
+<!--        <a th:href="@{'/employees/delete/' + ${employee.employeeId}}" class="btn btn-danger btn-sm">Удалить</a>-->
+
+
+        <a th:href="@{'/employees/edit/' + ${employee.employeeId}}" class="btn btn-warning btn-sm"
+           th:if="${roles.contains('ROLE_ADMIN')}"
+            >Редактировать</a>
+
+        <a th:href="@{'/employees/delete/' + ${employee.employeeId}}" class="btn btn-danger btn-sm"
+           th:if="${roles.contains('ROLE_ADMIN')}"
+            >Удалить</a>
+
+
       </td>
     </tr>
     </tbody>

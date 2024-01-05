@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
-  <title>New Employee</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Новый Сотрудник</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -20,7 +21,8 @@
   </button>
 
   <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Реестр бронирования    </button>
+    Реестр бронирования
+  </button>
 
   <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal">
     Клиенты
@@ -29,13 +31,6 @@
   <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal">
     Работники
   </button>
-
-
-
-
-
-
-
 
   <!-- Кнопка "Обратная связь" -->
   <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
@@ -83,27 +78,27 @@
       <li class="nav-item">
         <a class="nav-link" href="#registrationModal" data-toggle="modal">Регистрация</a>
       </li>
-      <!-- Logout button -->
+      <!-- Кнопка выхода -->
       <li class="nav-item">
         <a class="nav-link" href="/logout">Вход</a>
       </li>
     </ul>
   </div>
 </nav>
-<h2>New Employee</h2>
+<h2>Новый Сотрудник</h2>
 <form th:action="@{'/employees/new'}" th:object="${employee}" method="post" enctype="multipart/form-data">
-  <label>Name: <input type="text" th:field="*{name}"/></label><br/>
-  <label>Last Name: <input type="text" th:field="*{lastName}"/></label><br/>
-  <label>Position: <input type="text" th:field="*{position}"/></label><br/>
-  <label>Salary: <input type="text" th:field="*{salary}"/></label><br/>
-  <label>Hire Date: <input type="date" th:field="*{hireDate}" /></label><br/>
+  <label>Имя: <input type="text" th:field="*{name}"/></label><br/>
+  <label>Фамилия: <input type="text" th:field="*{lastName}"/></label><br/>
+  <label>Должность: <input type="text" th:field="*{position}"/></label><br/>
+  <label>Зарплата: <input type="text" th:field="*{salary}"/></label><br/>
+  <label>Дата Найма: <input type="date" th:field="*{hireDate}" /></label><br/>
   <label>Email: <input type="text" th:field="*{email}"/></label><br/>
-  <label>Phone: <input type="text" th:field="*{phone}"/></label><br/>
+  <label>Телефон: <input type="text" th:field="*{phone}"/></label><br/>
 
   <input type="file" name="file"/>
-  <input type="submit" value="Save"/>
+  <input type="submit" value="Сохранить"/>
 </form>
 <br/>
-<a th:href="@{'/employees'}">Cancel</a>
+<a th:href="@{'/employees'}">Отмена</a>
 </body>
 </html>

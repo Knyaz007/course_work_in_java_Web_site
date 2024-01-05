@@ -2,6 +2,8 @@ package com.example.laba.controls;
 
 import com.example.laba.models.Tour;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +13,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 public class MainController {
+
     @Autowired
     private tourRepository tourRepository;
     @GetMapping("/main")
@@ -31,6 +39,15 @@ public class MainController {
             // Добавить сообщение в модель для использования в представлении
             model.addAttribute("message", message);
         }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        model.addAttribute("roles", roles);
+        model.addAttribute("authentication", authentication);
+
         // Передача модели в представление
         //  model.addAttribute("user", new User()); // Пустой объект User для формы регистрации
         model.addAttribute("tours", tours); /* Здесь нужно получить список туров из сервиса или репозитория */;

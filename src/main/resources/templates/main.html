@@ -21,20 +21,25 @@
     Авибилеты
   </button>
 
-  <button onclick="window.location.href='/tours/new'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
     Туры
   </button>
 
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Реестр бронирования    </button>
+  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Реестр бронирования
+  </button>
 
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
     Клиенты
   </button>
 
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
     Работники
   </button>
+
 
 
 
@@ -120,15 +125,22 @@
           <!-- View details button -->
           <a th:href="@{'/tours/details/' + ${tour.tourId}}" class="btn btn-info btn-sm float-right">Подробнее</a>
 
-          <!-- Edit button -->
-          <a th:href="@{'/tours/edit/' + ${tour.tourId}}" class="btn btn-primary btn-sm float-right ml-2">Редактировать</a>
-          <!-- Delete button -->
-          <a th:href="@{'/tours/delete/' + ${tour.tourId}}" class="btn btn-danger btn-sm float-right ml-2">Удалить</a>
+
+
+          <a th:href="@{'/tours/edit/' + ${tour.tourId}}"
+             th:if="${roles.contains('ROLE_ADMIN')}"
+             class="btn btn-primary btn-sm float-right ml-2">Редактировать</a>
+
+          <a th:href="@{'/tours/delete/' + ${tour.tourId}}"
+             th:if="${roles.contains('ROLE_ADMIN')}"
+             class="btn btn-danger btn-sm float-right ml-2">Удалить</a>
+
+
         </li>
 
       </ul>
       <!-- Add new tour button -->
-      <a th:href="@{'/tours/new'}" class="btn btn-success mt-3">Добавить новый тур</a>
+      <a th:href="@{'/tours/new'}"   th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый тур</a>
     </div>
   </div>
 
