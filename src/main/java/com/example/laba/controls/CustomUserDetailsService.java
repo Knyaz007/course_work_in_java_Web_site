@@ -15,6 +15,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+//    Метод loadUserByUsername: Этот метод вызывается Spring Security при попытке аутентификации пользователя.
+//    В этом методе производится поиск пользователя по его имени (username) в репозитории UserRepository.
+//    Если пользователь найден, создается объект UserDetailsImpl с использованием статического метода build,
+//    который, вероятно, определен в классе
+//    UserDetailsImpl. Этот объект UserDetails затем используется для проверки подлинности пользователя.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByName(username)
