@@ -145,7 +145,10 @@
     </tr>
     </tbody>
   </table>
-  <a th:href="@{'/hotels/new'}" class="btn btn-success">Добавить новый отель</a>
+
+  <a  th:href="@{'/hotels/new'}"  th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый отель</a>
+
+
 </div>
 </body>
 </html>

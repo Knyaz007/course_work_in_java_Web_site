@@ -54,6 +54,8 @@ public class TourController {
             // Добавить сообщение в модель для использования в представлении
             model.addAttribute("message", message);
         }
+
+        // ЗАпрос на роль авторизированного клиента
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> roles = authentication.getAuthorities()
                 .stream()

@@ -6,7 +6,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Главная страница</title>
-  <!-- Подключаем Bootstrap CSS -->
+
+   <!-- Подключаем Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -65,21 +66,23 @@
         </div>
         <div class="modal-body">
           <!-- Форма обратной связи -->
-          <form>
+          <!-- Форма обратной связи -->
+          <form th:action="@{/send-email}" method="post">
             <div class="form-group">
               <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" placeholder="Введите ваше имя">
+              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
             </div>
             <div class="form-group">
               <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" placeholder="Введите ваш Email">
+              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
             </div>
             <div class="form-group">
               <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" rows="4" placeholder="Введите ваше сообщение"></textarea>
+              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Отправить</button>
           </form>
+
         </div>
       </div>
     </div>

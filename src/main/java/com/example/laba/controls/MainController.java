@@ -39,6 +39,8 @@ public class MainController {
             // Добавить сообщение в модель для использования в представлении
             model.addAttribute("message", message);
         }
+
+        // ЗАпрос на роль авторизированного клиента
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> roles = authentication.getAuthorities()
                 .stream()
@@ -47,6 +49,14 @@ public class MainController {
 
         model.addAttribute("roles", roles);
         model.addAttribute("authentication", authentication);
+
+        // Если зарегестрирован то передавать loggedIn для отображения элементов представления ( кнопка регистрация вход)
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+
+
+//
 
         // Передача модели в представление
         //  model.addAttribute("user", new User()); // Пустой объект User для формы регистрации

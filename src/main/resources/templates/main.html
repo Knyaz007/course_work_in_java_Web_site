@@ -1,15 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Главная страница</title>
+  <title>Список Туров</title>
   <!-- Подключаем Bootstrap CSS -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
 
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    a {
+      text-decoration: none;
+      margin-right: 10px;
+    }
+  </style>
+</head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="/">Турфирма Paradise</a>
@@ -65,25 +88,31 @@
         </div>
         <div class="modal-body">
           <!-- Форма обратной связи -->
-          <form>
+          <!-- Форма обратной связи -->
+          <form th:action="@{/send-email}" method="post">
             <div class="form-group">
               <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" placeholder="Введите ваше имя">
+              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
             </div>
             <div class="form-group">
               <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" placeholder="Введите ваш Email">
+              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
             </div>
             <div class="form-group">
               <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" rows="4" placeholder="Введите ваше сообщение"></textarea>
+              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Отправить</button>
           </form>
+
         </div>
       </div>
     </div>
   </div>
+
+
+
+
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,132 +120,57 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="#registrationModal" data-toggle="modal">Регистрация</a>
+      <!-- Conditionally render user information or registration/login buttons -->
+      <li class="nav-item" th:if="${loggedIn}">
+        <span class="nav-link" th:text="${authentication.name}"></span>
+      </li>
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
       </li>
       <!-- Logout button -->
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Вход</a>
+      <li class="nav-item" th:if="${loggedIn}">
+        <a class="nav-link" href="/logout">Выход</a>
+      </li>
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" href="/login">Вход</a>
       </li>
     </ul>
   </div>
+
+
 </nav>
 <div class="container">
-  <!-- Навигационная панель Bootstrap -->
-  <!-- Навигационная панель Bootstrap -->
+  <h2>Список Туров</h2>
+  <table class="table table-bordered">
+    <thead class="thead-light">
+    <tr>
+      <th>ID</th>
+      <th>Название</th>
+      <th>Начало</th>
+      <th>Окончание</th>
+      <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="tour : ${tours}">
+      <td th:text="${tour.tourId}"></td>
+      <td th:text="${tour.name}"></td>
+      <td th:text="${#temporals.format(tour.startDate, 'dd.MM.yyyy')}"></td>
+      <td th:text="${#temporals.format(tour.endDate, 'dd.MM.yyyy')}"></td>
+      <td>
+        <a th:href="@{'/tours/details/' + ${tour.tourId}}" class="btn btn-info btn-sm">Подробнее</a>
 
-  <!-- Список туров -->
-  <!-- Список туров -->
-  <div class="row mt-4">
-    <div class="col-md-8">
-      <h2>Список Туров</h2>
-      <ul class="list-group">
-        <!-- Loop through the list of tours -->
-        <li th:each="tour : ${tours}" class="list-group-item">
-          <!-- Display tour details -->
-          <span th:text="${tour.name}"></span>
-          <br>
-          <!-- Display tour start date -->
-          <span th:text="${#temporals.format(tour.startDate, 'dd.MM.yyyy')}"></span>
-          <br>
-          <!-- Display tour end date -->
-          <span th:text="${#temporals.format(tour.endDate, 'dd.MM.yyyy')}"></span>
+        <a th:href="@{'/tours/edit/' + ${tour.tourId}}" class="btn btn-warning btn-sm"
+           th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
 
-          <!-- View details button -->
-          <a th:href="@{'/tours/details/' + ${tour.tourId}}" class="btn btn-info btn-sm float-right">Подробнее</a>
+        <a th:href="@{'/tours/delete/' + ${tour.tourId}}" class="btn btn-danger btn-sm"
+           th:if="${roles.contains('ROLE_ADMIN')}">Удалить</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
-
-
-          <a th:href="@{'/tours/edit/' + ${tour.tourId}}"
-             th:if="${roles.contains('ROLE_ADMIN')}"
-             class="btn btn-primary btn-sm float-right ml-2">Редактировать</a>
-
-          <a th:href="@{'/tours/delete/' + ${tour.tourId}}"
-             th:if="${roles.contains('ROLE_ADMIN')}"
-             class="btn btn-danger btn-sm float-right ml-2">Удалить</a>
-
-
-        </li>
-
-      </ul>
-      <!-- Add new tour button -->
-      <a th:href="@{'/tours/new'}"   th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый тур</a>
-    </div>
-  </div>
-
-  <!-- Модальное окно редактирования тура -->
-  <div class="modal fade" id="editTourModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editTourLabel">Редактирование тура</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Здесь можете разместить форму редактирования тура -->
-          <!-- Пример: -->
-          <form>
-            <!-- Форма редактирования тура -->
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Модальное окно удаления тура -->
-  <div class="modal fade" id="deleteTourModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteTourLabel">Удаление тура</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Здесь можете разместить подтверждение удаления тура -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Модальное окно регистрации -->
-  <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-       aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Регистрация</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Здесь можете разместить форму регистрации -->
-          <!-- Пример: -->
-          <form>
-            <div class="form-group">
-              <label for="username">Имя пользователя</label>
-              <input type="text" class="form-control" id="username" placeholder="Введите имя пользователя">
-            </div>
-            <div class="form-group">
-              <label for="password">Пароль</label>
-              <input type="password" class="form-control" id="password" placeholder="Введите пароль">
-            </div>
-            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+  <a th:href="@{'/tours/new'}" th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый тур</a>
 </div>
-
-<!-- Подключаем Bootstrap JS (необходим для работы модальных окон и других компонентов) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>

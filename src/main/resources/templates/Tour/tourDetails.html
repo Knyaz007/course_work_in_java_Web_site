@@ -71,6 +71,7 @@
       background-color: #286090;
     }
   </style>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -222,7 +223,7 @@
 <!--  <button type="submit" name="action" value="book" class="btn btn-success">Забронировать</button>-->
 <!--</form>-->
 <!-- Форма для бронирования тура -->
-<form th:action="@{/tours/bookingTour}" method="post">
+<form   th:if="${roles.contains('ROLE_ADMIN')}"  th:action="@{/tours/bookingTour}" method="post">
   <!-- Включите tourId как скрытое поле в форме -->
   <input type="hidden" name="tourId" th:value="${tour.tourId}" />
   <!-- Добавьте другие поля формы, если необходимо -->

@@ -29,7 +29,7 @@ public class RegistrationController {
     public String registrationForm(Model model) {
         // Добавляем модель, чтобы передать данные в представление
         model.addAttribute("user", new UserDTO());
-        return "registration";
+        return "registration/registration";
     }
 
     @PostMapping("/register")

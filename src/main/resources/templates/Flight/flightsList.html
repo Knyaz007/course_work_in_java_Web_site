@@ -160,6 +160,8 @@
   </tr>
   </tbody>
 </table>
-<a th:href="@{'/flights/new'}">Добавить новый рейс</a>
+<a th:href="@{'/flights/new'}"  th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый рейс</a>
+
+
 </body>
 </html>
