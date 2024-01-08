@@ -4,52 +4,7 @@
   <meta charset="UTF-8"/>
   <title th:text="${hotel.name}"></title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
-    body {
-      padding: 20px;
-      font-family: Arial, sans-serif;
-    }
 
-    h2 {
-      text-align: center;
-      color: #007bff;
-    }
-
-    p {
-      font-size: 18px;
-      margin-bottom: 5px;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      margin-top: 10px;
-    }
-
-    h3 {
-      color: #007bff;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      margin-bottom: 10px;
-    }
-
-    a {
-      display: block;
-      margin-top: 20px;
-      color: #28a745;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -59,7 +14,7 @@
   </button>
 
   <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Авибилеты
+    Авиабилета
   </button>
 
   <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
@@ -106,25 +61,31 @@
         </div>
         <div class="modal-body">
           <!-- Форма обратной связи -->
-          <form>
+          <!-- Форма обратной связи -->
+          <form th:action="@{/send-email}" method="post">
             <div class="form-group">
               <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" placeholder="Введите ваше имя">
+              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
             </div>
             <div class="form-group">
               <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" placeholder="Введите ваш Email">
+              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
             </div>
             <div class="form-group">
               <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" rows="4" placeholder="Введите ваше сообщение"></textarea>
+              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Отправить</button>
           </form>
+
         </div>
       </div>
     </div>
   </div>
+
+
+
+
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,15 +93,24 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="#registrationModal" data-toggle="modal">Регистрация</a>
+      <!-- Conditionally render user information or registration/login buttons -->
+      <li class="nav-item" th:if="${loggedIn}">
+        <span class="nav-link" th:text="${authentication.name}"></span>
+      </li>
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
       </li>
       <!-- Logout button -->
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Вход</a>
+      <li class="nav-item" th:if="${loggedIn}">
+        <a class="nav-link" href="/logout">Выход</a>
+      </li>
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" href="/login">Вход</a>
       </li>
     </ul>
   </div>
+
+
 </nav>
 
 <table class="table table-bordered">

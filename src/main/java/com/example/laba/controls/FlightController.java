@@ -36,6 +36,13 @@ public class FlightController {
 
         model.addAttribute("roles", roles);
         model.addAttribute("flights", flights);
+
+
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
         return "Flight/flightsList";
     }
 
@@ -51,6 +58,10 @@ public class FlightController {
 
         model.addAttribute("roles", roles);
 
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
 
 
         if (optionalFlight.isPresent()) {
@@ -65,6 +76,17 @@ public class FlightController {
     @GetMapping("/edit/{id}")
     public String editFlight(Model model, @PathVariable("id") Long id) {
         Optional<Flight> flight = flightRepository.findById(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
         if (flight.isPresent()) {
             model.addAttribute("flight", flight.get());
             return "Flight/editFlight";
@@ -82,7 +104,7 @@ public class FlightController {
 
         flightRepository.save(flight);
         model.addAttribute("message", "Flight successfully edited");
-        return "redirect:/flights";
+        return "redirect:/flights/list";
     }
 
     @GetMapping("/delete/{id}")
@@ -90,11 +112,26 @@ public class FlightController {
         if (flightRepository.existsById(id)) {
             flightRepository.deleteById(id);
         }
-        return "redirect:/flights";
+        return "redirect:/flights/list";
     }
 
     @GetMapping("/new")
     public String newFlight(Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        model.addAttribute("roles", roles);
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
+
+
         model.addAttribute("flight", new Flight());
         return "Flight/newFlight";
     }
@@ -102,6 +139,6 @@ public class FlightController {
     @PostMapping("/new")
     public String newFlight(@ModelAttribute Flight flight) {
         flightRepository.save(flight);
-        return "redirect:/flights";
+        return "redirect:/flights/list";
     }
 }

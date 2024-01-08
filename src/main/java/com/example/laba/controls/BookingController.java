@@ -40,6 +40,13 @@ public class BookingController {
         model.addAttribute("roles", roles);
 
         model.addAttribute("bookings", bookings);
+
+
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
         return "booking/list";
     }
 

@@ -34,6 +34,12 @@ public class UserController {
                 .collect(Collectors.toList());
 
         model.addAttribute("roles", roles);
+
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
         return "User/usersList";
     }
 
@@ -72,7 +78,7 @@ public class UserController {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
         }
-        return "redirect:/users";
+        return "redirect:/";
     }
 
     @GetMapping("/new")
@@ -84,6 +90,6 @@ public class UserController {
     @PostMapping("/new")
     public String newUser(@ModelAttribute User user) {
         userRepository.save(user);
-        return "redirect:/users";
+        return "redirect:/";
     }
 }

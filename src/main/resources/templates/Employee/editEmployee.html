@@ -9,6 +9,7 @@
     }
 
     h2 {
+      text-align: center;
       color: #007bff;
     }
 
@@ -46,30 +47,41 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Турфирма Paradise</a>
+  <a class="navbar-brand" href="/">Турфирма Paradise</a>
   <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
     Отели
   </button>
 
   <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Авиабилеты
+    Авиабилета
   </button>
 
-  <button onclick="window.location.href='/tours/new'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
     Туры
   </button>
 
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
     Реестр бронирования
   </button>
 
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
     Клиенты
   </button>
 
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal">
+  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
+          th:if="${roles.contains('ROLE_ADMIN')}">
     Работники
   </button>
+
+
+
+
+
+
+
+
 
   <!-- Кнопка "Обратная связь" -->
   <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
@@ -88,25 +100,31 @@
         </div>
         <div class="modal-body">
           <!-- Форма обратной связи -->
-          <form>
+          <!-- Форма обратной связи -->
+          <form th:action="@{/send-email}" method="post">
             <div class="form-group">
               <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" placeholder="Введите ваше имя">
+              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
             </div>
             <div class="form-group">
               <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" placeholder="Введите ваш Email">
+              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
             </div>
             <div class="form-group">
               <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" rows="4" placeholder="Введите ваше сообщение"></textarea>
+              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Отправить</button>
           </form>
+
         </div>
       </div>
     </div>
   </div>
+
+
+
+
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,15 +132,24 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="#registrationModal" data-toggle="modal">Регистрация</a>
+      <!-- Conditionally render user information or registration/login buttons -->
+      <li class="nav-item" th:if="${loggedIn}">
+        <span class="nav-link" th:text="${authentication.name}"></span>
       </li>
-      <!-- Кнопка выхода -->
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Вход</a>
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
+      </li>
+      <!-- Logout button -->
+      <li class="nav-item" th:if="${loggedIn}">
+        <a class="nav-link" href="/logout">Выход</a>
+      </li>
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" href="/login">Вход</a>
       </li>
     </ul>
   </div>
+
+
 </nav>
 <h2>Редактировать данные о сотруднике</h2>
 <div class="container">

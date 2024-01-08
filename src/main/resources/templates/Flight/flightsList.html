@@ -41,7 +41,7 @@
   </button>
 
   <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Авибилеты
+    Авиабилета
   </button>
 
   <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
@@ -88,25 +88,31 @@
         </div>
         <div class="modal-body">
           <!-- Форма обратной связи -->
-          <form>
+          <!-- Форма обратной связи -->
+          <form th:action="@{/send-email}" method="post">
             <div class="form-group">
               <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" placeholder="Введите ваше имя">
+              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
             </div>
             <div class="form-group">
               <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" placeholder="Введите ваш Email">
+              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
             </div>
             <div class="form-group">
               <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" rows="4" placeholder="Введите ваше сообщение"></textarea>
+              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Отправить</button>
           </form>
+
         </div>
       </div>
     </div>
   </div>
+
+
+
+
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,15 +120,24 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="#registrationModal" data-toggle="modal">Регистрация</a>
+      <!-- Conditionally render user information or registration/login buttons -->
+      <li class="nav-item" th:if="${loggedIn}">
+        <span class="nav-link" th:text="${authentication.name}"></span>
+      </li>
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
       </li>
       <!-- Logout button -->
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Вход</a>
+      <li class="nav-item" th:if="${loggedIn}">
+        <a class="nav-link" href="/logout">Выход</a>
+      </li>
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" href="/login">Вход</a>
       </li>
     </ul>
   </div>
+
+
 </nav>
 <h2>Список рейсов</h2>
 <table border="1">
@@ -162,6 +177,9 @@
 </table>
 <a th:href="@{'/flights/new'}"  th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый рейс</a>
 
-
+<!-- Подключаем Bootstrap JS (необходим для работы модальных окон и других компонентов) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

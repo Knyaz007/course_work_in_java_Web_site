@@ -38,6 +38,12 @@ public class HotelController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         model.addAttribute("roles", roles);
+
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
         return "Hotel/hotelsList";
     }
 
@@ -51,6 +57,15 @@ public class HotelController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         model.addAttribute("roles", roles);
+
+
+
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
+
         if (optionalHotel.isPresent()) {
             Hotel hotel = optionalHotel.get();
             model.addAttribute("hotel", hotel);
@@ -71,6 +86,13 @@ public class HotelController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         model.addAttribute("roles", roles);
+
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
+
         if (hotel.isPresent()) {
             model.addAttribute("hotel", hotel.get());
             return "Hotel/editHotel";
@@ -93,7 +115,14 @@ public class HotelController {
         model.addAttribute("roles", roles);
         hotelRepository.save(hotel);
         model.addAttribute("message", "Hotel successfully edited");
-        return "redirect:/hotels";
+
+        // Если зарегестрирован то передавать loggedIn для отображения элементов представления ( кнопка регистрация вход)
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
+        return "redirect:/hotels/list";
     }
 
     @GetMapping("/delete/{id}")
@@ -120,6 +149,13 @@ public class HotelController {
                 .collect(Collectors.toList());
         model.addAttribute("roles", roles);
         model.addAttribute("hotel", new Hotel());
+
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
+
         return "Hotel/newHotel";
     }
 

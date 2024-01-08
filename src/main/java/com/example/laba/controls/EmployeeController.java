@@ -45,6 +45,11 @@ public class EmployeeController {
                 .collect(Collectors.toList());
 
        model.addAttribute("roles", roles);
+
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
         return "Employee/employeesList";
     }
 
@@ -63,7 +68,20 @@ public class EmployeeController {
 //                // Помещение фотографии в модель
 //                model.addAttribute("employeePhoto", photo);
 //            }
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            List<String> roles = authentication.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
 
+            model.addAttribute("roles", roles);
+
+
+            // Если зарегестрирован то передавать loggedIn для отображения элементов представления ( кнопка регистрация вход)
+            boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+            model.addAttribute("loggedIn", loggedIn);
+            model.addAttribute("authentication", authentication);
             // Помещение сотрудника в модель
             model.addAttribute("employee", employee);
 
@@ -88,6 +106,23 @@ public class EmployeeController {
     @GetMapping("/edit/{id}")
     public String editEmployee(Model model, @PathVariable("id") Long id) {
         Optional<Employee> employee = employeeRepository.findById(id);
+
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        model.addAttribute("roles", roles);
+
+
+        // Если зарегестрирован то передавать loggedIn для отображения элементов представления ( кнопка регистрация вход)
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
         if (employee.isPresent()) {
             model.addAttribute("employee", employee.get());
             return "Employee/editEmployee";
@@ -122,6 +157,24 @@ public class EmployeeController {
 
     @GetMapping("/new")
     public String newEmployee(Model model) {
+
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        model.addAttribute("roles", roles);
+
+
+        // Если зарегестрирован то передавать loggedIn для отображения элементов представления ( кнопка регистрация вход)
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
+
         model.addAttribute("employee", new Employee());
         return "Employee/newEmployee";
     }

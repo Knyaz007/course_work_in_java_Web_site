@@ -2,18 +2,81 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
-  <title>Edit Flight</title>
+  <title>Редактирование Рейса</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 20px 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    input[type="submit"] {
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    a {
+      display: inline-block;
+      padding: 8px 16px;
+      text-decoration: none;
+      background-color: #ddd;
+      color: #333;
+      border-radius: 4px;
+    }
+
+    a:hover {
+      background-color: #bbb;
+    }
+
+    /* Стили Thymeleaf */
+    .error {
+      color: red;
+    }
+
+    .info {
+      color: green;
+    }
+  </style>
 </head>
 <body>
-<h2>Edit Flight</h2>
+<h2>Редактирование Рейса</h2>
 <form th:action="@{'/flights/edit'}" th:object="${flight}" method="post">
   <input type="hidden" th:field="*{flightId}"/>
-  <label>Flight Number: <input type="text" th:field="*{flightNumber}"/></label><br/>
-  <label>Departure: <input type="text" th:field="*{departure}"/></label><br/>
-  <label>Destination: <input type="text" th:field="*{destination}"/></label><br/>
-  <label>Departure DateTime: <input type="text" th:field="*{departureDateTime}"/></label><br/>
-  <input type="submit" value="Save"/>
+  <label>Номер Рейса: <input type="text" th:field="*{flightNumber}"/></label><br/>
+  <label>Отправление: <input type="text" th:field="*{departure}"/></label><br/>
+  <label>Пункт Назначения: <input type="text" th:field="*{destination}"/></label><br/>
+  <label>Дата и Время Отправления: <input type="text" th:field="*{departureDateTime}"/></label><br/>
+  <input type="submit" value="Сохранить" class="btn btn-success"/>
 </form>
-<a th:href="@{'/flights/details/' + ${flight.flightId}}">Cancel</a>
+<a th:href="@{'/flights/list'}" style="text-decoration: none;">
+  <button style="background-color: #337ab7; color: #fff; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
+    Отмена
+  </button>
+</a>
 </body>
 </html>

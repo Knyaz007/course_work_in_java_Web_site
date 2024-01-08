@@ -10,7 +10,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface EmployeeRepository extends CrudRepository<Employee, Long> {
-    @Query("SELECT e.photo FROM Employee e WHERE e.employeeId = :employeeId")
+       @Query("SELECT e.photo FROM Employee e WHERE e.employeeId = :employeeId")
     Optional<byte[]> findPhotoById(@Param("employeeId") Long employeeId);
+
+
 
 }

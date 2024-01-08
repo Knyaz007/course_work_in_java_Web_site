@@ -3,6 +3,7 @@ package com.example.laba.models;
 import jakarta.persistence.*;
 
 //import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +26,7 @@ public class Hotel {
     private Integer availableRooms;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();;
 
     public Long getId() {
         return id;

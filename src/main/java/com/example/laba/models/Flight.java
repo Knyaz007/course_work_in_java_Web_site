@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 //import javax.persistence.*;
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,7 +31,7 @@ public class Flight {
     private LocalDateTime departureDateTime;
 
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();;
 
     public Long getFlightId() {
         return flightId;

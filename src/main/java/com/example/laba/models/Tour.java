@@ -20,7 +20,7 @@ public class Tour {
     @Column(name = "Name", nullable = false)
     private String name;
 
-    @Column(name = "Description")
+    @Column(name = "Description", columnDefinition = "TEXT") // Указываем новый тип столбца
     private String description;
 
     @Column(name = "Price")

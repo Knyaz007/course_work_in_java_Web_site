@@ -39,7 +39,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(authorize -> authorize
-                        .requestMatchers("/",  "/employees/**","/tours/**","/users/**","/flights/**","/employees/**","/register" ,"/tour/details/{tourId}","/hotels/**").permitAll() // Allow access to the main page without authentication
+                        .requestMatchers("/","/","/","/","/send-email",  "/employees/**","/tours/**","/users/**","/flights/**","/employees/**","/register" ,"/tour/details/{tourId}","/hotels/**").permitAll() // Allow access to the main page without authentication
                         .requestMatchers("/students/delete/**", "/students/update/**", "/departments/new").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )

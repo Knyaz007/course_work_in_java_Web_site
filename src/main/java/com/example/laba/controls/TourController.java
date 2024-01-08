@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +69,13 @@ public class TourController {
         //  model.addAttribute("user", new User()); // Пустой объект User для формы регистрации
         model.addAttribute("tours", tours); /* Здесь нужно получить список туров из сервиса или репозитория */;
 
+
+        // Если зарегестрирован то передавать loggedIn для отображения элементов представления ( кнопка регистрация вход)
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+
+
         return "main"; // Имя представления (шаблона Thymeleaf)
     }
 
@@ -87,6 +96,14 @@ public class TourController {
 
             model.addAttribute("roles", roles);
 
+
+            // Если зарегестрирован то передавать loggedIn для отображения элементов представления ( кнопка регистрация вход)
+            boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+            model.addAttribute("loggedIn", loggedIn);
+            model.addAttribute("authentication", authentication);
+
+
             return "Tour/tourDetails"; // Assuming you have a "tourDetails" template
         } else {
             // Handle the case where the tourId is not valid
@@ -98,13 +115,27 @@ public class TourController {
     //  http://localhost:8080/tours/edit/1
     @GetMapping("/edit/{id}")
     public String editTour(Model model, @PathVariable("id") Long id) {
-        Optional<Tour> tour = tourRepository.findById(id);
-        if (tour.isEmpty()) {
+        Optional<Tour> optionalTour = tourRepository.findById(id);
+
+        if (optionalTour.isEmpty()) {
             return "redirect:/tours";
         }
-        model.addAttribute("tour", tour.get());
+
+        Tour tourToEdit = optionalTour.get();
+        tourToEdit.setStartDate(LocalDate.now()); // Замените это на реальное значение
+        tourToEdit.setEndDate(LocalDate.now().plusDays(7)); // Замените это на реальное значение
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        model.addAttribute("tour", tourToEdit);
+        model.addAttribute("startDateFormatted", tourToEdit.getStartDate().format(formatter));
+        model.addAttribute("endDateFormatted", tourToEdit.getEndDate().format(formatter));
+
+
+
+
         return "Tour/editTour";
     }
+
 
     @PostMapping("/edit")
     public String editTour(@ModelAttribute Tour tour,Model model) {
@@ -130,6 +161,20 @@ public class TourController {
     @GetMapping("/new")
     public String newTour(Model model) {
         model.addAttribute("tour", new Tour());
+
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        model.addAttribute("roles", roles);
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
         return "Tour/newTour";
     }
 
