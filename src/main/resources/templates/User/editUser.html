@@ -3,6 +3,55 @@
 <head>
   <!-- Заголовок, стили и мета-теги -->
   <title>Редактирование пользователя</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    label {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #28a745;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
 <!-- Заголовок страницы -->
@@ -14,19 +63,41 @@
   <input type="hidden" th:field="*{userId}" />
 
   <!-- Поля для редактирования информации о пользователе -->
-  <label for="name">Имя:</label>
-  <input type="text" id="name" th:field="*{name}" />
+  <div class="form-group">
+    <label for="name">Имя:</label>
+    <input type="text" id="name" th:field="*{name}" class="form-control" required/>
+  </div>
 
-  <label for="lastName">Фамилия:</label>
-  <input type="text" id="lastName" th:field="*{lastName}" />
+  <div class="form-group">
+    <label for="lastName">Фамилия:</label>
+    <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required/>
+  </div>
+
+  <div class="form-group">
+    <label for="year">Возраст:</label>
+    <input type="number" id="year" th:field="*{year}" class="form-control"/>
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="email" id="email" th:field="*{email}" class="form-control" required/>
+  </div>
+
+  <div class="form-group">
+    <label for="phone">Телефон:</label>
+    <input type="text" id="phone" th:field="*{phone}" class="form-control"/>
+  </div>
 
   <!-- Добавьте другие поля пользователя по необходимости -->
 
   <!-- Кнопка для отправки формы -->
-  <button type="submit">Сохранить</button>
+  <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
 
 <!-- Ссылка на список пользователей -->
-<a th:href="@{/users/list}">Назад к списку</a>
+<a th:href="@{/users/list}" class="btn btn-secondary">Назад к списку</a>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

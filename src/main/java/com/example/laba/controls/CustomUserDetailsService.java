@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 //    UserDetailsImpl. Этот объект UserDetails затем используется для проверки подлинности пользователя.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByName(username)
+        User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         return UserDetailsImpl.build(user);

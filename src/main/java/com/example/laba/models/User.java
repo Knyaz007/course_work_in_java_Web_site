@@ -27,7 +27,7 @@ public class User {
 
     @Column(name = "Year", nullable = true)
     private Integer year;
-
+   // @Column(name = "Email", nullable = true, unique = true)
     @Column(name = "Email", nullable = true)
    // @Email(message = "Email should be valid")
     //@NotBlank(message = "Email is mandatory")

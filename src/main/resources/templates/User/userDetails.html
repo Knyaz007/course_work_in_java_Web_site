@@ -3,21 +3,81 @@
 <head>
   <!-- Заголовок, стили и мета-теги -->
   <title>Подробности пользователя</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #28a745;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .table {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
 <!-- Заголовок страницы -->
 <h2>Подробности пользователя</h2>
 
-<!-- Информация о пользователе -->
-<p>ID: <span th:text="${user.userId}"></span></p>
-<p>Имя: <span th:text="${user.name}"></span></p>
-<p>Фамилия: <span th:text="${user.lastName}"></span></p>
-<!-- Добавьте другие поля пользователя по необходимости -->
+<!-- Таблица с информацией о пользователе -->
+<table class="table">
+  <tbody>
+  <tr>
+    <th scope="row">ID</th>
+    <td><span th:text="${user.userId}"></span></td>
+  </tr>
+  <tr>
+    <th scope="row">Имя</th>
+    <td><span th:text="${user.name}"></span></td>
+  </tr>
+  <tr>
+    <th scope="row">Фамилия</th>
+    <td><span th:text="${user.lastName}"></span></td>
+  </tr>
+  <tr>
+    <th scope="row">Возраст</th>
+    <td><span th:text="${user.year}"></span></td>
+  </tr>
+  <tr>
+    <th scope="row">Email</th>
+    <td><span th:text="${user.email}"></span></td>
+  </tr>
+  <tr>
+    <th scope="row">Телефон</th>
+    <td><span th:text="${user.phone}"></span></td>
+  </tr>
+  <!-- Добавьте другие поля пользователя по необходимости -->
+  </tbody>
+</table>
 
 <!-- Ссылка на редактирование пользователя -->
-<a th:href="@{/users/edit/{userId}(userId=${user.userId})}">Редактировать</a>
-|
+<a th:href="@{/users/edit/{userId}(userId=${user.userId})}" class="btn btn-primary">Редактировать</a>
 <!-- Ссылка на список пользователей -->
-<a th:href="@{/users/list}">Назад к списку</a>
+<a th:href="@{/users/list}" class="btn btn-secondary">Назад к списку</a>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -39,11 +39,19 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(authorize -> authorize
-                        .requestMatchers("/","/","/","/","/send-email",  "/employees/**","/tours/**","/users/**","/flights/**","/employees/**","/register" ,"/tour/details/{tourId}","/hotels/**").permitAll() // Allow access to the main page without authentication
+                        .requestMatchers("/","/","/login","/","/send-email",  "/employees/**","/tours/**","/users/**","/flights/**","/employees/**","/register" ,"/tour/details/{tourId}","/hotels/**").permitAll() // Allow access to the main page without authentication
                         .requestMatchers("/students/delete/**", "/students/update/**", "/departments/new").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
+
+//                        .usernameParameter ("email") // Имя параметра для электронной почты
+//                        .passwordParameter("password") // Имя параметра для пароля
+//                        .defaultSuccessUrl("/").permitAll()
+
+                       //  .loginPage("/login") //Можно использовать для перенаправления на свою страницу  login  в  RegistrationController
+
+
                         .defaultSuccessUrl("/").permitAll()
                 )
                 .logout(logout -> logout

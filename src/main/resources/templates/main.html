@@ -129,10 +129,10 @@
       </li>
       <!-- Logout button -->
       <li class="nav-item" th:if="${loggedIn}">
-        <a class="nav-link" href="/logout">Выход</a>
+        <a class="nav-link"  href="/logout">Выход</a>
       </li>
       <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" href="/login">Вход</a>
+        <a class="nav-link"  href="/login">Вход</a>
       </li>
     </ul>
   </div>
@@ -144,7 +144,7 @@
   <table class="table table-bordered">
     <thead class="thead-light">
     <tr>
-      <th>ID</th>
+<!--      <th>ID</th>-->
       <th>Название</th>
       <th>Начало</th>
       <th>Окончание</th>
@@ -153,7 +153,7 @@
     </thead>
     <tbody>
     <tr th:each="tour : ${tours}">
-      <td th:text="${tour.tourId}"></td>
+<!--      <td th:text="${tour.tourId}"></td>-->
       <td th:text="${tour.name}"></td>
       <td th:text="${#temporals.format(tour.startDate, 'dd.MM.yyyy')}"></td>
       <td th:text="${#temporals.format(tour.endDate, 'dd.MM.yyyy')}"></td>

@@ -3,7 +3,7 @@ package com.example.laba.controls;
 import com.example.laba.models.Booking;
 
 import com.example.laba.models.Hotel;
-import com.example.laba.repository.bookingRepository;
+import com.example.laba.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +22,15 @@ import java.util.stream.Collectors;
 public class BookingController {
     @Autowired
     private   bookingRepository BookingRepository;
+
+    @Autowired
+    private flightRepository FlightRepository;
+    @Autowired
+    private HotelRepository HotelRepository;
+    @Autowired
+    private tourRepository TourRepository;
+    @Autowired
+    private UserRepository UserRepository;
 
 
     @GetMapping("/list")
@@ -53,6 +62,8 @@ public class BookingController {
     @GetMapping("/details/{bookingId}")
     public String bookingDetails(@PathVariable Long bookingId, Model model) {
         Optional<Booking> optionalBooking = BookingRepository.findById(bookingId);
+
+
 
         if (optionalBooking.isPresent()) {
             Booking booking = optionalBooking.get();
