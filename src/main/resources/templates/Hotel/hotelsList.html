@@ -5,6 +5,7 @@
   <title>Список отелей</title>
   <!-- Подключаем Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link th:href="@{/public/hotel.css}" rel="stylesheet" />
   <style>
     body {
       padding: 20px;
@@ -31,6 +32,7 @@
       margin-right: 10px;
     }
   </style>
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -140,6 +142,96 @@
 </nav>
 <div class="container">
   <h2>Список отелей</h2>
+
+
+  <div id="search-form-container" style="float: left;">
+    <div class="sfl-container sfl-layout-default sfl-theme-16886-xroomhotel" data-version="1.5">
+      <div class="sf-wrapper">
+
+        <div class="sf-controls-wrapper">
+          <!-- Hotel Select -->
+
+          <!-- Arrival Date -->
+          <div class="sf-field-container sf-arrival-date-container">
+            <div class="sf-field-label sf-arrival-date-label">Заезд</div>
+            <input type="date" id="arrivalDate">
+          </div>
+
+
+          <!-- Departure Date -->
+          <div class="sf-field-container sf-departure-date-container">
+            <div class="sf-field-label sf-departure-date-label">Выезд</div>
+            <input type="date" id="arrivalDate2">
+          </div>
+
+
+          <div class="guests-input-container">
+            <input type="text" class="sfl-guests-input" readonly="" inputmode="none" id="guestsInput" pattern="[0-9]*" value="Нужно на 2">
+            <button onclick="decrementAdults()">-</button>
+            <button onclick="incrementAdults()">+</button>
+          </div>
+
+          <script>
+  var adultsCount = 2; // начальное количество взрослых
+
+  function updateGuestsInput() {
+    var guestsInput = document.getElementById('guestsInput');
+    guestsInput.value = 'Нужно на ' + adultsCount;
+  }
+
+  function incrementAdults() {
+    if (adultsCount < 4) { // проверка максимального значения
+      adultsCount++;
+      updateGuestsInput();
+    }
+  }
+
+  function decrementAdults() {
+    if (adultsCount > 0) {
+      adultsCount--;
+      updateGuestsInput();
+    }
+  }
+</script>
+
+
+
+          <!-- Nights -->
+<!--          <div class="sf-field-container sf-Number-of-guests-container">-->
+<!--            <div class="sf-field-label sf-Number-of-guests-label">Количество гостей</div>-->
+<!--            <select class="sfl-nights">-->
+<!--              &lt;!&ndash; Options for nights &ndash;&gt;-->
+<!--              <option value="1">1 ночь</option>-->
+<!--              <option value="2">2 ночи</option>-->
+<!--              <option value="3">3 ночи</option>-->
+<!--            </select>-->
+<!--          </div>-->
+
+
+          <!-- Submit Buttons -->
+          <div class="sf-submit-button-container sf-submit-button-input-container">
+            <input type="button" class="sfl-submit-button sfl-submit-button-input standard-view-button" value="Найти номер">
+            <input type="button" class="sfl-submit-button sfl-submit-button-input compact-view-button" value="Забронировать">
+          </div>
+
+          <div class="sf-backlink-container">
+            <div><a href="https://www.travelline.ru/products/tl-hotel/" rel="nofollow" aria-label="система онлайн-бронирования" target="_blank">TravelLine: Platform</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
   <table class="table table-bordered">
     <thead class="thead-light">
     <tr>
@@ -177,5 +269,46 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+// время в поиске
+  // Get the input element by its ID
+
+
+
+
+
+  // Получаем текущую дату
+var today = new Date();
+
+// Получаем компоненты даты (год, месяц, день)
+var year = today.getFullYear();
+var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Месяцы в JavaScript нумеруются с 0, поэтому добавляем 1
+var day = today.getDate().toString().padStart(2, '0');
+
+// Форматируем дату в формат 'YYYY-MM-DD' (совместимый с input type="date")
+var formattedDate = year + '-' + month + '-' + day;
+
+// Устанавливаем значение в input
+var dateInput = document.getElementById('arrivalDate');
+dateInput.value = formattedDate;
+
+
+
+var dateInput2 = document.getElementById('arrivalDate2');
+var year = today.getFullYear();
+var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Месяцы в JavaScript нумеруются с 0, поэтому добавляем 1
+var day = (today.getDate()+1).toString().padStart(2, '0');
+
+// Форматируем дату в формат 'YYYY-MM-DD' (совместимый с input type="date")
+var formattedDate = year + '-' + month + '-' + day;
+
+dateInput2.value = formattedDate;
+
+
+</script>
+
+
+
+
 </body>
 </html>

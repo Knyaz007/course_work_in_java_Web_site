@@ -1,0 +1,50 @@
+body {
+  background-color: #7DF9FF; /* Голубой цвет, можно изменить на свой вкус */
+  padding: 1;
+}
+.navbar-brand {
+  background-color: #7DF9FF;
+
+ }
+ /* чтобы ширина и высота включали границы и отступы внутри элемента.*/
+.image-container {
+    background: #7DF9FF;
+    position: relative;
+    height: 150px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100vw;
+      /* Добавлено для корректного позиционирования .image-text */
+   /* object-fit: cover; /* Заполнить контейнер, сохраняя соотношение сторон */
+   /*  overflow: hidden;  Обрезать изображение, если оно не вмещается в контейнер */
+}
+img {
+     width: 100%; /* Растягиваем изображение на всю ширину контейнера */
+    max-width: 100vw; /* Гарантируем, что изображение не будет превышать 100% ширины контейнера */
+    max-height: 100%; /* Гарантируем, что изображение не будет превышать 100% высоты контейнера */
+     /* width: auto; /* Позволяет сохранять пропорции изображения */
+}
+.image-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #0000FF; /* Устанавливаем цвет текста */
+    text-align: center; /* Выравниваем текст по центру */
+    width: 100%; /* Занимаем 100% ширины контейнера */
+   /* font-family: 'Apple Chancery', sans-serif;*/
+
+ }
+
+.image-text p {
+    font-family: 'Brush Script MT', 'Brush Script Std', 'cursive', sans-serif;
+    font-style: italic;
+    z-index: 1; /* Устанавливаем z-index, чтобы текст был выше других элементов */
+    margin: 0; /* Убираем внешние отступы у абзаца */
+    font-size: 120px; /* Настройте размер шрифта по вашему выбору */
+}
+
+

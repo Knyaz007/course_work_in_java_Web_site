@@ -1,0 +1,178 @@
+/* Container styles */
+body #search-form-container {
+  float: left;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px;
+
+}
+
+.sf-field-container {
+    height: 60px;
+    width: 120px;
+    margin-bottom: 15px;
+}
+
+
+#arrivalDate, #arrivalDate2 {
+    z-index: 1;
+    border: none;
+    width: 120px;
+    height: 40px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+#arrivalDateInput {
+    z-index: 2;
+    border: none;
+    width: 100px;
+    padding: 5px;
+    box-sizing: border-box;
+    position: absolute;
+    left: 130px;
+}
+
+ .sf-field-container {
+    position: relative;
+  }
+
+ .sf-field-label {
+     font-size: 14px;
+     font-weight: bold;
+     margin-bottom: 5px;
+     color: #333;
+ }
+ .sf-field-label {
+     z-index: 3;
+     position: relative;
+     top: 0;
+     left: 0px;
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.sfl-container {
+  background-color: #eaeef2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sf-wrapper {
+  padding: 20px;
+}
+
+/* Title and top blocks styles */
+.sf-title-container {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.sf-top-block-1,
+.sf-top-block-2 {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+/* Form field container styles */
+.sf-field-container {
+  margin-bottom: 15px;
+}
+
+/* Label styles */
+.sf-field-label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+/* Input styles */
+.sfl-date-control,
+.sfl-nights,
+.sfl-adults,
+.sfl-promo-code-input,
+.sfl-guests-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Calendar button styles */
+.sf-calendar-button {
+  width: 30px;
+  height: 30px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Button styles */
+.sfl-submit-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Additional styles for compact view button */
+.sfl-submit-button.compact-view-button {
+  background-color: #e74c3c;
+}
+
+/* Promo code info styles */
+.sf-promo-code-info {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Backlink styles */
+.sf-backlink-container {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.sf-backlink-container a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.sf-backlink-container a:hover {
+  text-decoration: underline;
+}
+

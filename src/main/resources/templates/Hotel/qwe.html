@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Photos</title>
+</head>
+<body>
+
+<h2>Upload Photos</h2>
+
+<form th:action="@{'/hotels/upload'}" method="post" enctype="multipart/form-data">
+  <label for="photos">Select Photos:</label>
+  <input type="file" id="photos" name="photos" multiple/>
+  <br/>
+  <input type="submit" value="Upload"/>
+</form>
+
+</body>
+</html>

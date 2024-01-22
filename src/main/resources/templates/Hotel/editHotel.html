@@ -113,14 +113,85 @@
 
 
 </nav>
+
+
+<!-- Existing HTML code above this line -->
+
 <h2>Редактирование отеля</h2>
-<form th:action="@{'/hotels/edit'}" th:object="${hotel}" method="post">
+<form th:action="@{'/hotels/edit'}" th:object="${hotel}" method="post" enctype="multipart/form-data">
   <input type="hidden" th:field="*{id}"/>
   <label>Название: <input type="text" th:field="*{name}"/></label><br/>
   <label>Адрес: <input type="text" th:field="*{address}"/></label><br/>
   <label>Доступные номера: <input type="text" th:field="*{availableRooms}"/></label><br/>
+
+  <!-- Display existing photos -->
+<!--  <div th:each="photo, iterStat : *{photos}">-->
+<!--    <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo"/>-->
+<!--    <button type="button" class="btn btn-danger" onclick="removePhoto('/uploads/hotel-${hotel.id}/${photo}')">Удалить фото</button>-->
+<!--  </div>-->
+  <!-- Лист для удаленных фото existing photos -->
+  <input type="hidden" id="deletedPhotos" name="deletedPhotos" />
+
+
+  <div th:each="photo, iterStat : *{photos}"  th:data-index="${iterStat.index}">
+    <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo"
+         th:style="'max-width: 200px; max-height: 150px;'"/>
+    <button type="button" class="btn btn-danger" th:attr="data-photo-path=@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" onclick="removePhoto(this)">Удалить фото</button>
+    <p th:text="${iterStat.index}"></p>
+    <!-- Hidden input for existing photo -->
+    <input type="hidden" name="existingPhotos" th:value="${photo}" />
+  </div>
+  <!-- Hidden input for deleted photos -->
+
+
+  <!-- JavaScript -->
+  <script th:inline="javascript">
+    /* Добавить функцию JavaScript для обработки удаления фотографий */
+    function removePhoto(button) {
+
+
+
+    // Extract the numeric part from the ID
+    var index = parseInt(button.parentElement.getAttribute('data-index'));
+    console.log(index);
+    var photoContainerSelector = '[data-index="' + index + '"]';
+
+    // Получаем доступ к элементу по селектору
+    var photoContainer = document.querySelector(photoContainerSelector);
+    photoContainer.style.display = 'none';
+    console.log(photoContainer);
+
+<!--    получаем путь фотографии где она хранится-->
+    var photoPath = button.getAttribute('data-photo-path');
+
+<!--        //при нажатие делаем div(ищем по photoContainerSelector ) не видимым но не удаляем чтоб параметры сохранились-->
+
+<!--        var photoContainer = document.getElementById(photoContainerId);-->
+
+        // Extract the filename from the full path
+        var photo = photoPath.replace(/^.*[\\\/]/, '');
+        console.log(photo);
+
+        // Create a hidden input for each deleted photo
+        var deletedPhotosInput = document.getElementById('deletedPhotos');
+        deletedPhotosInput.value += photo + ",";
+    }
+</script>
+
+
+  <!-- Add new photo input fields -->
+  <div class="form-group">
+    <label>Добавить фото:</label>
+    <input type="file" name="newPhotos" accept="image/*" multiple="multiple" class="form-control"/>
+  </div>
+
   <input type="submit" value="Сохранить"/>
 </form>
+
+
 <a th:href="@{'/hotels/details/' + ${hotel.id}}">Отмена</a>
+
+
+
 </body>
 </html>

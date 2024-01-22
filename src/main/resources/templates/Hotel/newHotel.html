@@ -114,10 +114,16 @@
 
 </nav>
 <h2>Новый отель</h2>
-<form th:action="@{'/hotels/new'}" th:object="${hotel}" method="post">
+<form th:action="@{'/hotels/new'}" th:object="${hotel}" method="post" enctype="multipart/form-data">
   <label>Название: <input type="text" th:field="*{name}"/></label><br/>
   <label>Адрес: <input type="text" th:field="*{address}"/></label><br/>
   <label>Доступные номера: <input type="text" th:field="*{availableRooms}"/></label><br/>
+
+  <label  >Select Photos:</label>
+  <input type="file"  name="photos22" multiple/>
+
+
+
   <input type="submit" value="Сохранить"/>
 </form>
 <a th:href="@{'/hotels/'}">Отмена</a>

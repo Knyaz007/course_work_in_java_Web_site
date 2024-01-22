@@ -1,0 +1,84 @@
+/* Общие стили для футера */
+footer {
+  background-color: #2A4A92;
+
+  padding: 20px;
+
+}
+.footer {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Allow items to wrap to the next row if needed */
+}*/
+
+.column {
+  vertical-align: top;
+  width: 48%;
+  display: inline-block;
+
+  margin-right: 20px; /* Adjust the margin as needed for space between columns */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+
+/* Add any additional styling as needed */
+
+/* Стили для информации о копирайте */
+footer p {
+  font-size: 14px;
+  color: #FFFFFF;
+}
+
+/* Стили для ссылок в навигационных меню */
+footer nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+footer nav ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+footer nav ul li a {
+  text-decoration: none;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+/* Стили для контактной информации */
+footer address {
+  font-style: normal;
+
+}
+footer address a{
+  font-style: normal;
+   color: #FFFFFF;
+}
+/* Стили для иконок социальных сетей */
+.social-media a {
+  color: #FFFFFF;
+  margin-right: 10px;
+}
+
+.social-media img {
+  width: 30px;
+  height: 30px;
+}
+
+/* Стили для важных разделов сайта */
+footer nav:last-child ul {
+  display: flex;
+}
+
+footer nav:last-child ul li {
+  margin-right: 20px;
+}
+
+/* Стили для логотипов и брендирования */
+.branding img {
+  width: 80px;
+  height: 80px;
+  margin-top: 10px;
+}

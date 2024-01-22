@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- Ваше представление с сообщением об ошибке -->
+<div th:if="${error}" class="alert alert-danger" role="alert">
+  <p th:text="${error}"></p>
+</div>
+</body>
+</html>

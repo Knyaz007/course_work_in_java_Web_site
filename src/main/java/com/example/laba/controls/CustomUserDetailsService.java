@@ -20,6 +20,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 //    Если пользователь найден, создается объект UserDetailsImpl с использованием статического метода build,
 //    который, вероятно, определен в классе
 //    UserDetailsImpl. Этот объект UserDetails затем используется для проверки подлинности пользователя.
+
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)

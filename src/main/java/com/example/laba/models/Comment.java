@@ -34,7 +34,7 @@ public class Comment {
     private Tour tour;
 
     @ManyToOne
-    @JoinColumn(name = "IdHotel")
+    @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
     @ManyToOne
