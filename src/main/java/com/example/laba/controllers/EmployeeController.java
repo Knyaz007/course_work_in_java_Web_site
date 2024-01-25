@@ -1,4 +1,4 @@
-package com.example.laba.controls;
+package com.example.laba.controllers;
 
 import com.example.laba.models.Employee;
 import com.example.laba.repository.EmployeeRepository;
@@ -16,14 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 @RequestMapping("/employees")

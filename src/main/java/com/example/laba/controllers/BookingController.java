@@ -1,8 +1,7 @@
-package com.example.laba.controls;
+package com.example.laba.controllers;
 
 import com.example.laba.models.Booking;
 
-import com.example.laba.models.Hotel;
 import com.example.laba.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

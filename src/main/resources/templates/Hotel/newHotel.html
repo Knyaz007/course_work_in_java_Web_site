@@ -116,8 +116,14 @@
 <h2>Новый отель</h2>
 <form th:action="@{'/hotels/new'}" th:object="${hotel}" method="post" enctype="multipart/form-data">
   <label>Название: <input type="text" th:field="*{name}"/></label><br/>
-  <label>Адрес: <input type="text" th:field="*{address}"/></label><br/>
-  <label>Доступные номера: <input type="text" th:field="*{availableRooms}"/></label><br/>
+  <label>Название: <input type="text" th:field="*{country}"/></label><br/>
+  <label>Область: <input type="text" th:field="*{region}"/></label><br/>
+  <label>Город: <input type="text" th:field="*{city}"/></label><br/>
+  <label>Улица: <input type="text" th:field="*{street}"/></label><br/>
+  <label>Дом: <input type="text" th:field="*{house}"/></label><br/>
+
+
+
 
   <label  >Select Photos:</label>
   <input type="file"  name="photos22" multiple/>
@@ -125,6 +131,7 @@
 
 
   <input type="submit" value="Сохранить"/>
+
 </form>
 <a th:href="@{'/hotels/'}">Отмена</a>
 </body>

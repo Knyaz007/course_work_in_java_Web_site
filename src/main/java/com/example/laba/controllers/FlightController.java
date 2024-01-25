@@ -1,6 +1,5 @@
-package com.example.laba.controls;
+package com.example.laba.controllers;
 
-import com.example.laba.models.Comment;
 import com.example.laba.models.Flight;
 
 import com.example.laba.repository.flightRepository;

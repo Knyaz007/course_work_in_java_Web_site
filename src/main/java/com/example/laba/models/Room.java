@@ -1,6 +1,10 @@
 package com.example.laba.models;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -12,6 +16,9 @@ public class Room {
     @Column(name = "room_id")
     private Long id;
 
+    @Column(name = "MealPrice", nullable = false)
+    private Double mealPrice;
+
     @Column(name = "RoomNumber", nullable = false)
     private Integer roomNumber;
 
@@ -22,7 +29,37 @@ public class Room {
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
+    @ElementCollection
+    @CollectionTable(name = "RoomPhotos", joinColumns = @JoinColumn(name = "room_id"))
+    @Column(name = "photo_path", nullable = false)
+    private List<String> photos = new ArrayList<>();
     // Другие характеристики номера, например, тип номера, количество кроватей и т.д.
+
+    public void addPhoto(String photoPath) {
+        this.photos.add(photoPath);
+    }
+
+    public void removePhoto(String photoPath) {
+        Iterator<String> iterator = this.photos.iterator();
+
+        while (iterator.hasNext()) {
+            String path = iterator.next();
+            if (path.equals(photoPath)) {
+                iterator.remove();
+                break; // Exit the loop once the photo is removed
+            }
+        }
+
+
+    }
+    public List<String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
+    }
+
 
     public Long getId() {
         return id;
@@ -64,6 +101,14 @@ public class Room {
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
         return Objects.equals(id, room.id);
+    }
+
+    public Double getMealPrice() {
+        return mealPrice;
+    }
+
+    public void setMealPrice(Double mealPrice) {
+        this.mealPrice = mealPrice;
     }
 
     @Override

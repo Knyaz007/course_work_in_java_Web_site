@@ -127,10 +127,17 @@
 
     <td th:text="${hotel.id}"></td>
     <td th:text="${hotel.name}"></td>
-    <td th:text="${hotel.address}"></td>
-    <td th:text="${hotel.availableRooms}"></td>
+    <td th:text="${hotel.region + ', ' + hotel.city + ', ' + hotel.street + ', ' + hotel.house}"></td>
+
+    <td th:text="${hotel.region}"></td>
+    <td th:text="${hotel.city}"></td>
+    <td th:text="${hotel.street}"></td>
+    <td th:text="${hotel.house}"></td>
+
+
     <td>
-      <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-info btn-sm">Подробнее</a>
+
+<!--      <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-info btn-sm">Подробнее</a>-->
 
       <a th:href="@{'/hotels/edit/' + ${hotel.id}}" class="btn btn-warning btn-sm"
          th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
@@ -140,16 +147,50 @@
     </td>
 
   </tbody>
+ 
 </table>
+
+
 <div th:each="photo : ${hotel.photos}">ккк
-  <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo" />
+  <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo"
+       th:style="'max-width: 200px; max-height: 150px;'"/>
 
 </div>
+<div th:each="comment : ${hotel.comments}">
+  <div>
+    <p th:text="${comment.commentary}"></p>
+    <p th:text="${comment.evaluation}"></p>
+    <!-- Добавьте дополнительные поля комментария, если необходимо -->
+  </div>
+</div>
+<h2>Список номеров</h2>
+
+<table>
+  <thead>
+  <tr>
+    <th>Номер</th>
+    <th>Цена</th>
+    <th>Цена за питание</th>
+    <th>Фотографии</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="room : ${rooms}">
+    <td th:text="${room.roomNumber}"></td>
+    <td th:text="${room.price}"></td>
+    <td th:text="${room.mealPrice}"></td>
+    <td>
+      <ul>
+        <li th:each="photo : ${room.photos}" th:text="${photo}"></li>
+      </ul>
+    </td>
+  </tr>
+  </tbody>
+</table>
 
 
-
-
-
+https://console.cloud.google.com/apis/library/maps-backend.googleapis.com?project=articulate-rain-412014
+https://yandex.ru/map-constructor/
 
 </body>
 </html>

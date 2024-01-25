@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Список номеров</title>
+</head>
+<body>
+<h2>Список номеров</h2>
+
+<table>
+  <thead>
+  <tr>
+    <th>Номер</th>
+    <th>Цена</th>
+    <th>Цена за питание</th>
+    <th>Фотографии</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="room : ${rooms}">
+    <td th:text="${room.roomNumber}"></td>
+    <td th:text="${room.price}"></td>
+    <td th:text="${room.mealPrice}"></td>
+    <td>
+      <ul>
+        <li th:each="photo : ${room.photos}" th:text="${photo}"></li>
+      </ul>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<a th:href="@{'/rooms/add/1'}">Добавить номер</a>
+</body>
+</html>

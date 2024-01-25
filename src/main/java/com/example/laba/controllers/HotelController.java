@@ -1,24 +1,21 @@
-package com.example.laba.controls;
+package com.example.laba.controllers;
 
-import com.example.laba.models.Comment;
 import com.example.laba.models.Hotel;
+import com.example.laba.models.Room;
 import com.example.laba.repository.HotelRepository;
-import jakarta.annotation.PostConstruct;
+import com.example.laba.repository.RoomRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -29,9 +26,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +35,8 @@ public class HotelController {
 
     @Autowired
     private HotelRepository hotelRepository;
-
+    @Autowired
+    private RoomRepository roomRepository;
 
 
     @GetMapping("/list")
@@ -82,6 +77,10 @@ public class HotelController {
 
         model.addAttribute("loggedIn", loggedIn);
         model.addAttribute("authentication", authentication);
+
+
+        List<Room> rooms = roomRepository.findByHotelId(hotelId);
+        model.addAttribute("rooms", rooms);
 
 
         if (optionalHotel.isPresent()) {

@@ -1,4 +1,4 @@
-package com.example.laba.controls;
+package com.example.laba.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

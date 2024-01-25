@@ -1,4 +1,4 @@
-package com.example.laba.controls;
+package com.example.laba.controllers;
 
 import com.example.laba.models.Tour;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller

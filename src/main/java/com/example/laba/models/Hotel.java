@@ -22,16 +22,50 @@ public class Hotel {
     @Column(name = "Name", nullable = false)
     private String name;
 
-    @Column(name = "Address", nullable = false)
-    private String address;
+//    @Column(name = "Address", nullable = false)
+//    private String address;
 
+    @Column(name = "Сountry", nullable = false)
+    private String country;
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    @Column(name = "Region", nullable = false)
+    private String region;
+    @Column(name = "City", nullable = false)
+    private String city;
+    @Column(name = "Street", nullable = false)
+    private String street;
+
+
+    @Column(name = "House", nullable = false)
+    private String house;
+
+    //@Column(name = "Distance_to_the_center")
     @Column(name = "AvailableRooms")
     private Integer availableRooms;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE) //связанные комментарии также будут удалены.
     private List<Comment> comments = new ArrayList<>();
+    public Double getAverageCommentEvaluation() {
+        if (comments == null || comments.isEmpty()) {
+            return 0.0;
+        }
 
+        int sum = 0;
+        for (Comment comment : comments) {
+            sum += comment.getEvaluation();
+        }
+
+        return (double) sum / comments.size();
+    }
 
     @ElementCollection
     @CollectionTable(name = "HotelPhotos", joinColumns = @JoinColumn(name = "hotel_id"))
@@ -78,13 +112,44 @@ public class Hotel {
         this.name = name;
     }
 
-    public String getAddress() {
-        return address;
+    public String getRegion() {
+        return region;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setRegion(String region) {
+        this.region = region;
     }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getHouse() {
+        return house;
+    }
+    public String getCity() {
+        return city;
+    }
+
+    public void setHouse(String house) {
+        this.house = house;
+    }
+
+//    public String getAddress() {
+//        return address;
+//    }
+//
+//    public void setAddress(String address) {
+//        this.address = address;
+//    }
 
     public Integer getAvailableRooms() {
         return availableRooms;
@@ -114,4 +179,7 @@ public class Hotel {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
+
 }

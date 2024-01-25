@@ -1,4 +1,4 @@
-package com.example.laba.controls;
+package com.example.laba.controllers;
 
 import com.example.laba.models.User;
 import com.example.laba.repository.UserRepository;

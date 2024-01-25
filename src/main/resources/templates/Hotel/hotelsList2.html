@@ -77,47 +77,6 @@
   }
 </style>
 
-  <style>
-
-}
-
-/* Добавьте дополнительные стили по необходимости */
-.hotel-section section {
-    position: relative;
-}
-.comments{
- display: flex;
-
-}
-.photo-carousel {
-    position: relative;
-    overflow: hidden;
-}
-
-.container, .container-md, .container-sm {
-    max-width: none;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
-body #search-form-container {
-    position: relative;
-
-    width: 100%;
-    max-width: 400px;
-    margin: 20px;
-}
-.hotel-section {
-    position: relative;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    padding: 10px;
-}
-h2{
- text-align: center;
-}
-    /* Добавьте дополнительные стили по необходимости */
-</style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -225,12 +184,11 @@ h2{
 
 
 </nav>
-<h2>Список отелей</h2>
 <div class="container">
+  <h2>Список отелей</h2>
 
 
-<!--  <div id="search-form-container" style="float: left;">-->
-  <div id="search-form-container"  >
+  <div id="search-form-container" style="float: left;">
     <div class="sfl-container sfl-layout-default sfl-theme-16886-xroomhotel" data-version="1.5">
       <div class="sf-wrapper">
 
@@ -307,43 +265,124 @@ h2{
       </div>
     </div>
   </div>
-  <div th:each="hotel : ${hotels}" class="hotel-section">
-    <section class="NDSPt L8lvE" itemscope="" itemtype="https://schema.org/Hotel">
-      <!-- Ваш код для отображения данных отеля, например, название, адрес и др. -->
 
-      <!-- Фотографии отеля -->
-      <div class="photo-carousel">
-        <div class="photo-container">
-          <div th:each="photo : ${hotel.photos}" th:data-photo="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}">
-            <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo" />
-          </div>
-        </div>
-        <!-- Стрелки для пролистывания фотографий -->
-        <div class="arrow left" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showPrevPhoto(this)">&lt;</div>
-        <div class="arrow right" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showNextPhoto(this)">&gt;</div>
-      </div>
 
-      <!-- Ссылки для подробной информации, редактирования и удаления (если пользователь администратор) -->
-      <div>
-        <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-info btn-sm">Подробнее</a>
-        <a th:href="@{'/hotels/edit/' + ${hotel.id}}" class="btn btn-warning btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
-        <a th:href="@{'/hotels/delete/' + ${hotel.id}}" class="btn btn-danger btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Удалить</a>
-      </div>
-     <!-- Дополнительные данные, например, количество отзывов и средняя оценка -->
-      <div class="comments" th:if="${not #lists.isEmpty(hotel.comments)}">
+
+
+
+
+  <table class="table table-bordered">
+    <thead class="thead-light">
+    <tr>
+      <th  th:if="${roles.contains('ROLE_ADMIN')}" >ID</th>
+      <th>Название</th>
+      <th></th>
+<!--      <th>Адрес</th>-->
+      <th></th>
+<!--      <th>Действия</th>-->
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="hotel : ${hotels}">
+
+
+      <td  th:if="${roles.contains('ROLE_ADMIN')}" th:text="${hotel.id}"></td>
+      <td th:text="${hotel.name}"></td>
+      <td >
         <p><span  th:text="${hotel.region + ', ' + hotel.city + ', ' + hotel.street + ', ' + hotel.house}"></span> </p>
+        <!-- Добавьте блок для отображения количества комментариев -->
+        <div  th:if="${not #lists.isEmpty(hotel.comments)}">
+          <p><span th:text="${#lists.size(hotel.comments)}"></span> отзывов</p>
 
-        <p><span th:text="${#lists.size(hotel.comments)}"></span> отзывов</p>
-        <p th:if="${hotel.averageCommentEvaluation > 0.0}">
-          Средняя оценка <span th:text="${hotel.averageCommentEvaluation}"></span>
-        </p>
-        <p th:if="${hotel.averageCommentEvaluation <= 0.0}">
-          <span>Нет оценок.</span>
-        </p>
-      </div>
-    </section>
 
-    <script th:inline="javascript">
+          <p th:if="${hotel.averageCommentEvaluation > 0.0}">
+            Средняя оценка <span th:text="${hotel.averageCommentEvaluation}"></span>
+          </p>
+          <p th:if="${hotel.averageCommentEvaluation <= 0.0}">
+            <span>Нет оценок.</span>
+          </p>
+
+        </div>
+      </td>
+<!--      <td th:text="${hotel.address}"></td>-->
+<!--      <td th:text="${hotel.availableRooms}"></td>-->
+
+      <td>
+        <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-info btn-sm">Подробнее</a>
+
+        <a th:href="@{'/hotels/edit/' + ${hotel.id}}" class="btn btn-warning btn-sm"
+           th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
+
+        <a th:href="@{'/hotels/delete/' + ${hotel.id}}" class="btn btn-danger btn-sm"
+           th:if="${roles.contains('ROLE_ADMIN')}">Удалить</a>
+
+
+
+
+
+
+
+
+
+
+
+      </td>
+
+
+      <td>
+        <div id="photoCarousel" class="photo-carousel">
+          <div class="photo-container">
+            <div th:each="photo : ${hotel.photos}" th:data-photo="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}">
+              <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo"
+                    />
+            </div>
+          </div>
+
+          <!-- Стрелка влево -->
+<!--          <div class="arrow left" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.length}" onclick="showPrevPhoto(this)">&lt;</div>-->
+
+
+          <!-- Стрелка влево -->
+          <div class="arrow left"  th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showPrevPhoto(this)">&lt;</div>
+          <!-- Стрелка вправо -->
+          <div class="arrow right" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showNextPhoto(this)">&gt;</div>
+        </div>
+      </td>
+
+<!--      <div class="listHotels-comments" th:each="comment : ${hotel.comments}">-->
+<!--        <div>-->
+<!--          <p th:text="${comment.commentary}"></p>-->
+<!--          <p th:text="${comment.evaluation}"></p>-->
+<!--          &lt;!&ndash; Добавьте дополнительные поля комментария, если необходимо &ndash;&gt;-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div   th:if="${not #lists.isEmpty(hotel.comments)}">-->
+<!--        <p><span th:text="${#lists.size(hotel.comments)}"></span> отзывов</p>-->
+
+
+<!--        <p th:if="${hotel.averageCommentEvaluation > 0.0}">-->
+<!--          Средняя оценка <span th:text="${hotel.averageCommentEvaluation}"></span>-->
+<!--        </p>-->
+<!--        <p th:if="${hotel.averageCommentEvaluation <= 0.0}">-->
+<!--          <span>Нет оценок.</span>-->
+<!--        </p>-->
+
+<!--      </div>-->
+<!--      -->
+<!--      -->
+
+
+
+      <script th:inline="javascript">
+    var name = /*[[${hotel.name}]]*/;
+    console.log('Hello, ' + name + '!');
+     var photos = /*[[${hotel.photos}]]*/;
+     console.log(photos);
+</script>
+
+
+      <script th:inline="javascript">
     function showPrevPhoto(element) {
         var hotelId = element.getAttribute('data-hotel-id');
         var totalPhotos = element.getAttribute('data-total-photos');
@@ -387,10 +426,15 @@ h2{
         photoContainer.appendChild(img);
     }
 </script>
-  </div>
+      <!-- ... -->
+    </tr>
+
+    </td>
 
 
-
+     </tr>
+    </tbody>
+  </table>
 
   <a  th:href="@{'/hotels/new'}"  th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый отель</a>
 

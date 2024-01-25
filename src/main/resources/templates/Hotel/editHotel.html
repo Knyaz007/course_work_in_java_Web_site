@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <title>Редактирование отеля</title>
-
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 </head>
 <body>
 <!-- Навигационная панель (navbar) и прочий код не изменились -->
@@ -121,8 +121,10 @@
 <form th:action="@{'/hotels/edit'}" th:object="${hotel}" method="post" enctype="multipart/form-data">
   <input type="hidden" th:field="*{id}"/>
   <label>Название: <input type="text" th:field="*{name}"/></label><br/>
-  <label>Адрес: <input type="text" th:field="*{address}"/></label><br/>
-  <label>Доступные номера: <input type="text" th:field="*{availableRooms}"/></label><br/>
+  <label>Область: <input type="text" th:field="*{region}"/></label><br/>
+  <label>Город: <input type="text" th:field="*{city}"/></label><br/>
+  <label>Улица: <input type="text" th:field="*{street}"/></label><br/>
+  <label>Дом: <input type="text" th:field="*{house}"/></label><br/>
 
   <!-- Display existing photos -->
 <!--  <div th:each="photo, iterStat : *{photos}">-->
@@ -191,7 +193,15 @@
 
 <a th:href="@{'/hotels/details/' + ${hotel.id}}">Отмена</a>
 
-
+<!-- Добавьте блок для отображения комментариев -->
+<h3>Комментарии</h3>
+<div th:each="comment : ${hotel.comments}">
+  <div>
+    <p th:text="${comment.commentary}"></p>
+    <p th:text="${comment.evaluation}"></p>
+    <!-- Добавьте дополнительные поля комментария, если необходимо -->
+  </div>
+</div>
 
 </body>
 </html>

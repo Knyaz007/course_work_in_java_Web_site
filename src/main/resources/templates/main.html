@@ -44,10 +44,12 @@
   </div>
 </div>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" >
+  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link"  >
     Отели
   </button>
-
+  <button onclick="window.location.href='/rooms/list'" type="button" class="btn btn-link" >
+    Комнаты
+  </button>
   <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" >
     Авиабилета
   </button>
@@ -133,7 +135,7 @@
         <span class="nav-link" th:text="${authentication.name}"></span>
       </li>
       <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
+        <a class="nav-link" onclick="window.location.href='/register'"    data-toggle="modal">Регистрация</a>
       </li>
       <!-- Logout button -->
       <li class="nav-item" th:if="${loggedIn}">

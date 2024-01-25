@@ -1,6 +1,5 @@
-package com.example.laba.controls;
+package com.example.laba.controllers;
 
-import com.example.laba.controls.EmailService;
 //import com.example.laba.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,6 @@
-package com.example.laba.controls;
+package com.example.laba.controllers;
 
 import com.example.laba.models.User;
-import com.example.laba.models.UserDTO;
 import com.example.laba.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
