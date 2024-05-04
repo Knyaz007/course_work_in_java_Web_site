@@ -1,0 +1,42 @@
+body {
+    padding: 20px;
+}
+
+.hotels-details {
+   /* display: flex;*/
+    flex-wrap: wrap; /* Гибкое переносимость элементов на новую строку */
+    justify-content: center; /* Центрируем содержимое по горизонтали */
+    align-items: center; /* Выравниваем элементы по вертикали */
+    text-align: center; /* Центрируем текст */
+    width: 100%; /* Ширина блока */
+    padding: 20px; /* Добавляем отступы вокруг содержимого */
+    border: 1px solid #ccc; /* Добавляем рамку для ясности границ блока */
+    border-radius: 8px; /* Добавляем скругление углов */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Добавляем тень */
+    background-color: #f9f9f9; /* Цвет фона блока */
+    margin-bottom: 20px; /* Отступ снизу между блоками */
+}
+
+
+.hotels-details2 {
+    display: flex;
+    flex-wrap: wrap; /* Гибкое переносимость элементов на новую строку */
+    justify-content: space-around; /* Равномерное распределение элементов по ширине */
+    align-items: center; /* Выравниваем элементы по вертикали */
+    width: 100%; /* Ширина блока */
+    padding: 10px; /* Добавляем отступы вокруг содержимого */
+    border-top: 1px solid #ccc; /* Добавляем верхнюю границу */
+}
+
+
+.hotels-details  h3{
+     text-align: center;
+}
+.hotels-details  span {
+     text-align: center;
+}
+.hotels-details h3 {
+    margin-bottom: 10px; /* Отступ снизу между заголовком и следующим содержимым */
+    font-size: 24px; /* Размер шрифта заголовка */
+    color: #333; /* Цвет текста заголовка */
+}

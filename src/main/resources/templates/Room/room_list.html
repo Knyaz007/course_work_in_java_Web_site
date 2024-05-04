@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Room List</title>
+  <!-- Подключение Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h2>Room List</h2>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Room Number</th>
+      <!-- Добавьте заголовки для других полей комнаты -->
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="room : ${rooms}" class="room">
+      <td th:text="${room.roomNumber}"></td>
+      <!-- Добавьте другие поля комнаты -->
+      <td>
+        <a th:href="@{'/rooms/edit/' + ${room.id}}" class="btn btn-warning btn-sm">Edit</a>
+        <a th:href="@{'/rooms/delete/' + ${room.id}}" class="btn btn-danger btn-sm">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <a th:href="@{'/rooms/add'}" class="btn btn-success">Add Room</a>
+</div>
+<!-- Подключение Bootstrap JavaScript (необязательно, если вам не нужны JS-функции Bootstrap) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

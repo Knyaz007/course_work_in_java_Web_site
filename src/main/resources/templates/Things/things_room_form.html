@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add/Edit Things in Room</title>
+</head>
+<body>
+<form th:object="${thingsRoom}" th:action="@{'/things/add'}" method="post">
+
+  <input type="text" th:field="*{category}">
+  <input type="text" th:field="*{title}">
+  <!-- Добавьте остальные поля вещей в комнатах -->
+  <button type="submit">Submit</button>
+</form>
+</body>
+</html>

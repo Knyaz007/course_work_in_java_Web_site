@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add/Edit Room</title>
+  <style>
+#hotel-image {
+  width: 200px;
+  height: auto;
+}
+</style>
+</head>
+<body>
+<!-- Форма для добавления или редактирования комнаты -->
+<form th:action="@{'/rooms/add'}" th:object="${room}" method="post" enctype="multipart/form-data">
+  <!-- Поле для ввода номера комнаты -->
+  <label >Room Number: <input type="text" th:field="*{roomNumber}" id="roomNumber" required></label>
+  <br>
+   Добавьте остальные поля комнаты, например, цену за питание и цену за проживание
+   <label >Meal Price:  <input type="text" th:field="*{mealPrice}" id="mealPrice" required></label>
+  <br>
+  <label >Price: <input type="text" th:field="*{price}" id="price" required></label>
+  <br>
+  <label>Hotel:</label>
+  <select id="hotel" onchange="displayHotelInfo()">
+    <option value="" selected disabled>Choose a hotel</option>
+    <option th:each="hotel : ${hotels}" th:value="${hotel.id}"
+            th:text="${hotel.name}"
+            th:data-image="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${hotel.photos[0]}}"
+            th:data-name="${hotel.name}"
+            th:data-address="${hotel.region + ', ' + hotel.city + ', ' + hotel.street + ', ' + hotel.house}"
+            th:data-photos="${hotel.photos}">
+    </option>
+  </select>
+  <div id="hotel-info">
+    <h2>Hotel Information</h2>
+    <p id="hotel-name"></p>
+    <p id="hotel-address"></p>
+    <img id="hotel-image" src="" alt="Hotel Image">
+    <div id="hotel-photos"></div>
+    <!-- Поле для выбранного отеля -->
+    <input type="hidden" name="id" id="selectedHotelId">
+  </div>
+  <script>
+<!--  Показываем информацию об выбранном отели -->
+function displayHotelInfo() {
+  var selectedHotel = document.getElementById("hotel");
+  var selectedOption = selectedHotel.options[selectedHotel.selectedIndex];
+  var hotelName = selectedOption.getAttribute("data-name");
+  var hotelAddress = selectedOption.getAttribute("data-address");
+  var hotelPhotos = selectedOption.getAttribute("data-photos").split(",");
+  var imageUrl = selectedOption.getAttribute("data-image");
+
+  document.getElementById("hotel-name").innerText = hotelName;
+  document.getElementById("hotel-address").innerText = hotelAddress;
+
+  var imageContainer = document.getElementById("hotel-image");
+  imageContainer.setAttribute("src", imageUrl);
+
+  var photoContainer = document.getElementById("hotel-photos");
+  photoContainer.innerHTML = ""; // Очистить контейнер перед добавлением новых фотографий
+
+  hotelPhotos.forEach(function(photoPath) {
+    var img = document.createElement("img");
+    img.src = photoPath;
+    img.alt = "Hotel Photo";
+    photoContainer.appendChild(img);
+  });
+
+  var hotelId = selectedOption.value;
+
+    // Обновляем значение скрытого поля
+    document.getElementById("selectedHotelId").value = hotelId;
+
+}
+</script>
+
+  <label>Room Photos:</label>
+  <input type="file" name="photos23" multiple  />
+
+  <input type="submit" value="Сохранить"/>
+</form>
+</body>
+</html>

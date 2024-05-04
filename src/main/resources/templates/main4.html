@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Список Туров</title>
+  <link th:href="@{/public/style.css}" rel="stylesheet" />
+  <link th:href="@{/public/footer.css}" rel="stylesheet" />
+
+
+  <!-- Подключаем Bootstrap CSS -->
+  <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+div {
+  width: 100%;
+  display: grid;
+  grid-gap: 5rem;
+  grid-template-columns: 60px 1fr 60px;
+  grid-template-rows: 50px;
+}
+
+ul {
+  width: 100%;
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(20, 100px);
+  list-style: none;
+  overflow: hidden;
+  scroll-snap-type: x mandatory;
+}
+
+li {
+  background-color: #c62828;
+  scroll-snap-align: center;
+}
+
+button {
+  background-color: #212121;
+  border: none;
+  cursor: pointer;
+}
+
+#left {
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+
+#right {
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+  </style>
+</head>
+<div>
+  <button id="left"></button>
+  <ul>
+    <li><img th:src="@{/public/images/mi-vlgu.jpg}" alt="mi-vlgu"></li>
+    <li><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></li>
+    <li><img th:src="@{/public/images/mi-vlgu.jpg}" alt="mi-vlgu"></li>
+    <li><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></li>
+    <li><img th:src="@{/public/images/mi-vlgu.jpg}" alt="mi-vlgu"></li>
+    <li><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></li>
+    <li><img th:src="@{/public/images/mi-vlgu.jpg}" alt="mi-vlgu"></li>
+    <li><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></li>
+    <li><img th:src="@{/public/images/mi-vlgu.jpg}" alt="mi-vlgu"></li>
+    <li><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></li>
+    <li><img th:src="@{/public/images/mi-vlgu.jpg}" alt="mi-vlgu"></li>
+    <li><img th:src="@{/public/images/mi-vlgu.jpg}" alt="mi-vlgu"></li>
+    <li><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></li>
+    <li><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></li>
+    <li><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></li>
+    <li><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+  <button id="right"></button>
+</div>
+<script th:inline="javascript">
+var leftBtn = document.querySelector('#left');
+var rightBtn = document.querySelector('#right');
+
+leftBtn.addEventListener('click', slide);
+rightBtn.addEventListener('click', slide);
+
+function slide(e) {
+e.target.id === 'left' ? scroll(100) : scroll(-100);
+}
+
+function scroll(val) {
+document.querySelector('ul').scrollBy({
+left: val,
+behavior: 'smooth'
+});
+}
+</script>
+</html>

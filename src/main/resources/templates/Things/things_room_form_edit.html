@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add/Edit Room</title>
+</head>
+<body>
+<!-- Форма для добавления или редактирования комнаты -->
+<form th:action="@{'/rooms/edit'}" th:object="${room}" method="post">
+  <input type="hidden" th:field="*{id}"/>
+  <!-- Поле для ввода номера комнаты -->
+  <label for="roomNumber">Room Number:</label>
+  <input type="text" th:field="*{roomNumber}" id="roomNumber" required>
+  <br>
+   Добавьте остальные поля комнаты, например, цену за питание и цену за проживание
+   <label for="mealPrice">Meal Price:</label>
+  <input type="text" th:field="*{mealPrice}" id="mealPrice" required>
+  <br>
+  <label for="price">Price:</label>
+  <input type="text" th:field="*{price}" id="price" required>
+  <br>
+  <!-- Поле для выбора отеля, к которому относится комната -->
+  <!-- Если комната принадлежит определенному отелю, замените select на input -->
+   <label for="hotel">Hotel:</label>
+  <select th:field="*{hotel.id}" id="hotel">
+    <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.name}"></option>
+  </select>
+  <br>
+  <!-- Поля для загрузки фотографий комнаты -->
+  <!-- Не забудьте добавить атрибут multiple, если вы хотите загрузить несколько фотографий одновременно -->
+
+
+
+  <label  >Room Photos:</label>
+  <input type="file"  name="photos22" multiple/>
+
+
+
+  <input type="submit" value="Сохранить"/>
+
+
+  <br>
+  <!-- Кнопка для отправки формы -->
+  <button type="submit">Submit</button>
+</form>
+</body>
+</html>

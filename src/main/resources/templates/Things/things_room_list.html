@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Things Room List</title>
+</head>
+<body>
+<table>
+  <thead>
+  <tr>
+    <th>Category</th>
+    <th>Title</th>
+    <!-- Добавьте заголовки для других полей объекта ThingsRoom -->
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="thingsRoom : ${thingsRooms}">
+    <td th:text="${thingsRoom.category}"></td>
+    <td th:text="${thingsRoom.title}"></td>
+    <!-- Добавьте другие поля объекта ThingsRoom -->
+    <td>
+      <a th:href="@{'/things/edit/' + ${thingsRoom.id}}" class="btn btn-warning btn-sm">Edit</a>
+      <a th:href="@{'/things/delete/' + ${thingsRoom.id}}" class="btn btn-danger btn-sm">Delete</a>
+
+
+    </td>
+  </tr>
+  </tbody>
+</table>
+<a  th:href="@{'/things/add'}"   class="btn btn-success mt-3">Добавить вещь</a>
+</body>
+</html>

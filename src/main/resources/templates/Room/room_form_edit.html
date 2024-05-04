@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add/Edit Room</title>
+  <!-- Подключение Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h2>Add/Edit Room</h2>
+  <!-- Форма для добавления или редактирования комнаты -->
+  <form th:action="@{'/rooms/edit'}" th:object="${room}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <!-- Поле для ввода номера комнаты -->
+    <div class="form-group">
+      <label for="roomNumber">Room Number:</label>
+      <input type="text" th:field="*{roomNumber}" id="roomNumber" class="form-control" required>
+    </div>
+    <!-- Добавьте остальные поля комнаты, например, цену за питание и цену за проживание -->
+    <div class="form-group">
+      <label for="mealPrice">Meal Price:</label>
+      <input type="text" th:field="*{mealPrice}" id="mealPrice" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="price">Price:</label>
+      <input type="text" th:field="*{price}" id="price" class="form-control" required>
+    </div>
+    <!-- Поле для выбора отеля, к которому относится комната -->
+    <!-- Если комната принадлежит определенному отелю, замените select на input -->
+    <div class="form-group">
+      <label for="hotel">Hotel:</label>
+      <select th:field="*{hotel.id}" id="hotel" class="form-control">
+        <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.name}"></option>
+      </select>
+    </div>
+    <!-- Поля для загрузки фотографий комнаты -->
+    <!-- Не забудьте добавить атрибут multiple, если вы хотите загрузить несколько фотографий одновременно -->
+    <div class="form-group">
+      <label for="photos">Room Photos:</label>
+      <input type="file" id="photos" name="photos" class="form-control-file" multiple>
+    </div>
+
+    <!-- Кнопка для отправки формы -->
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+<!-- Подключение Bootstrap JavaScript (необязательно, если вам не нужны JS-функции Bootstrap) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
