@@ -26,12 +26,12 @@ public class Room {
     private Double price;
 
     @ManyToOne
-    @JoinColumn(name = "hotel_id", nullable = false)
+    @JoinColumn(name = "hotel_id", nullable = true)
     private Hotel hotel;
 
     @ElementCollection
     @CollectionTable(name = "RoomPhotos", joinColumns = @JoinColumn(name = "room_id"))
-    @Column(name = "photo_path", nullable = false)
+    @Column(name = "photo_path", nullable = true)
     private List<String> photos = new ArrayList<>();
     // Другие характеристики номера, например, тип номера, количество кроватей и т.д.
 

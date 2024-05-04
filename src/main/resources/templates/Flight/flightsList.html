@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link th:href="@{/public/flights.css}" rel="stylesheet" />
   <style>
     body {
       padding: 20px;
@@ -139,6 +140,108 @@
 
 
 </nav>
+<div id="search-form-container"  >
+  <div class="sfl-container sfl-layout-default sfl-theme-16886-xroomhotel" data-version="1.5">
+    <div class="sf-wrapper">
+
+      <div class="sf-controls-wrapper">
+        <!-- Hotel Select -->
+        <div class="sf-field-container sf-arrival-date-container">
+          <div class="sf-field-label sf-arrival-date-label">Куда вы хотите?</div>
+          <input type="text" id="Region">
+        </div>
+
+
+
+
+
+
+
+
+        <!-- Arrival Date -->
+        <div class="sf-field-container sf-arrival-date-container">
+          <div class="sf-field-label sf-arrival-date-label">Заезд</div>
+          <input type="date" id="arrivalDate">
+        </div>
+
+
+        <!-- Departure Date -->
+        <div class="sf-field-container sf-departure-date-container">
+          <div class="sf-field-label sf-departure-date-label">Выезд</div>
+          <input type="date" id="arrivalDate2">
+        </div>
+
+
+        <div class="guests-input-container">
+          <input type="text" class="sfl-guests-input" readonly="" inputmode="none" id="guestsInput" pattern="[0-9]*" value="Нужно на 2">
+          <div class="guests-input-container-button">
+            <button onclick="decrementAdults()">-</button>
+            <button onclick="incrementAdults()">+</button>
+          </div>
+        </div>
+
+        <script>
+  var adultsCount = 2; // начальное количество взрослых
+
+  function updateGuestsInput() {
+    var guestsInput = document.getElementById('guestsInput');
+    guestsInput.value = 'Нужно на ' + adultsCount;
+  }
+
+  function incrementAdults() {
+    if (adultsCount < 4) { // проверка максимального значения
+      adultsCount++;
+      updateGuestsInput();
+    }
+  }
+
+  function decrementAdults() {
+    if (adultsCount > 0) {
+      adultsCount--;
+      updateGuestsInput();
+    }
+  }
+</script>
+
+
+
+        <!-- Nights -->
+        <!--          <div class="sf-field-container sf-Number-of-guests-container">-->
+        <!--            <div class="sf-field-label sf-Number-of-guests-label">Количество гостей</div>-->
+        <!--            <select class="sfl-nights">-->
+        <!--              &lt;!&ndash; Options for nights &ndash;&gt;-->
+        <!--              <option value="1">1 ночь</option>-->
+        <!--              <option value="2">2 ночи</option>-->
+        <!--              <option value="3">3 ночи</option>-->
+        <!--            </select>-->
+        <!--          </div>-->
+
+
+        <!-- Submit Buttons -->
+        <div class="sf-submit-button-container sf-submit-button-input-container">
+          <input type="button" class="sfl-submit-button sfl-submit-button-input standard-view-button" value="Найти номер" >
+          <!--  <input type="button" class="sfl-submit-button sfl-submit-button-input compact-view-button" value="Забронировать"> -->
+        </div>
+
+
+        <!--        работает толко надо под кнопку найти номер сделать-->
+        <div id="search-form-container1">
+          <form id="search-form" th:action="@{/hotels/search}" method="post">
+            <input type="text" id="cityInput" name="city" placeholder="Введите название города">
+            <button type="submit">Искать</button>
+          </form>
+        </div>
+
+
+
+
+
+
+
+      </div>
+    </div>
+  </div>
+</div>
 <h2>Список рейсов</h2>
 <table border="1">
   <thead>

@@ -1,28 +1,40 @@
 /* Container styles */
 body #search-form-container {
-  float: left;
-  width: 100%;
-  max-width: 400px;
-  margin: 20px;
 
+  width: 55%;
+  position: relative;
+ /*   max-width: 400px; */
+  margin: 20px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+.sf-controls-wrapper
+{
+ justify-content: center;
+ display:flex;
+ flex-flow: row nowrap;
 }
 
 .sf-field-container {
-    height: 60px;
-    width: 120px;
+  /*   height: 60px;*/
+  /*   width: 120px;*/
     margin-bottom: 15px;
+    padding: 10px;
+
+    position: relative;
 }
 
-
-#arrivalDate, #arrivalDate2 {
+ /*
+#arrivalDate, #arrivalDate2 { #foo {} будет оформлять единственный элемент, объявленный с атрибутом id="foo"
     z-index: 1;
     border: none;
-    width: 120px;
-    height: 40px;
+   /* width: 120px;  */
+   /*   height: 40px;
     padding: 5px;
     box-sizing: border-box;
 }
-
+*/
 #arrivalDateInput {
     z-index: 2;
     border: none;
@@ -33,22 +45,43 @@ body #search-form-container {
     left: 130px;
 }
 
- .sf-field-container {
-    position: relative;
-  }
 
+padding: 10px;
+    position: relative;
  .sf-field-label {
      font-size: 14px;
      font-weight: bold;
      margin-bottom: 5px;
      color: #333;
  }
- .sf-field-label {
-     z-index: 3;
-     position: relative;
-     top: 0;
-     left: 0px;
- }
+
+.sf-field-container sf-arrival-date-container input{
+ height: 30px;
+ width: 120px;
+}
+.sf-submit-button-container{
+ padding: 10px;
+}
+.sf-field-container input{
+
+}
+.guests-input-container input {
+                            height: 30px;
+                            overflow: visible;
+                            width: 120px;
+                            display: flex;
+
+                        }
+.guests-input-container button {
+                                                    height: 30px;
+                                                    overflow: visible;
+                                                    width: 60px;
+                                                    display: flex;
+
+                                                }
+.guests-input-container-button{
+display:flex;
+}
 
 
 
@@ -61,10 +94,19 @@ body #search-form-container {
 
 
 
-
-
-
-
+.container{
+display: block;
+}
+.hotel-section {
+    position: relative;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: pointer;
+}
+.hotel-section section {
+    display: flex;
+}
 
 
 
@@ -78,7 +120,7 @@ body #search-form-container {
 }
 
 .sf-wrapper {
-  padding: 20px;
+
 }
 
 /* Title and top blocks styles */
@@ -95,10 +137,7 @@ body #search-form-container {
   margin-bottom: 10px;
 }
 
-/* Form field container styles */
-.sf-field-container {
-  margin-bottom: 15px;
-}
+
 
 /* Label styles */
 .sf-field-label {
@@ -107,14 +146,17 @@ body #search-form-container {
   margin-bottom: 5px;
   color: #333;
 }
-
+.guests-input-container{
+display: block;
+padding: 10px;
+}
 /* Input styles */
 .sfl-date-control,
 .sfl-nights,
 .sfl-adults,
 .sfl-promo-code-input,
 .sfl-guests-input {
-  width: 100%;
+  width: 60%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -204,3 +246,43 @@ body #search-form-container {
 .slick-next {
   right: 10px;
 }
+
+
+
+
+
+
+/* Поле вода поиска */
+.input-with-datalist {
+    position: relative;
+    width: 100%;
+}
+
+.input-with-datalist input {
+    width: calc(100% - 20px); /* Ширина поля минус ширина скроллбара */
+    /*padding-right: 20px; /* Правый отступ для кнопки */
+    box-sizing: border-box; /* Учитываем padding в общей ширине */
+}
+
+/*.input-with-datalist::after {
+    content: '\25BC'; /* Символ стрелки вниз */
+    position: absolute;
+    top: 50%;
+    right: 5px; /* Правый отступ для стрелки */
+    transform: translateY(-50%);
+    pointer-events: none; /* События мыши не учитываются */
+    z-index: 1; /* Чтобы стрелка была выше даталиста */
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+

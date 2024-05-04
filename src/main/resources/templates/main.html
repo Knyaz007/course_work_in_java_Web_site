@@ -37,7 +37,7 @@
 </head>
 <body>
 <div class="image-container">
-<!--  <img th:src="@{/public/images/main.jpeg}" alt="main Image"/>-->
+  <!--  <img th:src="@{/public/images/main.jpeg}" alt="main Image"/>-->
   <img th:src="@{/public/images/main22.jpg}" alt="main Image"/>
   <div class="image-text">
     <p>Paradise</p>
@@ -47,8 +47,11 @@
   <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link"  >
     Отели
   </button>
-  <button onclick="window.location.href='/rooms/list'" type="button" class="btn btn-link" >
+  <button onclick="window.location.href='/rooms/listRooms'" type="button" class="btn btn-link"  >
     Комнаты
+  </button>
+  <button onclick="window.location.href='/things/listThings'" type="button" class="btn btn-link"  >
+    вещи комнат
   </button>
   <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" >
     Авиабилета
@@ -73,6 +76,10 @@
     Работники
   </button>
 
+  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Финансовый учёт и отчётность
+  </button>
 
 
 
@@ -157,7 +164,7 @@
   <table class="table table-bordered">
     <thead class="thead-light">
     <tr>
-<!--      <th>ID</th>-->
+      <!--      <th>ID</th>-->
       <th>Название</th>
       <th>Начало</th>
       <th>Окончание</th>
@@ -166,7 +173,7 @@
     </thead>
     <tbody>
     <tr th:each="tour : ${tours}">
-<!--      <td th:text="${tour.tourId}"></td>-->
+      <!--      <td th:text="${tour.tourId}"></td>-->
       <td th:text="${tour.name}"></td>
       <td th:text="${#temporals.format(tour.startDate, 'dd.MM.yyyy')}"></td>
       <td th:text="${#temporals.format(tour.endDate, 'dd.MM.yyyy')}"></td>
@@ -187,28 +194,28 @@
 </div>
 <footer>
   <div class="footer">
-  <div class="column">
-  <!-- Информация о копирайте -->
+    <div class="column">
+      <!-- Информация о копирайте -->
 
 
-  <!-- Ссылки -->
-  <nav>
-    <ul>
-      <li><a href="/privacy-policy">Политика конфиденциальности</a></li>
-      <li><a href="/contact">Контакты</a></li>
+      <!-- Ссылки -->
+      <nav>
+        <ul>
+          <li><a href="/privacy-policy">Политика конфиденциальности</a></li>
+          <li><a href="/contact">Контакты</a></li>
 
-      <li><a href="/home">Главная</a></li>
-      <li><a href="/products">Продукты</a></li>
-      <li><a href="/services">Услуги</a></li>
-    </ul>
-  </nav>
+          <li><a href="/home">Главная</a></li>
+          <li><a href="/products">Продукты</a></li>
+          <li><a href="/services">Услуги</a></li>
+        </ul>
+      </nav>
 
-  <!-- Контактная информация -->
+      <!-- Контактная информация -->
 
-  </div>
+    </div>
 
     <div class="column">
-  <!-- Ссылки на важные разделы сайта -->
+      <!-- Ссылки на важные разделы сайта -->
       <address>
         <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
         <p>Телефон: 8 800 770 65 65</p>
@@ -222,7 +229,7 @@
       <!-- Ссылки на социальные сети -->
 
 
-  <!-- Логотипы и брендирование -->
+      <!-- Логотипы и брендирование -->
 
     </div>
     <div class="branding">

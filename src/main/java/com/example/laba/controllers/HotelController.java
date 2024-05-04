@@ -276,8 +276,8 @@ public class HotelController {
 //
 //        return "redirect:/hotels";
 //    }
-@PostMapping("/new")
-public String createHotel(@ModelAttribute Hotel hotel, @RequestParam("photos22") List<MultipartFile> photos) throws IOException {
+    @PostMapping("/new")
+    public String createHotel(@ModelAttribute Hotel hotel, @RequestParam("photos22") List<MultipartFile> photos) throws IOException {
     if (!photos.isEmpty()) {
         // Обработка фотографий (сохранение на сервере или в базе данных)
         hotelRepository.save(hotel); // Сначала сохраняем отель
@@ -420,14 +420,14 @@ public String createHotel(@ModelAttribute Hotel hotel, @RequestParam("photos22")
 
 
     @GetMapping("/upload")
-public String upload(Model model) {
+    public String upload(Model model) {
 
         return "Hotel/qwe";
     }
 
 
-        @PostMapping("/upload")
-public String uploadPhotos(@RequestParam("photos") List<MultipartFile> photos) {
+    @PostMapping("/upload")
+    public String uploadPhotos(@RequestParam("photos") List<MultipartFile> photos) {
             // Поместите код для сохранения фотографий на сервере или в базе данных
             // Например, сохраните их на сервере в директории uploads
 
@@ -447,6 +447,28 @@ public String uploadPhotos(@RequestParam("photos") List<MultipartFile> photos) {
             return "Photos uploaded successfully.";
         }
 
+    @PostMapping("/search")
+    public String searchHotels(@RequestParam("city") String city, Model model) {
+        List<Hotel> hotels = hotelRepository.findByCityContainingIgnoreCase(city);
+        model.addAttribute("hotels", hotels);
+
+
+        model.addAttribute("hotels", hotels);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        model.addAttribute("roles", roles);
+
+        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("authentication", authentication);
+
+        return "Hotel/hotelsList"; // это имя вашего HTML шаблона для результатов поиска отелей
+    }
     private String transliterate(String text) {
         text = text.replaceAll("а", "a");
         text = text.replaceAll("б", "b");
@@ -519,7 +541,6 @@ public String uploadPhotos(@RequestParam("photos") List<MultipartFile> photos) {
 
         return text;
     }
-
-}
+    }
 
 

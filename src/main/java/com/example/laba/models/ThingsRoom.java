@@ -22,7 +22,7 @@ public class ThingsRoom {
     private String title;
 
     @OneToOne
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "room_id", nullable = true)
     private Room room;
 
 

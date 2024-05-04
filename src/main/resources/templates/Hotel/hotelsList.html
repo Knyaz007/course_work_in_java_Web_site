@@ -33,6 +33,7 @@
     }
   </style>
   <style>
+    /* Для картинок */
   .photo-carousel {
     position: absolute;
 
@@ -48,6 +49,13 @@
     height: 100%;
     overflow: hidden;
   }
+
+
+ .photo-container div {
+    height: 100%;
+  }
+
+
 
   .photo-container img {
     width: 100%;
@@ -66,15 +74,30 @@
     cursor: pointer;
     color: #333;
     background-color: #f5f5f5;
+    opacity: 0.5;
   }
 
   .arrow.left {
     left: 0;
+
   }
 
   .arrow.right {
     right: 0;
   }
+  .arrow:hover {
+    opacity: 1; /* При наведении делаем стрелки непрозрачными */
+}
+
+
+.hotel-description {
+    width: 50%;
+    height: 100%;
+
+}
+
+
+
 </style>
 
   <style>
@@ -94,25 +117,9 @@
     overflow: hidden;
 }
 
-.container, .container-md, .container-sm {
-    max-width: none;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
-body #search-form-container {
-    position: relative;
 
-    width: 100%;
-    max-width: 400px;
-    margin: 20px;
-}
-.hotel-section {
-    position: relative;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    padding: 10px;
-}
+
+
 h2{
  text-align: center;
 }
@@ -120,6 +127,7 @@ h2{
 </style>
 </head>
 <body>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="/">Турфирма Paradise</a>
   <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
@@ -225,39 +233,70 @@ h2{
 
 
 </nav>
-<h2>Список отелей</h2>
-<div class="container">
+
+<div id="search-form-container"  >
+  <div class="sfl-container sfl-layout-default sfl-theme-16886-xroomhotel" data-version="1.5">
+    <div class="sf-wrapper">
+
+      <div class="sf-controls-wrapper">
 
 
-<!--  <div id="search-form-container" style="float: left;">-->
-  <div id="search-form-container"  >
-    <div class="sfl-container sfl-layout-default sfl-theme-16886-xroomhotel" data-version="1.5">
-      <div class="sf-wrapper">
+        <div class="sf-field-container sf-arrival-date-container">
+          <div class="sf-field-label sf-arrival-date-label">Куда вы хотите?</div>
+          <!-- Всплывающий список с возможностью ввода -->
+          <div class="input-with-datalist">
+            <input list="citiesSelect" id="Region" name="myCity" placeholder="Enter city name">
+            <datalist id="citiesSelect"   onchange="updateInputValue()">
+              <!-- Thymeleaf цикл для создания опций на основе данных об отелях -->
+              <option th:each="hotel : ${hotels}"
+                      th:value="${hotel.city}"
+                       >
+              </option>
 
-        <div class="sf-controls-wrapper">
-          <!-- Hotel Select -->
-
-          <!-- Arrival Date -->
-          <div class="sf-field-container sf-arrival-date-container">
-            <div class="sf-field-label sf-arrival-date-label">Заезд</div>
-            <input type="date" id="arrivalDate">
+            </datalist>
+                    <script>
+              function updateInputValue() {
+                var hotelSelect = document.getElementById('citiesSelect');
+                var selectedOption = hotelSelect.options[hotelSelect.selectedIndex];
+                var inputValue = document.getElementById('Region');
+                // Устанавливаем значение в поле ввода на основе выбранной опции в списке
+                inputValue.value = selectedOption.text;
+              }
+            </script>
           </div>
+        </div>
 
 
-          <!-- Departure Date -->
-          <div class="sf-field-container sf-departure-date-container">
-            <div class="sf-field-label sf-departure-date-label">Выезд</div>
-            <input type="date" id="arrivalDate2">
-          </div>
 
 
-          <div class="guests-input-container">
-            <input type="text" class="sfl-guests-input" readonly="" inputmode="none" id="guestsInput" pattern="[0-9]*" value="Нужно на 2">
-            <button onclick="decrementAdults()">-</button>
-            <button onclick="incrementAdults()">+</button>
-          </div>
 
-          <script>
+
+
+
+
+        <!-- Arrival Date -->
+        <div class="sf-field-container sf-arrival-date-container">
+          <div class="sf-field-label sf-arrival-date-label">Заезд</div>
+          <input type="date" id="arrivalDate">
+        </div>
+
+
+        <!-- Departure Date -->
+        <div class="sf-field-container sf-departure-date-container">
+          <div class="sf-field-label sf-departure-date-label">Выезд</div>
+          <input type="date" id="arrivalDate2">
+        </div>
+
+
+        <div class="guests-input-container">
+          <input type="text" class="sfl-guests-input" readonly="" inputmode="none" id="guestsInput" pattern="[0-9]*" value="Нужно на 2">
+          <div class="guests-input-container-button">
+          <button onclick="decrementAdults()">-</button>
+          <button onclick="incrementAdults()">+</button>
+        </div>
+        </div>
+
+        <script>
   var adultsCount = 2; // начальное количество взрослых
 
   function updateGuestsInput() {
@@ -282,66 +321,115 @@ h2{
 
 
 
-          <!-- Nights -->
-<!--          <div class="sf-field-container sf-Number-of-guests-container">-->
-<!--            <div class="sf-field-label sf-Number-of-guests-label">Количество гостей</div>-->
-<!--            <select class="sfl-nights">-->
-<!--              &lt;!&ndash; Options for nights &ndash;&gt;-->
-<!--              <option value="1">1 ночь</option>-->
-<!--              <option value="2">2 ночи</option>-->
-<!--              <option value="3">3 ночи</option>-->
-<!--            </select>-->
-<!--          </div>-->
+        <!-- Nights -->
+        <!--          <div class="sf-field-container sf-Number-of-guests-container">-->
+        <!--            <div class="sf-field-label sf-Number-of-guests-label">Количество гостей</div>-->
+        <!--            <select class="sfl-nights">-->
+        <!--              &lt;!&ndash; Options for nights &ndash;&gt;-->
+        <!--              <option value="1">1 ночь</option>-->
+        <!--              <option value="2">2 ночи</option>-->
+        <!--              <option value="3">3 ночи</option>-->
+        <!--            </select>-->
+        <!--          </div>-->
 
 
-          <!-- Submit Buttons -->
-          <div class="sf-submit-button-container sf-submit-button-input-container">
-            <input type="button" class="sfl-submit-button sfl-submit-button-input standard-view-button" value="Найти номер">
-            <input type="button" class="sfl-submit-button sfl-submit-button-input compact-view-button" value="Забронировать">
+        <!-- Submit Buttons -->
+        <div class="sf-submit-button-container sf-submit-button-input-container">
+
+          <form id="search-form" th:action="@{/hotels/search}" method="post">
+
+            <input type="hidden" id="cityInput" name="city" th:value="${Region}">
+            <input type="button" class="sfl-submit-button sfl-submit-button-input standard-view-button" value="Найти номер" onclick="submitForm()" >
+          </form>
+          <script>
+
+           function submitForm() {
+          var regionValue = document.getElementById('Region').value;
+          document.getElementById('cityInput').value = regionValue;
+          document.getElementById('search-form').submit();
+          }</script>
+
+
           </div>
 
-          <div class="sf-backlink-container">
-            <div><a href="https://www.travelline.ru/products/tl-hotel/" rel="nofollow" aria-label="система онлайн-бронирования" target="_blank">TravelLine: Platform</a></div>
-          </div>
-        </div>
+
+
+
+
+
+
+
+      </div>
       </div>
     </div>
   </div>
-  <div th:each="hotel : ${hotels}" class="hotel-section">
-    <section class="NDSPt L8lvE" itemscope="" itemtype="https://schema.org/Hotel">
-      <!-- Ваш код для отображения данных отеля, например, название, адрес и др. -->
 
-      <!-- Фотографии отеля -->
-      <div class="photo-carousel">
-        <div class="photo-container">
-          <div th:each="photo : ${hotel.photos}" th:data-photo="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}">
-            <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo" />
+
+
+
+
+  <div class="container">
+    <h2>Список отелей</h2>
+
+  <!--  <div id="search-form-container" style="float: left;">-->
+
+    <div th:each="hotel : ${hotels}" class="hotel-section" >
+      <section class="NDSPt L8lvE" itemscope="" itemtype="https://schema.org/Hotel" th:onclick="'redirectToDetails(\'' + ${hotel.id} + '\')'">
+        <!-- Фотографии отеля -->
+        <div class="photo-carousel">
+          <div class="photo-container">
+            <div th:each="photo : ${hotel.photos}" th:data-photo="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}">
+              <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo" />
+            </div>
+          </div>
+          <!-- Стрелки для пролистывания фотографий -->
+          <div class="arrow left" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showPrevPhoto(this)">&lt;</div>
+          <div class="arrow right" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showNextPhoto(this)">&gt;</div>
+        </div>
+
+
+
+        <!-- Описание отеля -->
+        <div class="hotel-description">
+          <h3 th:text="${hotel.name}"></h3>
+          <p><span th:text="${hotel.region + ', ' + hotel.city + ', ' + hotel.street + ', ' + hotel.house}"></span></p>
+        </div>
+
+        <!-- Список доступных услуг отеля -->
+        <div class="services">
+          <h4>Доступные услуги</h4>
+          <ul>
+            <!-- Пример услуги: -->
+            <!-- <li>Бесплатный Wi-Fi</li> -->
+            <!-- Замените текст услуги на фактические услуги отеля -->
+            <li>Услуга 1</li>
+            <li>Услуга 2</li>
+            <li>Услуга 3</li>
+          </ul>
+          <div class="price">
+            <h4>цена</h4>
           </div>
         </div>
-        <!-- Стрелки для пролистывания фотографий -->
-        <div class="arrow left" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showPrevPhoto(this)">&lt;</div>
-        <div class="arrow right" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showNextPhoto(this)">&gt;</div>
-      </div>
 
+        <!-- Комментарии об отеле -->
+        <div class="comments" th:if="${not #lists.isEmpty(hotel.comments)}">
+          <h4>Комментарии</h4>
+          <p><span th:text="${#lists.size(hotel.comments)}"></span> отзывов</p>
+          <p th:if="${hotel.averageCommentEvaluation > 0.0}">
+            Средняя оценка <span th:text="${hotel.averageCommentEvaluation}"></span>
+          </p>
+          <p th:if="${hotel.averageCommentEvaluation <= 0.0}">
+            <span>Нет оценок.</span>
+          </p>
+        </div>
+      </section>
       <!-- Ссылки для подробной информации, редактирования и удаления (если пользователь администратор) -->
-      <div>
-        <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-info btn-sm">Подробнее</a>
+      <div class="actions">
+        <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-info btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Подробнее</a>
         <a th:href="@{'/hotels/edit/' + ${hotel.id}}" class="btn btn-warning btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
         <a th:href="@{'/hotels/delete/' + ${hotel.id}}" class="btn btn-danger btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Удалить</a>
       </div>
-     <!-- Дополнительные данные, например, количество отзывов и средняя оценка -->
-      <div class="comments" th:if="${not #lists.isEmpty(hotel.comments)}">
-        <p><span  th:text="${hotel.region + ', ' + hotel.city + ', ' + hotel.street + ', ' + hotel.house}"></span> </p>
 
-        <p><span th:text="${#lists.size(hotel.comments)}"></span> отзывов</p>
-        <p th:if="${hotel.averageCommentEvaluation > 0.0}">
-          Средняя оценка <span th:text="${hotel.averageCommentEvaluation}"></span>
-        </p>
-        <p th:if="${hotel.averageCommentEvaluation <= 0.0}">
-          <span>Нет оценок.</span>
-        </p>
-      </div>
-    </section>
 
     <script th:inline="javascript">
     function showPrevPhoto(element) {
@@ -377,6 +465,7 @@ h2{
         var photoContainer = document.querySelector('.photo-container');
         console.log(photoContainer);
         var photoUrl = '/uploads/hotel-' + hotelId + '/' + photos[currentPhotoIndex];
+        var photoAlt ='Hotel Photo'
 
         // Очищаем контейнер
         photoContainer.innerHTML = '';
@@ -384,9 +473,30 @@ h2{
         // Добавляем новую фотографию
         var img = document.createElement('img');
         img.src = photoUrl;
+        img.alt=photoAlt;
         photoContainer.appendChild(img);
     }
 </script>
+<script th:inline="javascript">
+ function redirectToDetails(hotelId) {
+    // Получаем элемент, на котором произошло событие клика
+    var clickedElement = event.target;
+
+    // Проверяем, является ли элемент стрелкой для пролистывания фотографий
+    if (!clickedElement.classList.contains('arrow')) {
+        console.log('Redirecting to hotel details for ID:');
+        window.location.href = '/hotels/details/' + hotelId;
+        console.log(hotelId);
+    }
+}
+
+</script>
+
+
+
+
+      <h2>Кооличесво коментариев при нажатие переход на этот отель .. оценка кол-во коменнтариве тип (отель хостель и так далее) </h2>
+
   </div>
 
 

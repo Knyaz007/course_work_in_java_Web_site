@@ -22,6 +22,7 @@ public class SecurityConfig {
     private CustomUserDetailsService userDetailsService;
 
 
+
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
@@ -34,6 +35,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers("/css/**","/public/**").permitAll()
 //                         Разрешение доступа ко всем URL
