@@ -4,6 +4,7 @@ import com.example.laba.models.Hotel;
 import com.example.laba.models.Room;
 import com.example.laba.repository.HotelRepository;
 import com.example.laba.repository.RoomRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,8 +34,12 @@ public class RoomController {
     @Autowired
     private HotelRepository hotelRepository;
     @GetMapping("/add")
-    public String showRoomForm(Model model) {
-        model.addAttribute("hotels", hotelRepository.findAll());
+    public String showRoomForm(Model model,  HttpSession session) {
+        Long hotelId = (Long) session.getAttribute("hotelId");
+        Optional<Hotel> hotelOptional = hotelRepository.findById(hotelId);
+        Hotel hotel = hotelOptional.get();
+        System.out.println(hotel.getId() +"----------------Roomsssssssssssss--------------------");
+        model.addAttribute("hotels",hotel );
         model.addAttribute("room", new Room());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("authentication", authentication);
@@ -59,7 +64,8 @@ public class RoomController {
         }
         roomRepository.save(room2);
         // Перенаправление на метод для отображения списка комнат
-        return "redirect:/rooms/listRooms";
+//        return "redirect:/rooms/listRooms";
+        return "redirect:/hotels/list";
     }
     private void savePhotos(Hotel hotel, Room room, List<MultipartFile> photos) throws IOException {
         // Получаем ID отеля
@@ -222,6 +228,8 @@ public class RoomController {
         Optional<Room> room = roomRepository.findById(id);
 
         model.addAttribute("room", room);
+        model.addAttribute("hotelRoom", room.get().getHotel());
+        model.addAttribute("hotels", hotelRepository.findAll());
 
         return "Room/room_form_edit";
     }

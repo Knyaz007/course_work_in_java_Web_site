@@ -2,11 +2,16 @@ package com.example.laba.controllers;
 
 import com.example.laba.models.Hotel;
 import com.example.laba.models.Room;
+import com.example.laba.models.ThingsRoom;
 import com.example.laba.repository.HotelRepository;
 import com.example.laba.repository.RoomRepository;
+import com.example.laba.repository.ThingsRoomRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,8 +42,20 @@ public class HotelController {
     private HotelRepository hotelRepository;
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    private ThingsRoomRepository thingsRoomRepository;
 
+    public List<ThingsRoom> getRoomsAndServicesByHotelId(Long hotelId) {
+        List<Room> rooms = roomRepository.findByHotelId(hotelId);
+        List<ThingsRoom> roomsWithServices = new ArrayList<>();
 
+        for (Room room : rooms) {
+            List<ThingsRoom> services = room.getThingsRoom();
+            roomsWithServices.addAll(services);
+        }
+
+        return roomsWithServices;
+    }
     @GetMapping("/list")
     public String listHotels(Model model) {
         List<Hotel> hotels = new ArrayList<>();
@@ -57,7 +74,47 @@ public class HotelController {
         model.addAttribute("loggedIn", loggedIn);
         model.addAttribute("authentication", authentication);
 
+
+
+
+        List<List<ThingsRoom>> thingsRoom = new ArrayList<>();
+        for (Hotel Hotel : hotels) {
+            List<ThingsRoom> Hotel25 = getRoomsAndServicesByHotelId(Hotel.getId());
+            thingsRoom.add(Hotel25);
+        }
+//       System.out.println(thingsRoom.size() +"----------------thingsRoom--------------------");
+        model.addAttribute("services", thingsRoom);
+
+
+        List<Room>  Roomss = new ArrayList<>();
+        for (Hotel Hotel : hotels) {
+            List<Room> Rooms = roomRepository.findByHotelId(Hotel.getId());
+            System.out.println(Rooms.size() +"----------------Roomsssssssssssss--------------------");
+            Optional<Room> cheapestRoomOptional = Rooms.stream()
+                    .min(Comparator.comparingDouble(Room::getPrice));
+            Roomss.add(cheapestRoomOptional.get());
+        }
+
+
+      System.out.println(Roomss.size() +"----------------Roomss--------------------");
+        model.addAttribute("rooms", Roomss);
+
         return "Hotel/hotelsList";
+    }
+
+    @GetMapping("/photos/{hotelId}")
+    public ResponseEntity<List<String>> getHotelPhotos(@PathVariable Long hotelId) {
+        List<String> photos = hotelRepository.getHotelPhotosById(hotelId);
+        for (String photo : photos) {
+            System.out.println(photo+"------------------------------------");
+        }
+        if (photos != null && !photos.isEmpty()) {
+            System.out.println( "-------------if-----------------------");
+            return ResponseEntity.ok(photos);
+        } else {
+            System.out.println("------------------else------------------");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping("/details/{hotelId}")
@@ -242,7 +299,22 @@ public class HotelController {
                 entityManager.remove(hotel);
             }
 
+        List<Room> rooms = roomRepository.findByHotelId(id);
+        if (hotel != null) {
+            // Удалить все комнаты отеля и их фотографии
+            for (Room room : rooms) {
+                room.getPhotos().clear();
+                roomRepository.delete(room);
+            }
+        }
 
+
+        if (hotel != null) {
+            // Удалить все фотографии отеля
+            hotel.getPhotos().clear();
+            // Удалить отель
+            hotelRepository.delete(hotel);
+        }
 
 
         if (hotelRepository.existsById(id)) {
@@ -277,7 +349,7 @@ public class HotelController {
 //        return "redirect:/hotels";
 //    }
     @PostMapping("/new")
-    public String createHotel(@ModelAttribute Hotel hotel, @RequestParam("photos22") List<MultipartFile> photos) throws IOException {
+    public String createHotel(HttpSession session, @ModelAttribute Hotel hotel, @RequestParam("photos22") List<MultipartFile> photos) throws IOException {
     if (!photos.isEmpty()) {
         // Обработка фотографий (сохранение на сервере или в базе данных)
         hotelRepository.save(hotel); // Сначала сохраняем отель
@@ -286,8 +358,16 @@ public class HotelController {
         // Обработка случая, когда нет загруженных фотографий
         // Здесь можете добавить дополнительную логику по вашему усмотрению
     }
+        session.setAttribute("hotelId", hotel.getId());
+
+
+
+        // Редирект на страницу добавления номера в комнату с передачей id отеля в параметре запроса
+//        return "redirect:/rooms/add?hotelId=" + hotelId;
     // Редирект на страницу отелей
-    return "redirect:/hotels/list";
+//   return "redirect:/hotels/list";
+
+          return "redirect:/rooms/add";
 }
 
     private void savePhotos(Hotel hotel, List<MultipartFile> photos) throws IOException {
@@ -466,6 +546,31 @@ public class HotelController {
 
         model.addAttribute("loggedIn", loggedIn);
         model.addAttribute("authentication", authentication);
+
+
+
+
+        List<List<ThingsRoom>> thingsRoom = new ArrayList<>();
+        for (Hotel Hotel : hotels) {
+            List<ThingsRoom> Hotel25 = getRoomsAndServicesByHotelId(Hotel.getId());
+            thingsRoom.add(Hotel25);
+        }
+//       System.out.println(thingsRoom.size() +"----------------thingsRoom--------------------");
+        model.addAttribute("services", thingsRoom);
+
+
+        List<Room>  Roomss = new ArrayList<>();
+        for (Hotel Hotel : hotels) {
+            List<Room> Rooms = roomRepository.findByHotelId(Hotel.getId());
+            System.out.println(Rooms.size() +"----------------Roomsssssssssssss--------------------");
+            Optional<Room> cheapestRoomOptional = Rooms.stream()
+                    .min(Comparator.comparingDouble(Room::getPrice));
+            Roomss.add(cheapestRoomOptional.get());
+        }
+
+
+        System.out.println(Roomss.size() +"----------------Roomss--------------------");
+        model.addAttribute("rooms", Roomss);
 
         return "Hotel/hotelsList"; // это имя вашего HTML шаблона для результатов поиска отелей
     }

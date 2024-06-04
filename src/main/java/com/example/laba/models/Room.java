@@ -1,6 +1,8 @@
 package com.example.laba.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,20 +17,36 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
     private Long id;
+    @Column(name = "Description", nullable = true)
+    private String description;
 
-    @Column(name = "MealPrice", nullable = false)
+
+    @Column(name = "MealPrice", nullable = true)
     private Double mealPrice;
 
-    @Column(name = "RoomNumber", nullable = false)
+    @Column(name = "RoomNumber", nullable = true)
     private Integer roomNumber;
 
     @Column(name = "Price", nullable = false)
-    private Double price;
+    private Long price;
 
     @ManyToOne
     @JoinColumn(name = "hotel_id", nullable = true)
     private Hotel hotel;
 
+
+    @ElementCollection
+    @CollectionTable(name = "ThingsRoom", joinColumns = @JoinColumn(name = "room_id"))
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "room_id")
+    private List<ThingsRoom> thingsRoom = new ArrayList<>();
+    public List<ThingsRoom> getThingsRoom() {
+        return thingsRoom;
+    }
+
+    public void setThingsRoom(List<ThingsRoom> thingsRoom) {
+        this.thingsRoom = thingsRoom;
+    }
     @ElementCollection
     @CollectionTable(name = "RoomPhotos", joinColumns = @JoinColumn(name = "room_id"))
     @Column(name = "photo_path", nullable = true)
@@ -77,11 +95,11 @@ public class Room {
         this.roomNumber = roomNumber;
     }
 
-    public Double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
@@ -109,6 +127,13 @@ public class Room {
 
     public void setMealPrice(Double mealPrice) {
         this.mealPrice = mealPrice;
+    }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

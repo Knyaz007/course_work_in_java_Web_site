@@ -6,12 +6,12 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "ThingsRoom")
+@Table(name = "Thing")
 public class ThingsRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Things_id")
+    @Column(name = "things_id")
     private Long id;
 
     @Column(name = "Category", nullable = false)
@@ -21,13 +21,24 @@ public class ThingsRoom {
     @Column(name = "Title", nullable = false)
     private String title;
 
-    @OneToOne
-    @JoinColumn(name = "room_id", nullable = true)
-    private Room room;
+//    @ManyToOne
+//    @JoinColumn(name = "room_id", nullable = true)
+//    private Room room;
+
+    @Column(name = "Price", nullable = true )
+    private Long price;
 
 
     public Long getId() {
         return id;
+    }
+
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
     }
 
     public void setId(Long id) {
@@ -50,11 +61,11 @@ public class ThingsRoom {
         this.title = title;
     }
 
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
+//    public Room getRoom() {
+//        return room;
+//    }
+//
+//    public void setRoom(Room room) {
+//        this.room = room;
+//    }
 }

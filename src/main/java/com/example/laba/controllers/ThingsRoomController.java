@@ -53,6 +53,7 @@ public class ThingsRoomController {
     @GetMapping("listThings")
     public String listThingsRoom(Model model) {
         model.addAttribute("thingsRooms", thingsRoomRepository.findAll());
+
         return "Things/things_room_list";
     }
 }

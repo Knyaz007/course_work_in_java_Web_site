@@ -67,7 +67,7 @@ public class Hotel {
         return (double) sum / comments.size();
     }
 
-    @ElementCollection
+    @ElementCollection //    @ElementCollection не имеет каскадной операции удаления.
     @CollectionTable(name = "HotelPhotos", joinColumns = @JoinColumn(name = "hotel_id"))
     @Column(name = "photo_path", nullable = true)
     private List<String> photos = new ArrayList<>();

@@ -2,32 +2,34 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Things Room List</title>
+  <title>Список вещей в комнате</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<table>
-  <thead>
-  <tr>
-    <th>Category</th>
-    <th>Title</th>
-    <!-- Добавьте заголовки для других полей объекта ThingsRoom -->
-    <th>Action</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="thingsRoom : ${thingsRooms}">
-    <td th:text="${thingsRoom.category}"></td>
-    <td th:text="${thingsRoom.title}"></td>
-    <!-- Добавьте другие поля объекта ThingsRoom -->
-    <td>
-      <a th:href="@{'/things/edit/' + ${thingsRoom.id}}" class="btn btn-warning btn-sm">Edit</a>
-      <a th:href="@{'/things/delete/' + ${thingsRoom.id}}" class="btn btn-danger btn-sm">Delete</a>
-
-
-    </td>
-  </tr>
-  </tbody>
-</table>
-<a  th:href="@{'/things/add'}"   class="btn btn-success mt-3">Добавить вещь</a>
+<div class="container mt-5">
+  <h2>Список вещей в комнате</h2>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Категория</th>
+      <th>Название</th>
+      <th>Цена</th>
+      <th>Действие</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="thingsRoom : ${thingsRooms}">
+      <td th:text="${thingsRoom.category}"></td>
+      <td th:text="${thingsRoom.title}"></td>
+      <td th:text="${thingsRoom.price}"></td>
+      <td>
+        <a th:href="@{'/things/edit/' + ${thingsRoom.id}}" class="btn btn-warning btn-sm">Редактировать</a>
+        <a th:href="@{'/things/delete/' + ${thingsRoom.id}}" class="btn btn-danger btn-sm">Удалить</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <a th:href="@{'/things/add'}" class="btn btn-success">Добавить вещь</a>
+</div>
 </body>
 </html>

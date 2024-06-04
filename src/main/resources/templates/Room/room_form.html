@@ -3,82 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <title>Add/Edit Room</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
-#hotel-image {
-  width: 200px;
-  height: auto;
-}
-</style>
+    #hotel-image {
+      width: 200px;
+      height: auto;
+    }
+  </style>
 </head>
 <body>
-<!-- Форма для добавления или редактирования комнаты -->
-<form th:action="@{'/rooms/add'}" th:object="${room}" method="post" enctype="multipart/form-data">
-  <!-- Поле для ввода номера комнаты -->
-  <label >Room Number: <input type="text" th:field="*{roomNumber}" id="roomNumber" required></label>
-  <br>
-   Добавьте остальные поля комнаты, например, цену за питание и цену за проживание
-   <label >Meal Price:  <input type="text" th:field="*{mealPrice}" id="mealPrice" required></label>
-  <br>
-  <label >Price: <input type="text" th:field="*{price}" id="price" required></label>
-  <br>
-  <label>Hotel:</label>
-  <select id="hotel" onchange="displayHotelInfo()">
-    <option value="" selected disabled>Choose a hotel</option>
-    <option th:each="hotel : ${hotels}" th:value="${hotel.id}"
-            th:text="${hotel.name}"
-            th:data-image="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${hotel.photos[0]}}"
-            th:data-name="${hotel.name}"
-            th:data-address="${hotel.region + ', ' + hotel.city + ', ' + hotel.street + ', ' + hotel.house}"
-            th:data-photos="${hotel.photos}">
-    </option>
-  </select>
-  <div id="hotel-info">
-    <h2>Hotel Information</h2>
-    <p id="hotel-name"></p>
-    <p id="hotel-address"></p>
-    <img id="hotel-image" src="" alt="Hotel Image">
-    <div id="hotel-photos"></div>
-    <!-- Поле для выбранного отеля -->
-    <input type="hidden" name="id" id="selectedHotelId">
-  </div>
-  <script>
-<!--  Показываем информацию об выбранном отели -->
-function displayHotelInfo() {
-  var selectedHotel = document.getElementById("hotel");
-  var selectedOption = selectedHotel.options[selectedHotel.selectedIndex];
-  var hotelName = selectedOption.getAttribute("data-name");
-  var hotelAddress = selectedOption.getAttribute("data-address");
-  var hotelPhotos = selectedOption.getAttribute("data-photos").split(",");
-  var imageUrl = selectedOption.getAttribute("data-image");
+<div class="container">
+  <!-- Форма для добавления или редактирования комнаты -->
+  <form th:action="@{'/rooms/add'}" th:object="${room}" method="post" enctype="multipart/form-data">
+    <!-- Поле для ввода описания комнаты -->
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <input type="text" th:field="*{description}" class="form-control" id="description" required>
+    </div>
+    <!-- Поле для ввода цены -->
+    <div class="form-group">
+      <label for="price">Price:</label>
+      <input type="text" th:field="*{price}" class="form-control" id="price" required>
+    </div>
+    <div class="price">
+      <h4>Цена</h4>
+<!--      <div th:each="room : ${hotels}">-->
 
-  document.getElementById("hotel-name").innerText = hotelName;
-  document.getElementById("hotel-address").innerText = hotelAddress;
+      <input type="hidden" name="id" th:value="${hotels.id}">
+        <h3 th:text="${hotels.city}"></h3>
 
-  var imageContainer = document.getElementById("hotel-image");
-  imageContainer.setAttribute("src", imageUrl);
+<!--      </div>-->
+    </div>
+    <!-- Выбор отеля -->
+<!--    <div class="form-group">-->
+<!--      <label for="hotel">Hotel:</label>-->
+<!--      <select id="hotel" class="form-control" onchange="displayHotelInfo()">-->
+<!--        <option value="" selected disabled>Choose a hotel</option>-->
+<!--        <option th:if="${hotels != null}" th:each="hotel : ${hotels}" th:value="${hotel.id}"-->
+<!--                th:text="${hotel.name}"-->
+<!--                th:data-image="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${hotel.photos[0]}}"-->
+<!--                th:data-name="${hotel.name}"-->
+<!--                th:data-address="${hotel.region + ', ' + hotel.city + ', ' + hotel.street + ', ' + hotel.house}"-->
+<!--                th:data-photos="${hotel.photos}">-->
+<!--        </option>-->
+<!--      </select>-->
+<!--    </div>-->
+    <!-- Информация об отеле -->
+    <div id="hotel-info">
+      <h2>Hotel Information</h2>
+      <p id="hotel-name"></p>
+      <p id="hotel-address"></p>
+      <img id="hotel-image" src="" alt="Hotel Image">
+      <div id="hotel-photos"></div>
+      <!-- Скрытое поле для выбранного отеля -->
+<!--      <input type="hidden" name="id" id="selectedHotelId">-->
+    </div>
+    <!-- Загрузка фотографий комнаты -->
+    <div class="form-group">
+      <label >Room Photos:</label>
+      <input type="file" name="photos23" class="form-control-file" multiple>
+    </div>
+    <!-- Кнопка сохранения -->
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
 
-  var photoContainer = document.getElementById("hotel-photos");
-  photoContainer.innerHTML = ""; // Очистить контейнер перед добавлением новых фотографий
+<!-- Скрипт JavaScript для отображения информации об отеле -->
+<script>
+  <!--  Показываем информацию об выбранном отеле -->
+  function displayHotelInfo() {
+    var selectedHotel = document.getElementById("hotel");
+    var selectedOption = selectedHotel.options[selectedHotel.selectedIndex];
+    var hotelName = selectedOption.getAttribute("data-name");
+    var hotelAddress = selectedOption.getAttribute("data-address");
+    var hotelPhotos = selectedOption.getAttribute("data-photos").split(",");
+    var imageUrl = selectedOption.getAttribute("data-image");
 
-  hotelPhotos.forEach(function(photoPath) {
-    var img = document.createElement("img");
-    img.src = photoPath;
-    img.alt = "Hotel Photo";
-    photoContainer.appendChild(img);
-  });
+    document.getElementById("hotel-name").innerText = hotelName;
+    document.getElementById("hotel-address").innerText = hotelAddress;
 
-  var hotelId = selectedOption.value;
+    var imageContainer = document.getElementById("hotel-image");
+    imageContainer.setAttribute("src", imageUrl);
+
+    var photoContainer = document.getElementById("hotel-photos");
+    photoContainer.innerHTML = ""; // Очистить контейнер перед добавлением новых фотографий
+console.log('photoContainer');
+    hotelPhotos.forEach(function(photoPath) {
+      var img = document.createElement("img");
+      img.src = photoPath;
+      console.log('photoPath');
+      img.alt = "Hotel Photo";
+      photoContainer.appendChild(img);
+    });
+
+    var hotelId = selectedOption.value;
 
     // Обновляем значение скрытого поля
     document.getElementById("selectedHotelId").value = hotelId;
 
-}
+  }
 </script>
-
-  <label>Room Photos:</label>
-  <input type="file" name="photos23" multiple  />
-
-  <input type="submit" value="Сохранить"/>
-</form>
 </body>
 </html>

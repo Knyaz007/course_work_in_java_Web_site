@@ -5,6 +5,13 @@
   <title>Room List</title>
   <!-- Подключение Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Стили для отображения названия отеля и описания */
+    .room-info {
+      font-style: italic;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
@@ -12,15 +19,19 @@
   <table class="table">
     <thead>
     <tr>
-      <th>Room Number</th>
-      <!-- Добавьте заголовки для других полей комнаты -->
+      <th>Hotel Name</th>
+      <th>Hotel Adress</th>
+      <!-- Заголовок для названия отеля -->
+      <th>Description</th> <!-- Заголовок для описания -->
       <th>Action</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="room : ${rooms}" class="room">
-      <td th:text="${room.roomNumber}"></td>
-      <!-- Добавьте другие поля комнаты -->
+      <td th:text="${room.hotel.name}" class="room-info"></td> <!-- Отображение названия отеля -->
+
+      <td  class="room-info"> <p><span th:text="${room.hotel.region + ', ' + room.hotel.city + ', ' + room.hotel.street + ', ' + room.hotel.house}"></span></p> <!-- Отображение названия отеля -->
+     <td th:text="${room.description}" class="room-info"></td> <!-- Отображение описания -->
       <td>
         <a th:href="@{'/rooms/edit/' + ${room.id}}" class="btn btn-warning btn-sm">Edit</a>
         <a th:href="@{'/rooms/delete/' + ${room.id}}" class="btn btn-danger btn-sm">Delete</a>

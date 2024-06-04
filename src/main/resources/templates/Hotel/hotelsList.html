@@ -373,7 +373,7 @@ h2{
 
   <!--  <div id="search-form-container" style="float: left;">-->
 
-    <div th:each="hotel : ${hotels}" class="hotel-section" >
+    <div th:each="hotel, stat : ${hotels}" class="hotel-section">
       <section class="NDSPt L8lvE" itemscope="" itemtype="https://schema.org/Hotel" th:onclick="'redirectToDetails(\'' + ${hotel.id} + '\')'">
         <!-- Фотографии отеля -->
         <div class="photo-carousel">
@@ -383,11 +383,11 @@ h2{
             </div>
           </div>
           <!-- Стрелки для пролистывания фотографий -->
-          <div class="arrow left" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showPrevPhoto(this)">&lt;</div>
-          <div class="arrow right" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}" onclick="showNextPhoto(this)">&gt;</div>
+          <div class="arrow left" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}"
+               th:onclick="'showPrevPhoto(this, \'' + ${hotel.id} + '\')'"></div>
+          <div class="arrow right" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}"
+               th:onclick="'showNextPhoto(this, \'' + ${hotel.id} + '\')'">&gt;</div>
         </div>
-
-
 
         <!-- Описание отеля -->
         <div class="hotel-description">
@@ -399,30 +399,112 @@ h2{
         <div class="services">
           <h4>Доступные услуги</h4>
           <ul>
-            <!-- Пример услуги: -->
-            <!-- <li>Бесплатный Wi-Fi</li> -->
-            <!-- Замените текст услуги на фактические услуги отеля -->
-            <li>Услуга 1</li>
-            <li>Услуга 2</li>
-            <li>Услуга 3</li>
+            <!-- Проходимся по каждой комнате отеля и выводим их услуги -->
+            <div th:each="services : ${services[stat.index]}">
+
+                <div th:each="service : ${services}">
+                <h3 th:text="${service.title}"></h3>
+              </div>
+            </div>
           </ul>
-          <div class="price">
-            <h4>цена</h4>
+        </div>
+
+        <!-- Цена -->
+        <div class="price">
+          <h4>Цена</h4>
+          <div th:each="room : ${rooms[stat.index]}">
+
+
+              <h3 th:text="${room.price}"></h3>
+
           </div>
         </div>
 
-        <!-- Комментарии об отеле -->
-        <div class="comments" th:if="${not #lists.isEmpty(hotel.comments)}">
-          <h4>Комментарии</h4>
-          <p><span th:text="${#lists.size(hotel.comments)}"></span> отзывов</p>
-          <p th:if="${hotel.averageCommentEvaluation > 0.0}">
-            Средняя оценка <span th:text="${hotel.averageCommentEvaluation}"></span>
-          </p>
-          <p th:if="${hotel.averageCommentEvaluation <= 0.0}">
-            <span>Нет оценок.</span>
-          </p>
-        </div>
+
       </section>
+
+
+
+      <script th:inline="javascript">
+    // Функция для отображения предыдущей фотографии отеля
+    function showPrevPhoto(element, hotelId) {
+        var totalPhotos = element.getAttribute('data-total-photos');
+        var currentPhotoIndex = 0; // Текущий индекс фотографии
+
+        console.log('showPrevPhoto');
+        console.log(hotelId);
+        console.log(totalPhotos);
+
+        // Отправляем запрос на сервер для получения фотографий отеля по его идентификатору
+        fetch('/hotels/photos/' + hotelId)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Фотографии отеля
+                // Обновляем текущий индекс фотографии для отображения предыдущей
+                currentPhotoIndex = (currentPhotoIndex - 1 + totalPhotos) % totalPhotos;
+                // Вызываем функцию обновления фотографии
+                updatePhoto(data, currentPhotoIndex, hotelId, element);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // Функция для отображения следующей фотографии отеля
+    function showNextPhoto(element, hotelId) {
+        var totalPhotos = element.getAttribute('data-total-photos');
+        var currentPhotoIndex = 0; // Текущий индекс фотографии
+
+        console.log('showNextPhoto');
+        console.log(hotelId);
+        console.log(totalPhotos);
+
+        // Отправляем запрос на сервер для получения фотографий отеля по его идентификатору
+        fetch('/hotels/photos/' + hotelId)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Фотографии отеля
+                // Обновляем текущий индекс фотографии для отображения следующей
+                currentPhotoIndex = (currentPhotoIndex + 1) % totalPhotos;
+                // Вызываем функцию обновления фотографии
+                updatePhoto(data, currentPhotoIndex, hotelId, element);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // Функция для обновления отображаемой фотографии в контейнере
+    function updatePhoto(photos, currentPhotoIndex, hotelId, element) {
+        console.log('updatePhoto');
+        console.log(photos);
+        console.log(currentPhotoIndex);
+        console.log(hotelId);
+
+        // Находим ближайший родительский элемент с классом .photo-carousel
+        var photoCarousel = element.closest('.photo-carousel');
+        // Находим контейнер фотографий внутри найденного photoCarousel
+        var photoContainer = photoCarousel.querySelector('.photo-container');
+        if (!photoContainer) {
+            console.error('Photo container not found.');
+            return;
+        }
+
+        var photoUrl = '/uploads/hotel-' + hotelId + '/' + photos[currentPhotoIndex];
+        var photoAlt = 'Hotel Photo';
+
+        // Очищаем контейнер
+        photoContainer.innerHTML = '';
+
+        // Добавляем новую фотографию
+        var img = document.createElement('img');
+        img.src = photoUrl;
+        img.alt = photoAlt;
+        photoContainer.appendChild(img);
+    }
+</script>
+
+
       <!-- Ссылки для подробной информации, редактирования и удаления (если пользователь администратор) -->
       <div class="actions">
         <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-info btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Подробнее</a>
@@ -431,52 +513,7 @@ h2{
       </div>
 
 
-    <script th:inline="javascript">
-    function showPrevPhoto(element) {
-        var hotelId = element.getAttribute('data-hotel-id');
-        var totalPhotos = element.getAttribute('data-total-photos');
 
-        console.log('showPrevPhoto ');
-        console.log(hotelId);
-        console.log(totalPhotos);
-        var currentPhotoIndex = 0;
-        var photos = /*[[${hotel.photos}]]*/; // Получение фотографий отеля в JavaScript
-        console.log(photos);
-        currentPhotoIndex = (currentPhotoIndex - 1 + totalPhotos) % totalPhotos;
-        console.log(totalPhotos);
-        updatePhoto(photos, currentPhotoIndex, hotelId);
-    }
-
-    function showNextPhoto(element) {
-        var hotelId = element.getAttribute('data-hotel-id');
-        var totalPhotos = element.getAttribute('data-total-photos');
-
-        console.log('showNextPhoto ');
-        var currentPhotoIndex = 0;
-        var photos = /*[[${hotel.photos}]]*/; // Получение фотографий отеля в JavaScript
-        console.log(photos);
-        console.log(totalPhotos);
-        currentPhotoIndex = (currentPhotoIndex + 1) % totalPhotos;
-        updatePhoto(photos, currentPhotoIndex, hotelId);
-    }
-
-    function updatePhoto(photos, currentPhotoIndex, hotelId) {
-        console.log('updatePhoto ');
-        var photoContainer = document.querySelector('.photo-container');
-        console.log(photoContainer);
-        var photoUrl = '/uploads/hotel-' + hotelId + '/' + photos[currentPhotoIndex];
-        var photoAlt ='Hotel Photo'
-
-        // Очищаем контейнер
-        photoContainer.innerHTML = '';
-
-        // Добавляем новую фотографию
-        var img = document.createElement('img');
-        img.src = photoUrl;
-        img.alt=photoAlt;
-        photoContainer.appendChild(img);
-    }
-</script>
 <script th:inline="javascript">
  function redirectToDetails(hotelId) {
     // Получаем элемент, на котором произошло событие клика
