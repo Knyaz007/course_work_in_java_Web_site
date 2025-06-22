@@ -55,7 +55,7 @@ public class BookingController {
         model.addAttribute("loggedIn", loggedIn);
         model.addAttribute("authentication", authentication);
 
-        return "booking/list";
+        return "booking/listBookings";
     }
 
     @GetMapping("/details/{bookingId}")
@@ -112,4 +112,18 @@ public class BookingController {
         BookingRepository.deleteById(bookingId);
         return "redirect:/bookings/list";
     }
+
+    @PostMapping("/confirm/{bookingId}")
+public String confirmBooking(@PathVariable Long bookingId) {
+    Optional<Booking> optionalBooking = BookingRepository.findById(bookingId);
+
+    if (optionalBooking.isPresent()) {
+        Booking booking = optionalBooking.get();
+        booking.setConfirmed(true); // Убедись, что у Booking есть это поле
+        BookingRepository.save(booking);
+    }
+
+    return "redirect:/bookings/details/" + bookingId;
+}
+
 }

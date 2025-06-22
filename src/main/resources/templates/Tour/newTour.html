@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <title>New Tour</title>
+    <meta charset="UTF-8" />
+    <title>Новый тур</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -33,7 +33,8 @@
         }
 
         input,
-        textarea {
+        textarea,
+        select {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -68,41 +69,226 @@
 
 <body>
 
-<h2>New Tour</h2>
+   <h2 style="text-align: center;">Новый тур</h2>
 
-<form th:action="@{/tours/new}" method="post" th:object="${tour}">
-    <!-- Валидационные сообщения -->
-    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
-        <p th:each="error : ${#fields.errors('*')}" th:text="${error}"></p>
-    </div>
 
-    <!-- Поля формы -->
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" th:field="*{name}" />
+    <form th:action="@{/tours/new}" method="post" th:object="${tour}">
+        <!-- Валидационные сообщения -->
+        <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+            <p th:each="error : ${#fields.errors('*')}" th:text="${error}"></p>
+        </div>
 
-    <label for="description">Description:</label>
-    <textarea id="description" name="description" th:field="*{description}"></textarea>
+        <label for="name">Название:</label>
+        <input type="text" id="name" name="name" th:field="*{name}" />
 
-    <label for="price">Price:</label>
-    <input type="text" id="price" name="price" th:field="*{price}" />
+        <label for="description">Описание:</label>
+        <textarea id="description" name="description" th:field="*{description}"></textarea>
 
-    <label for="startDate">Start Date:</label>
-    <input type="date" id="startDate" name="startDate" th:field="*{startDate}" />
+        <label for="price">Цена:</label>
+        <input type="number" step="0.01" id="price" name="price" th:field="*{price}" />
 
-    <label for="endDate">End Date:</label>
-    <input type="date" id="endDate" name="endDate" th:field="*{endDate}" />
+        <label for="startDate">Начало:</label>
+        <input type="date" id="startDate" name="startDate" th:field="*{startDate}" />
 
-    <label for="availableSpots">Available Spots:</label>
-    <input type="text" id="availableSpots" name="availableSpots" th:field="*{availableSpots}" />
+        <label for="endDate">Окончание:</label>
+        <input type="date" id="endDate" name="endDate" th:field="*{endDate}" />
 
-    <!-- Кнопка отправки формы -->
-    <button type="submit">Submit</button>
-</form>
-<a href="/" style="text-decoration: none;">
-    <button style="background-color: #337ab7; color: #fff; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
-        Go to Main Form
-    </button>
-</a>
+        <label for="availableSpots">Доступных мест:</label>
+        <input type="number" id="availableSpots" name="availableSpots" th:field="*{availableSpots}" />
+
+        <!-- Select для Hotel -->
+
+
+<label for="hotel">Отель:</label>
+<select id="hotel" name="hotelId" onchange="filterRoomsByHotel(this); showHotelInfo(this);">
+    <option value="" disabled selected>Выберите отель</option>
+    <option th:each="hotel : ${hotels}"
+            th:value="${hotel.id}"
+            th:data-name="${hotel.name}"
+            th:data-country="${hotel.country}"
+            th:data-region="${hotel.region}"
+            th:data-city="${hotel.city}"
+            th:data-street="${hotel.street}"
+            th:data-house="${hotel.house}"
+            th:data-type="${hotel.type}"
+            th:data-rooms="${hotel.availableRooms}">
+        <span th:text="${hotel.name}">Отель</span>
+    </option>
+</select>
+
+<div id="hotel-info" style="margin-top: 1rem; border: 1px solid #ccc; padding: 10px; display: none;">
+    <p><strong>Название:</strong> <span id="hotel-name"></span></p>
+    <p><strong>Адрес:</strong> <span id="hotel-address"></span></p>
+    <p><strong>Тип:</strong> <span id="hotel-type"></span></p>
+    <p><strong>Доступные комнаты:</strong> <span id="hotel-rooms"></span></p>
+</div>
+
+<label for="room">Комната:</label>
+<select id="room" name="roomId" onchange="showRoomInfo(this)">
+    <option value="" disabled selected>Выберите комнату</option>
+    <option th:each="room : ${rooms}"
+            th:value="${room.id}"
+            th:data-hotel-id="${room.hotel.id}"
+            th:data-number="${room.roomNumber}"
+            th:data-capacity="${room.thingsRoom.size()}" 
+            th:data-type="${room.description}" 
+            th:data-price="${room.price}"
+            th:text="'Комната ' + ${room.roomNumber} + ' | Цена: ' + ${room.price} + '₽'">
+    </option>
+</select>
+
+<div id="room-info" style="margin-top: 1rem; border: 1px solid #ccc; padding: 10px; display: none;">
+    <p><strong>Номер:</strong> <span id="room-number"></span></p>
+    <p><strong>Вместимость:</strong> <span id="room-capacity"></span></p>
+    <p><strong>Тип:</strong> <span id="room-type"></span></p>
+    <p><strong>Цена за ночь:</strong> <span id="room-price"></span></p>
+</div>
+
+        <!-- Select для Flight --> 
+<label for="flight">Рейс:</label>
+<select id="flight" name="flightId" onchange="showFlightInfo(this)" class="form-control">
+    <option value="" disabled selected>Выберите рейс</option>
+    <option th:each="flight : ${flights}"
+            th:value="${flight.flightId}"
+            th:data-flight-number="${flight.flightNumber}"
+            th:data-departure="${flight.departure}"
+            th:data-departure-airport="${flight.departureAirport}"
+            th:data-destination="${flight.destination}"
+            th:data-arrival-airport="${flight.arrivalAirport}"
+            th:data-departure-date="${#temporals.format(flight.departureDate, 'yyyy-MM-dd')}"
+            th:data-departure-time="${#temporals.format(flight.departureTime, 'HH:mm')}"
+            th:data-arrival-date="${#temporals.format(flight.arrivalDate, 'yyyy-MM-dd')}"
+            th:data-arrival-time="${#temporals.format(flight.arrivalTime, 'HH:mm')}"
+            th:data-available-seats="${flight.availableSeats}"
+            th:data-price="${flight.price}"
+            th:data-flight-time="${flight.flightTime}"
+            th:data-wifi="${flight.wifiAvailability}"
+            th:data-payment-methods="${flight.availablePaymentMethods}"
+            th:data-pet-policy="${flight.petPolicy}"
+            th:text="${flight.flightNumber + ' | ' + flight.departure + ' → ' + flight.destination + ' | ' + #temporals.format(flight.departureDate, 'dd.MM.yyyy')}">
+    </option>
+</select>
+
+<div id="flight-info" style="margin-top: 1rem; border: 1px solid #ccc; padding: 10px; display: none;">
+    <p><strong>Номер рейса:</strong> <span id="flight-number"></span></p>
+    <p><strong>Город отправления:</strong> <span id="flight-departure"></span></p>
+    <p><strong>Аэропорт отправления:</strong> <span id="flight-departure-airport"></span></p>
+    <p><strong>Город назначения:</strong> <span id="flight-destination"></span></p>
+    <p><strong>Аэропорт прибытия:</strong> <span id="flight-arrival-airport"></span></p>
+    <p><strong>Дата и время отправления:</strong> <span id="flight-departure-date"></span> <span id="flight-departure-time"></span></p>
+    <p><strong>Дата и время прибытия:</strong> <span id="flight-arrival-date"></span> <span id="flight-arrival-time"></span></p>
+    <p><strong>Доступные места:</strong> <span id="flight-available-seats"></span></p>
+    <p><strong>Цена билета:</strong> <span id="flight-price"></span> ₽</p>
+    <p><strong>Время полета (ч):</strong> <span id="flight-time"></span></p>
+    <p><strong>Wi-Fi на борту:</strong> <span id="flight-wifi"></span></p>
+    <p><strong>Методы оплаты:</strong> <span id="flight-payment-methods"></span></p>
+    <p><strong>Условия провоза животных:</strong> <span id="flight-pet-policy"></span></p>
+</div>
+
+
+
+
+
+
+ <!-- Select для Excursion -->       
+<label for="excursion">Экскурсия:</label>
+<select id="excursion" name="excursionId" onchange="showExcursionInfo(this)">
+    <option value="" disabled selected>Выберите экскурсию</option>
+    <option th:each="excursion : ${excursions}"
+            th:value="${excursion.excursionId}"
+            th:data-title="${excursion.title}"
+            th:data-description="${excursion.description}"
+            th:data-location="${excursion.location}"
+            th:data-country="${excursion.country}"
+            th:data-city="${excursion.city}"
+            th:data-date-time="${#temporals.format(excursion.dateTime, 'yyyy-MM-dd HH:mm')}"
+            th:data-price="${excursion.price}"
+          
+            th:text="${excursion.title + ' | ' + excursion.city + ', ' + excursion.country + ' | ' + #temporals.format(excursion.dateTime, 'dd.MM.yyyy HH:mm')}">
+    </option>
+</select>
+
+<div id="excursion-info" style="margin-top: 1rem; border: 1px solid #ccc; padding: 10px; display: none;">
+    <p><strong>Название:</strong> <span id="exc-title"></span></p>
+    <p><strong>Описание:</strong> <span id="exc-description"></span></p>
+    <p><strong>Место:</strong> <span id="exc-location"></span></p>
+    <p><strong>Город:</strong> <span id="exc-city"></span></p>
+    <p><strong>Страна:</strong> <span id="exc-country"></span></p>
+    <p><strong>Дата и время:</strong> <span id="exc-date-time"></span></p>
+    <p><strong>Цена:</strong> <span id="exc-price"></span> ₽</p>
+    <p><strong>Связанный тур:</strong> <span id="exc-tour"></span></p>
+</div>
+
+
+       
+        <!-- Select для TrainTicket -->
+      <label for="trainTicket">Билет на поезд:</label>
+<select id="trainTicket" name="trainTicketId" onchange="filterCarriagesByTicket(this); showTrainTicketInfo(this);">
+    <option value="" disabled selected>Выберите билет</option>
+    <option th:each="ticket : ${trainTickets}"
+            th:value="${ticket.ticketId}"
+            th:data-train-number="${ticket.trainNumber}"
+            th:data-departure-city="${ticket.departureCity}"
+            th:data-departure-station="${ticket.departureStation}"
+            th:data-destination-city="${ticket.destinationCity}"
+            th:data-destination-station="${ticket.destinationStation}"
+            th:data-departure-date="${#temporals.format(ticket.departureDate, 'dd.MM.yyyy')}"
+            th:data-departure-time="${ticket.departureTime}"
+            th:data-arrival-date="${#temporals.format(ticket.arrivalDate, 'dd.MM.yyyy')}"
+            th:data-arrival-time="${ticket.arrivalTime}"
+            th:data-price="${ticket.price}">
+        <span th:text="'Поезд №' + ${ticket.trainNumber} + ' | ' + ${ticket.departureCity} + ' → ' + ${ticket.destinationCity}"></span>
+    </option>
+</select>
+
+<div id="ticket-info" style="margin-top: 1rem; border: 1px solid #ccc; padding: 10px; display: none;">
+    <p><strong>Поезд №:</strong> <span id="ticket-train-number"></span></p>
+    <p><strong>Маршрут:</strong> <span id="ticket-departure-city"></span> (<span id="ticket-departure-station"></span>) → <span id="ticket-destination-city"></span> (<span id="ticket-destination-station"></span>)</p>
+    <p><strong>Отправление:</strong> <span id="ticket-departure-date"></span> <span id="ticket-departure-time"></span></p>
+    <p><strong>Прибытие:</strong> <span id="ticket-arrival-date"></span> <span id="ticket-arrival-time"></span></p>
+    <p><strong>Цена:</strong> <span id="ticket-price"></span> ₽</p>
+</div>
+
+<label for="carriage">Вагон:</label>
+<select id="carriage" name="carriageId" onchange="showCarriageInfo(this)">
+    <option value="" disabled selected>Выберите вагон</option>
+    <option th:each="carriage : ${carriages}"
+            th:value="${carriage.carriageInfoId}"
+            th:data-train-ticket-id="${carriage.trainTicket.ticketId}"
+            th:data-type="${carriage.type}"
+            th:data-seats="${carriage.availableSeats}"
+            th:data-price="${carriage.minPrice}"
+            th:data-seat-type="${carriage.seatType}"
+            th:data-ticket-class="${carriage.ticketClass}"
+            th:text="'Тип: ' + ${carriage.type} + ', Цена от: ' + ${carriage.minPrice} + '₽'">
+    </option>
+</select>
+
+<div id="carriage-info" style="margin-top: 1rem; border: 1px solid #ccc; padding: 10px; display: none;">
+    <p><strong>Тип:</strong> <span id="carriage-type"></span></p>
+    <p><strong>Свободные места:</strong> <span id="carriage-seats"></span></p>
+    <p><strong>Мин. цена:</strong> <span id="carriage-price"></span> ₽</p>
+    <p><strong>Тип места:</strong> <span id="carriage-seat-type"></span></p>
+    <p><strong>Класс билета:</strong> <span id="carriage-class"></span></p>
+</div>
+
+
+
+
+       
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <a href="/" style="text-decoration: none;">
+        <button
+            style="background-color: #337ab7; color: #fff; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
+            Go to Main Form
+        </button>
+    </a>
+
+
+    <script src="/public/js/tourNew.js"></script>
 </body>
 
 </html>

@@ -1,117 +1,113 @@
 /* Container styles */
 body #search-form-container {
-
   width: 55%;
   position: relative;
- /*   max-width: 400px; */
-  margin: 20px;
-  margin-left: auto;
-  margin-right: auto;
-
+  /* max-width: 400px; */
+  margin: 20px auto;
 }
-.sf-controls-wrapper
-{
- justify-content: center;
- display:flex;
- flex-flow: row nowrap;
+.service-list {
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+  column-gap: 30px;
+  list-style-type: disc;
+  padding-left: 20px;
+
+  /* Добавим */
+  width: 100%;
+  max-width: 100%;
+}
+.service-list li {
+  white-space: nowrap; /* Не переносить строки */
+}
+
+.sf-controls-wrapper {
+  justify-content: center;
+  display: flex;
+  flex-flow: row nowrap;
 }
 
 .sf-field-container {
-  /*   height: 60px;*/
-  /*   width: 120px;*/
-    margin-bottom: 15px;
-    padding: 10px;
-
-    position: relative;
+  margin-bottom: 15px;
+  padding: 10px;
+  position: relative;
 }
 
- /*
-#arrivalDate, #arrivalDate2 { #foo {} будет оформлять единственный элемент, объявленный с атрибутом id="foo"
-    z-index: 1;
-    border: none;
-   /* width: 120px;  */
-   /*   height: 40px;
-    padding: 5px;
-    box-sizing: border-box;
+#arrivalDateInput {
+  z-index: 2;
+  border: none;
+  width: 100px;
+  padding: 5px;
+  box-sizing: border-box;
+  position: absolute;
+  left: 130px;
+}
+
+.sf-field-label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+/* Некорректный селектор. Закомментировано */
+/*
+.sf-field-container sf-arrival-date-container input {
+  height: 30px;
+  width: 120px;
 }
 */
-#arrivalDateInput {
-    z-index: 2;
-    border: none;
-    width: 100px;
-    padding: 5px;
-    box-sizing: border-box;
-    position: absolute;
-    left: 130px;
+
+.sf-submit-button-container {
+  padding: 10px;
 }
 
-
-padding: 10px;
-    position: relative;
- .sf-field-label {
-     font-size: 14px;
-     font-weight: bold;
-     margin-bottom: 5px;
-     color: #333;
- }
-
-.sf-field-container sf-arrival-date-container input{
- height: 30px;
- width: 120px;
+/* Пустое правило, удалено */
+/*
+.sf-field-container input {
 }
-.sf-submit-button-container{
- padding: 10px;
-}
-.sf-field-container input{
+*/
 
+.guests-input-container {
+  display: block;
+  padding: 10px;
 }
+
 .guests-input-container input {
-                            height: 30px;
-                            overflow: visible;
-                            width: 120px;
-                            display: flex;
+  height: 30px;
+  overflow: visible;
+  width: 120px;
+  display: flex;
+}
 
-                        }
 .guests-input-container button {
-                                                    height: 30px;
-                                                    overflow: visible;
-                                                    width: 60px;
-                                                    display: flex;
-
-                                                }
-.guests-input-container-button{
-display:flex;
+  height: 30px;
+  overflow: visible;
+  width: 60px;
+  display: flex;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-.container{
-display: block;
+.guests-input-container-button {
+  display: flex;
 }
+
+.container {
+  display: block;
+}
+
 .hotel-section {
-    position: relative;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    cursor: pointer;
+  position: relative;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+   
 }
+
 .hotel-section section {
-    display: flex;
+  display: flex;
 }
 
-
-
-
-
+/* Search form layout */
 .sfl-container {
   background-color: #eaeef2;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -119,8 +115,8 @@ display: block;
   overflow: hidden;
 }
 
+/* Не используется, но оставлено на случай добавления */
 .sf-wrapper {
-
 }
 
 /* Title and top blocks styles */
@@ -137,19 +133,14 @@ display: block;
   margin-bottom: 10px;
 }
 
-
-
-/* Label styles */
+/* Повторяется — оставлена только одна версия */
 .sf-field-label {
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 5px;
   color: #333;
 }
-.guests-input-container{
-display: block;
-padding: 10px;
-}
+
 /* Input styles */
 .sfl-date-control,
 .sfl-nights,
@@ -187,12 +178,10 @@ padding: 10px;
   margin-top: 10px;
 }
 
-/* Additional styles for compact view button */
 .sfl-submit-button.compact-view-button {
   background-color: #e74c3c;
 }
 
-/* Promo code info styles */
 .sf-promo-code-info {
   font-size: 12px;
   color: #888;
@@ -247,42 +236,244 @@ padding: 10px;
   right: 10px;
 }
 
-
-
-
-
-
-/* Поле вода поиска */
+/* Поле ввода поиска */
 .input-with-datalist {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .input-with-datalist input {
-    width: calc(100% - 20px); /* Ширина поля минус ширина скроллбара */
-    /*padding-right: 20px; /* Правый отступ для кнопки */
-    box-sizing: border-box; /* Учитываем padding в общей ширине */
+  width: calc(100% - 20px);
+  box-sizing: border-box;
 }
 
-/*.input-with-datalist::after {
-    content: '\25BC'; /* Символ стрелки вниз */
+/* Стили для карусели фотографий */
+.photo-carousel {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.photo-container {
+  position: relative;
+  width: 100%;
+  height: 250px;
+}
+
+ 
+
+.photo-container img:first-child {
+  display: block;
+}
+
+/* Кнопки навигации по фото */
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  z-index: 1;
+}
+
+.carousel-button.prev {
+  left: 10px;
+}
+
+.carousel-button.next {
+  right: 10px;
+}
+
+/* Стили для формы поиска */
+#search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 300px;
+  margin: auto;
+}
+
+#search-form input,
+#search-form select {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Стили для карточек отелей */
+.hotel-card {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.hotel-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hotel-card .hotel-info {
+  padding: 10px;
+}
+
+/* Счетчик гостей */
+#guestsInput {
+  font-weight: bold;
+}
+
+
+
+
+
+table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+th {
+      background-color: #f2f2f2;
+    }
+
+a {
+      text-decoration: none;
+      margin-right: 10px;
+    }
+ 
+
+
+
+
+
+
+
+
+
+
+
+  
+    /* Для картинок */
+.photo-carousel {
+    position: absolute;
+
+    width: 300px;
+    height: 200px;
+    background-color: white;
+    border: 1px solid #ccc;
+    overflow: hidden;
+  }
+
+.photo-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+
+.photo-container div {
+    height: 100%;
+  }
+
+
+
+.photo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+.arrow {
     position: absolute;
     top: 50%;
-    right: 5px; /* Правый отступ для стрелки */
-    transform: translateY(-50%);
-    pointer-events: none; /* События мыши не учитываются */
-    z-index: 1; /* Чтобы стрелка была выше даталиста */
-}*/
+    width: 30px;
+    height: 30px;
+    font-size: 24px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    color: #333;
+    background-color: #f5f5f5;
+    opacity: 0.5;
+  }
+
+.arrow.left {
+    left: 0;
+
+  }
+
+.arrow.right {
+    right: 0;
+  }
+.arrow:hover {
+    opacity: 1; /* При наведении делаем стрелки непрозрачными */
+}
+
+
+.hotel-description {
+    width: 50%;
+    height: 100%;
+
+}
 
 
 
 
 
 
+/* Добавьте дополнительные стили по необходимости */
+.hotel-section section {
+    position: relative;
+}
+.comments{
+ display: flex;
+
+}
+.photo-carousel {
+    position: relative;
+    overflow: hidden;
+}
 
 
 
 
+h2{
+ text-align: center;
+}
+    /* Добавьте дополнительные стили по необходимости */
+ 
 
 
 
+    
+.room-container {
+    display: flex;
+    gap: 20px;
+  }
+
+.services,
+.price {
+    flex: 1; /* Одинаковая ширина */
+    min-height: 200px; /* Минимальная высота, чтобы всегда занимали место */
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+.services ul {
+    list-style-type: none;
+    padding-left: 0;
+  }

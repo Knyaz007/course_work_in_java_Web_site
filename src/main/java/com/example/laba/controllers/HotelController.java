@@ -2,7 +2,9 @@ package com.example.laba.controllers;
 
 import com.example.laba.models.Hotel;
 import com.example.laba.models.Room;
+import com.example.laba.models.Service;
 import com.example.laba.models.ThingsRoom;
+import com.example.laba.repository.CommentRepository;
 import com.example.laba.repository.HotelRepository;
 import com.example.laba.repository.RoomRepository;
 import com.example.laba.repository.ThingsRoomRepository;
@@ -44,60 +46,85 @@ public class HotelController {
     private RoomRepository roomRepository;
     @Autowired
     private ThingsRoomRepository thingsRoomRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
+    /**
+     * Добавляет в модель общие атрибуты пользователя (аутентификация, роли,
+     * loggedIn),
+     * вызывается автоматически перед каждым методом контроллера.
+     */
+    @ModelAttribute
+    public void addUserAttributesToModel(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            List<String> roles = authentication.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+            model.addAttribute("roles", roles);
+            model.addAttribute("authentication", authentication);
+
+            boolean loggedIn = authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+            model.addAttribute("loggedIn", loggedIn);
+        }
+    }
+
+    /**
+     * Возвращает список услуг (ThingsRoom) для всех комнат отеля по его id.
+     */
     public List<ThingsRoom> getRoomsAndServicesByHotelId(Long hotelId) {
         List<Room> rooms = roomRepository.findByHotelId(hotelId);
         List<ThingsRoom> roomsWithServices = new ArrayList<>();
-
         for (Room room : rooms) {
             List<ThingsRoom> services = room.getThingsRoom();
-            roomsWithServices.addAll(services);
+            if (services != null) {
+                roomsWithServices.addAll(services);
+            }
         }
-
         return roomsWithServices;
     }
+
     @GetMapping("/list")
     public String listHotels(Model model) {
         List<Hotel> hotels = new ArrayList<>();
         hotelRepository.findAll().forEach(hotels::add);
+
         model.addAttribute("hotels", hotels);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<String> roles = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        model.addAttribute("roles", roles);
-
-        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
-
-        model.addAttribute("loggedIn", loggedIn);
-        model.addAttribute("authentication", authentication);
-
-
-
-
-        List<List<ThingsRoom>> thingsRoom = new ArrayList<>();
-        for (Hotel Hotel : hotels) {
-            List<ThingsRoom> Hotel25 = getRoomsAndServicesByHotelId(Hotel.getId());
-            thingsRoom.add(Hotel25);
+        // Карта услуг для каждого отеля
+        Map<Long, List<Service>> hotelServicesMap = new HashMap<>();
+        for (Hotel hotel : hotels) {
+            List<Service> services = hotel.getServices();
+            hotelServicesMap.put(hotel.getId(), services != null ? services : Collections.emptyList());
         }
-//       System.out.println(thingsRoom.size() +"----------------thingsRoom--------------------");
+        model.addAttribute("hotelServicesMap", hotelServicesMap);
+
+        // Средняя оценка для каждого отеля
+        Map<Long, Double> avgEval = new HashMap<>();
+        for (Hotel hotel : hotels) {
+            Double avg = commentRepository.findAverageEvaluationByHotelId(hotel.getId());
+            avgEval.put(hotel.getId(), avg != null ? avg : 0.0);
+        }
+        model.addAttribute("averageEvaluation", avgEval);
+
+        // Сервисы ThingsRoom для каждого отеля
+        List<List<ThingsRoom>> thingsRoom = new ArrayList<>();
+        for (Hotel hotel : hotels) {
+            thingsRoom.add(getRoomsAndServicesByHotelId(hotel.getId()));
+        }
         model.addAttribute("services", thingsRoom);
 
-
-        List<Room>  Roomss = new ArrayList<>();
-        for (Hotel Hotel : hotels) {
-            List<Room> Rooms = roomRepository.findByHotelId(Hotel.getId());
-            System.out.println(Rooms.size() +"----------------Roomsssssssssssss--------------------");
-            Optional<Room> cheapestRoomOptional = Rooms.stream()
-                    .min(Comparator.comparingDouble(Room::getPrice));
-            Roomss.add(cheapestRoomOptional.get());
+        // Самые дешёвые комнаты по каждому отелю
+        List<Room> cheapestRooms = new ArrayList<>();
+        for (Hotel hotel : hotels) {
+            List<Room> rooms = roomRepository.findByHotelId(hotel.getId());
+            rooms.stream()
+                    .min(Comparator.comparingDouble(Room::getPrice))
+                    .ifPresent(cheapestRooms::add);
         }
-
-
-      System.out.println(Roomss.size() +"----------------Roomss--------------------");
-        model.addAttribute("rooms", Roomss);
+        model.addAttribute("rooms", cheapestRooms);
 
         return "Hotel/hotelsList";
     }
@@ -105,199 +132,106 @@ public class HotelController {
     @GetMapping("/photos/{hotelId}")
     public ResponseEntity<List<String>> getHotelPhotos(@PathVariable Long hotelId) {
         List<String> photos = hotelRepository.getHotelPhotosById(hotelId);
-        for (String photo : photos) {
-            System.out.println(photo+"------------------------------------");
-        }
         if (photos != null && !photos.isEmpty()) {
-            System.out.println( "-------------if-----------------------");
             return ResponseEntity.ok(photos);
         } else {
-            System.out.println("------------------else------------------");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
     @GetMapping("/details/{hotelId}")
-    public String hotelDetails(@PathVariable Long hotelId, Model model) {
+    public String hotelDetails(HttpSession session, @PathVariable Long hotelId, Model model) {
         Optional<Hotel> optionalHotel = hotelRepository.findById(hotelId);
+        if (!optionalHotel.isPresent()) {
+            return "redirect:/hotels";
+        }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<String> roles = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        model.addAttribute("roles", roles);
+        Hotel hotel = optionalHotel.get();
+        model.addAttribute("hotel", hotel);
 
-
-
-        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
-
-        model.addAttribute("loggedIn", loggedIn);
-        model.addAttribute("authentication", authentication);
-
+        Double avgEval = commentRepository.findAverageEvaluationByHotelId(hotelId);
+        model.addAttribute("averageEvaluation", avgEval);
 
         List<Room> rooms = roomRepository.findByHotelId(hotelId);
         model.addAttribute("rooms", rooms);
 
+        session.setAttribute("hotelId", hotelId);
 
-        if (optionalHotel.isPresent()) {
-            Hotel hotel = optionalHotel.get();
-            model.addAttribute("hotel", hotel);
-
-            return "Hotel/hotelDetails"; // Assuming you have a "hotelDetails" template
-        } else {
-            return "redirect:/hotels";
-        }
+        return "Hotel/hotelDetails";
     }
 
     @GetMapping("/edit/{id}")
     public String editHotel(Model model, @PathVariable("id") Long id) {
         Optional<Hotel> hotel = hotelRepository.findById(id);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<String> roles = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        model.addAttribute("roles", roles);
-
-        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
-
-        model.addAttribute("loggedIn", loggedIn);
-        model.addAttribute("authentication", authentication);
-
-
-        if (hotel.isPresent()) {
-            model.addAttribute("hotel", hotel.get());
-            return "Hotel/editHotel";
-        } else {
+        if (!hotel.isPresent()) {
             return "redirect:/hotels";
         }
+        model.addAttribute("hotel", hotel.get());
+        return "Hotel/editHotel";
     }
+
     @PostMapping("/edit")
     public String editHotel(@ModelAttribute Hotel hotel,
-                            @RequestParam("newPhotos") List<MultipartFile> newPhotos,
-                            @RequestParam(value = "deletedPhotos", required = false) String deletedPhotoPath,
-                            @RequestParam(value = "existingPhotos", required = false) List<String> existingPhotos,
-                            Model model) throws IOException {
+            @RequestParam("newPhotos") List<MultipartFile> newPhotos,
+            @RequestParam(value = "deletedPhotos", required = false) String deletedPhotoPath,
+            @RequestParam(value = "existingPhotos", required = false) List<String> existingPhotos,
+            Model model) throws IOException {
+        Logger logger = LoggerFactory.getLogger(HotelController.class);
         try {
-            //  Этот метод если пользователь захочет удаленть и добавить одновременно
-            if (existingPhotos != null) {
-                saveExitPhotos(hotel,existingPhotos);
+            // Обработка сохранённых фото
+            if (existingPhotos != null && !existingPhotos.isEmpty()) {
+                saveExitPhotos(hotel, existingPhotos);
             }
 
-        // список удаляемых фото
-        String[] deletedPhotos = deletedPhotoPath.split(",");
+            // Обработка удалённых фото
+            if (deletedPhotoPath != null && !deletedPhotoPath.isEmpty()) {
+                String[] deletedPhotos = deletedPhotoPath.split(",");
+                deletePhotos(hotel, deletedPhotos);
+                logger.info("Deleted photos: {}", Arrays.toString(deletedPhotos));
+            }
 
-        // Clear comments to avoid issues with orphan removal
-        if (hotel.getComments() != null) {
-            hotel.getComments().clear();
+            // Проверяем новые фото - добавляем только если есть не пустое имя файла
+            boolean hasNewPhotos = newPhotos != null &&
+                    newPhotos.stream().anyMatch(f -> f != null && !f.getOriginalFilename().isEmpty());
+            if (hasNewPhotos) {
+                savePhotos(hotel, newPhotos);
+            }
+
+            // Очистка комментариев, чтобы избежать проблем с orphan removal
+            if (hotel.getComments() != null) {
+                hotel.getComments().clear();
+            }
+
+            hotelRepository.save(hotel);
+            model.addAttribute("message", "Hotel successfully edited");
+        } catch (HotelEditException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "your-error-view"; // Укажите корректное имя страницы с ошибкой
         }
 
-        // это для логов
-          Logger logger = LoggerFactory.getLogger(HotelController.class);
-
-        // Remove the specified photos from the hotel entity
-        if (deletedPhotoPath != null && !deletedPhotoPath.isEmpty()) {
-            deletePhotos(hotel, deletedPhotos);
-
-            logger.info("Cleared comments...");
-            logger.info("Deleted photos: {}", Arrays.toString(deletedPhotos));
-            // Use deletedPhotos array as needed
-        }
-
-//            // сохранения и новых и старых фото
-//            if(existingPhotos!= null && newPhotos != null) {
-//                savePhotosFoEdit(hotel, newPhotos, existingPhotos);
-//            }
-
-     // newPhoto всегда не null поэтому добавляем проверку, что первый элемент не пустое имя -
-        String filename ="";
-        for (MultipartFile newPhoto : newPhotos) {
-            filename = newPhoto.getOriginalFilename();
-
-            // If you want to do something with the filename, you can add your logic here
-        }
-        // Process new photos сохраняем так если нет ранее сохраняемых фото. Так сложно ибо потому, что ты можешь изменить
-        // допустим название, но по факуты ты должен перезаписать все поля потому, что выше мы перезаписываем и добавляем
-        // а тут просто добаляем
-        if (newPhotos != null && !newPhotos.isEmpty() && filename!="" ) {
-            // Save the new photos
-            savePhotos(hotel, newPhotos);
-        }
-
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<String> roles = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        model.addAttribute("roles", roles);
-
-        hotelRepository.save(hotel);
-        model.addAttribute("message", "Hotel successfully edited");
-
-        // If registered, pass loggedIn to display view elements (registration and login button)
-        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
-        model.addAttribute("loggedIn", loggedIn);
-        model.addAttribute("authentication", authentication);
-    } catch (HotelEditException ex) {
-        // Обработка исключения и передача сообщения об ошибке на страницу представления
-        model.addAttribute("error", ex.getMessage());
-        return "your-error-view"; // Замените на имя вашего представления с сообщением об ошибке
-    }
         return "redirect:/hotels/edit/" + hotel.getId();
-
     }
 
-   //Для ошибок
+    // Для ошибок
     public class HotelEditException extends RuntimeException {
         public HotelEditException(String message) {
             super(message);
         }
     }
 
-//    @PostMapping("/edit")
-//    public String editHotel(@ModelAttribute Hotel hotel, Model model) {
-//        // Clear comments to avoid issues with orphan removal
-//        if (hotel.getComments() != null) {
-//            hotel.getComments().clear();
-//        }
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        List<String> roles = authentication.getAuthorities()
-//                .stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.toList());
-//        model.addAttribute("roles", roles);
-//        hotelRepository.save(hotel);
-//        model.addAttribute("message", "Hotel successfully edited");
-//
-//        // Если зарегестрирован то передавать loggedIn для отображения элементов представления ( кнопка регистрация вход)
-//        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
-//
-//        model.addAttribute("loggedIn", loggedIn);
-//        model.addAttribute("authentication", authentication);
-//
-//        return "redirect:/hotels/list";
-//    }
     @PersistenceContext
-    private EntityManager entityManager; //для метода delete
+    private EntityManager entityManager; // для метода delete
+
     @Transactional
     @GetMapping("/delete/{id}")
     public String deleteHotel(Model model, @PathVariable("id") Long id) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<String> roles = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        model.addAttribute("roles", roles);
-
-//        он удалит отель вместе с связанными с ним комментариями из-за каскадного эффекта.
-            Hotel hotel = entityManager.find(Hotel.class, id);
-            if (hotel != null) {
-                entityManager.remove(hotel);
-            }
+        // он удалит отель вместе с связанными с ним комментариями из-за каскадного
+        // эффекта.
+        Hotel hotel = entityManager.find(Hotel.class, id);
+        if (hotel != null) {
+            entityManager.remove(hotel);
+        }
 
         List<Room> rooms = roomRepository.findByHotelId(id);
         if (hotel != null) {
@@ -308,7 +242,6 @@ public class HotelController {
             }
         }
 
-
         if (hotel != null) {
             // Удалить все фотографии отеля
             hotel.getPhotos().clear();
@@ -316,112 +249,35 @@ public class HotelController {
             hotelRepository.delete(hotel);
         }
 
-
         if (hotelRepository.existsById(id)) {
             hotelRepository.deleteById(id);
         }
+
+
+         String baseDirectory = "src/main/resources/static/uploads/";
+    Path hotelFolder = Paths.get(baseDirectory, "hotel-" + id);
+
+    try {
+        if (Files.exists(hotelFolder)) {
+            // Удаление папки и всех вложенных файлов/папок
+            Files.walk(hotelFolder)
+                .sorted(Comparator.reverseOrder()) // сначала файлы, потом папки
+                .forEach(path -> {
+                    try {
+                        Files.delete(path);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
         return "redirect:/hotels/list";
     }
 
-    @GetMapping("/new")
-    public String newHotel(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<String> roles = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        model.addAttribute("roles", roles);
-        model.addAttribute("hotel", new Hotel());
 
-        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
-
-        model.addAttribute("loggedIn", loggedIn);
-        model.addAttribute("authentication", authentication);
-
-
-        return "Hotel/newHotel";
-    }
-
-//    @PostMapping("/new")
-//    public String newHotel(@ModelAttribute Hotel hotel) {
-//        hotelRepository.save(hotel);
-//
-//        return "redirect:/hotels";
-//    }
-    @PostMapping("/new")
-    public String createHotel(HttpSession session, @ModelAttribute Hotel hotel, @RequestParam("photos22") List<MultipartFile> photos) throws IOException {
-    if (!photos.isEmpty()) {
-        // Обработка фотографий (сохранение на сервере или в базе данных)
-        hotelRepository.save(hotel); // Сначала сохраняем отель
-        savePhotos(hotel, photos);
-    } else {
-        // Обработка случая, когда нет загруженных фотографий
-        // Здесь можете добавить дополнительную логику по вашему усмотрению
-    }
-        session.setAttribute("hotelId", hotel.getId());
-
-
-
-        // Редирект на страницу добавления номера в комнату с передачей id отеля в параметре запроса
-//        return "redirect:/rooms/add?hotelId=" + hotelId;
-    // Редирект на страницу отелей
-//   return "redirect:/hotels/list";
-
-          return "redirect:/rooms/add";
-}
-
-    private void savePhotos(Hotel hotel, List<MultipartFile> photos) throws IOException {
-        // Получаем ID отеля
-        Long hotelId = hotel.getId();
-        // Создаем путь к директории для отеля внутри uploads
-        // Path uploadDir = Paths.get("uploads", "hotel-" + hotelId);
-        Path uploadDir = Paths.get("src", "main", "resources", "static", "uploads", "hotel-" + hotelId);
-        if (!Files.exists(uploadDir)) {
-            Files.createDirectories(uploadDir);
-        }
-        // Получаем список существующих фотографий отеля
-        List<String> existingPhotoNames = hotel.getPhotos();
-
-        for (MultipartFile photo : photos) {
-            if (!photo.isEmpty()) {
-                String fileName = StringUtils.cleanPath(Objects.requireNonNull(photo.getOriginalFilename()));
-                //  String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
-
-
-                String transliteratedText = transliterate(fileName);
-                System.out.println(transliteratedText);
-                Path filePath = uploadDir.resolve(transliteratedText);
-
-                // Проверка, есть ли уже фото с таким именем в базе
-                if (existingPhotoNames.contains(transliteratedText)) {
-                    String errorMessage = "Фото с именем " + transliteratedText + " уже существует в базе.";
-                    System.out.println(errorMessage);
-                    // Вызываем исключение с сообщением об ошибке
-                    throw new HotelEditException(errorMessage);
-                    // Обработайте этот случай по вашему усмотрению, например, пропустите сохранение
-
-                }
-
-                try {
-                    Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                    hotel.addPhoto(transliteratedText); // Сохраните имя файла в модели отеля
-                    hotelRepository.save(hotel);
-                } catch (IOException e) {
-                    e.printStackTrace(); // Обработайте ошибку в соответствии с вашими требованиями
-                }
-            }
-        }
-    }
-    private void saveExitPhotos(Hotel hotel,  List<String> photoPaths ) throws IOException {
-        // Process existing photos
-        for (String existingPhoto : photoPaths) {
-            // You may want to validate the existing photo path here
-            hotel.addPhoto(existingPhoto);
-        }
-        hotelRepository.save(hotel);
-    }
-
-    private void deletePhotos(Hotel hotel, String[] photoPaths) {
+ private void deletePhotos(Hotel hotel, String[] photoPaths) {
 
         String baseDirectoryфф = "src/main/resources/static/uploads/";
         try {
@@ -448,7 +304,153 @@ public class HotelController {
         }
     }
 
-    private void savePhotosFoEdit(Hotel hotel, List<MultipartFile> newPhotos, List<String> existingPhotos) throws IOException {
+
+
+
+
+
+
+
+
+
+    
+    @GetMapping("/new")
+    public String newHotel(Model model) {
+
+        model.addAttribute("hotel", new Hotel());
+
+        return "Hotel/newHotel";
+    }
+
+    @PostMapping("/new")
+    public String createHotel(HttpSession session, @ModelAttribute Hotel hotel,
+            @RequestParam("photos22") List<MultipartFile> photos) throws IOException {
+        if (!photos.isEmpty()) {
+            // Обработка фотографий (сохранение на сервере или в базе данных)
+            hotelRepository.save(hotel); // Сначала сохраняем отель
+            savePhotos(hotel, photos);
+        } else {
+            // Обработка случая, когда нет загруженных фотографий
+            // Здесь можете добавить дополнительную логику по вашему усмотрению
+        }
+        session.setAttribute("hotelId", hotel.getId());
+
+        // Редирект на страницу добавления номера в комнату с передачей id отеля в
+        // параметре запроса
+        // return "redirect:/rooms/add?hotelId=" + hotelId;
+        // Редирект на страницу отелей
+        // return "redirect:/hotels/list";
+
+        return "redirect:/rooms/add";
+    }
+
+   @PostMapping("/search")
+public String searchHotels(@RequestParam("city") String keyword, Model model) {
+   /*  List<Hotel> hotels = hotelRepository.findByCityContainingIgnoreCaseOrCountryContainingIgnoreCase(keyword, keyword);
+     */
+     List<Hotel> hotels = hotelRepository.findByCityIgnoreCaseOrCountryIgnoreCase(keyword, keyword);
+    
+
+    model.addAttribute("hotels", hotels);
+
+    // Получение списка услуг для каждого отеля
+    Map<Long, List<Service>> hotelServicesMap = new HashMap<>();
+    for (Hotel hotel : hotels) {
+        List<Service> services = hotel.getServices();
+        hotelServicesMap.put(hotel.getId(), services != null ? services : new ArrayList<>());
+    }
+    model.addAttribute("hotelServicesMap", hotelServicesMap);
+
+    // Средняя оценка
+    Map<Long, Double> avgEval = new HashMap<>();
+    for (Hotel hotel : hotels) {
+        Double avgEval2 = commentRepository.findAverageEvaluationByHotelId(hotel.getId());
+        avgEval.put(hotel.getId(), avgEval2 != null ? avgEval2 : 0.0);
+    }
+    model.addAttribute("averageEvaluation", avgEval);
+
+    // Services for rooms
+    List<List<ThingsRoom>> thingsRoom = new ArrayList<>();
+    for (Hotel hotel : hotels) {
+        List<ThingsRoom> list = getRoomsAndServicesByHotelId(hotel.getId());
+        thingsRoom.add(list);
+    }
+    model.addAttribute("services", thingsRoom);
+
+    // Cheapest room
+    List<Room> cheapestRooms = new ArrayList<>();
+    for (Hotel hotel : hotels) {
+        List<Room> rooms = roomRepository.findByHotelId(hotel.getId());
+        rooms.stream().min(Comparator.comparingDouble(Room::getPrice)).ifPresent(cheapestRooms::add);
+    }
+    model.addAttribute("rooms", cheapestRooms);
+
+    return "Hotel/hotelsList";
+}
+
+    
+    private void savePhotos(Hotel hotel, List<MultipartFile> photos) throws IOException {
+         if (photos == null || photos.isEmpty() || photos.stream().allMatch(MultipartFile::isEmpty)) {
+        return; // Если нет фото, выходим
+    }
+        // Получаем ID отеля
+        Long hotelId = hotel.getId();
+        // Создаем путь к директории для отеля внутри uploads
+        // Path uploadDir = Paths.get("uploads", "hotel-" + hotelId);
+        Path uploadDir = Paths.get("src", "main", "resources", "static", "uploads", "hotel-" + hotelId);
+        if (!Files.exists(uploadDir)) {
+            Files.createDirectories(uploadDir);
+        }
+        // Получаем список существующих фотографий отеля
+        List<String> existingPhotoNames = hotel.getPhotos();
+
+        for (MultipartFile photo : photos) {
+            if (!photo.isEmpty()) {
+                String fileName = StringUtils.cleanPath(Objects.requireNonNull(photo.getOriginalFilename()));
+                // String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
+
+                String transliteratedText = transliterate(fileName);
+                System.out.println(transliteratedText);
+                Path filePath = uploadDir.resolve(transliteratedText);
+
+                // Проверка, есть ли уже фото с таким именем в базе
+                if (existingPhotoNames.contains(transliteratedText)) {
+                    String errorMessage = "Фото с именем " + transliteratedText + " уже существует в базе.";
+                    System.out.println(errorMessage);
+                    // Вызываем исключение с сообщением об ошибке
+                    throw new HotelEditException(errorMessage);
+                    // Обработайте этот случай по вашему усмотрению, например, пропустите сохранение
+
+                }
+
+               try {
+    Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+    hotel.addPhoto(transliteratedText); // Добавляем имя файла в список
+    hotelRepository.save(hotel);          // Сохраняем изменения
+} catch (IOException e) {
+    e.printStackTrace();
+    throw e;  // Пробрасываем дальше, чтобы не скрывать ошибку
+} catch (Exception e) {
+    e.printStackTrace(); // Логируем другие ошибки, связанные с сохранением
+    throw e;
+}
+
+            }
+        }
+    }
+
+    private void saveExitPhotos(Hotel hotel, List<String> photoPaths) throws IOException {
+        // Process existing photos
+        for (String existingPhoto : photoPaths) {
+            // You may want to validate the existing photo path here
+            hotel.addPhoto(existingPhoto);
+        }
+        hotelRepository.save(hotel);
+    }
+
+   
+    private void savePhotosFoEdit(Hotel hotel, List<MultipartFile> newPhotos, List<String> existingPhotos)
+            throws IOException {
         // Получаем ID отеля
         Long hotelId = hotel.getId();
         // Создаем путь к директории для отеля внутри uploads
@@ -485,7 +487,6 @@ public class HotelController {
 
                 }
 
-
                 try {
                     Files.copy(newPhoto.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
                     hotel.addPhoto(transliteratedText); // Сохраните имя файла в модели отеля
@@ -498,82 +499,33 @@ public class HotelController {
         hotelRepository.save(hotel);
     }
 
-
     @GetMapping("/upload")
     public String upload(Model model) {
 
         return "Hotel/qwe";
     }
 
-
     @PostMapping("/upload")
     public String uploadPhotos(@RequestParam("photos") List<MultipartFile> photos) {
-            // Поместите код для сохранения фотографий на сервере или в базе данных
-            // Например, сохраните их на сервере в директории uploads
+        // Поместите код для сохранения фотографий на сервере или в базе данных
+        // Например, сохраните их на сервере в директории uploads
 
-            for (MultipartFile photo : photos) {
-                String fileName = photo.getOriginalFilename();
-                Path filePath = Path.of("uploads", fileName);
+        for (MultipartFile photo : photos) {
+            String fileName = photo.getOriginalFilename();
+            Path filePath = Path.of("uploads", fileName);
 
-                try {
-                    Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                    // Ваш код для сохранения имени файла или другой логики
-                } catch (IOException e) {
-                    e.printStackTrace(); // Обработайте ошибку в соответствии с вашими требованиями
-                    return "Failed to upload photos.";
-                }
+            try {
+                Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                // Ваш код для сохранения имени файла или другой логики
+            } catch (IOException e) {
+                e.printStackTrace(); // Обработайте ошибку в соответствии с вашими требованиями
+                return "Failed to upload photos.";
             }
-
-            return "Photos uploaded successfully.";
         }
 
-    @PostMapping("/search")
-    public String searchHotels(@RequestParam("city") String city, Model model) {
-        List<Hotel> hotels = hotelRepository.findByCityContainingIgnoreCase(city);
-        model.addAttribute("hotels", hotels);
-
-
-        model.addAttribute("hotels", hotels);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<String> roles = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        model.addAttribute("roles", roles);
-
-        boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
-
-        model.addAttribute("loggedIn", loggedIn);
-        model.addAttribute("authentication", authentication);
-
-
-
-
-        List<List<ThingsRoom>> thingsRoom = new ArrayList<>();
-        for (Hotel Hotel : hotels) {
-            List<ThingsRoom> Hotel25 = getRoomsAndServicesByHotelId(Hotel.getId());
-            thingsRoom.add(Hotel25);
-        }
-//       System.out.println(thingsRoom.size() +"----------------thingsRoom--------------------");
-        model.addAttribute("services", thingsRoom);
-
-
-        List<Room>  Roomss = new ArrayList<>();
-        for (Hotel Hotel : hotels) {
-            List<Room> Rooms = roomRepository.findByHotelId(Hotel.getId());
-            System.out.println(Rooms.size() +"----------------Roomsssssssssssss--------------------");
-            Optional<Room> cheapestRoomOptional = Rooms.stream()
-                    .min(Comparator.comparingDouble(Room::getPrice));
-            Roomss.add(cheapestRoomOptional.get());
-        }
-
-
-        System.out.println(Roomss.size() +"----------------Roomss--------------------");
-        model.addAttribute("rooms", Roomss);
-
-        return "Hotel/hotelsList"; // это имя вашего HTML шаблона для результатов поиска отелей
+        return "Photos uploaded successfully.";
     }
+
     private String transliterate(String text) {
         text = text.replaceAll("а", "a");
         text = text.replaceAll("б", "b");
@@ -646,6 +598,4 @@ public class HotelController {
 
         return text;
     }
-    }
-
-
+}

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Список отелей</title>
+  <!-- Подключаем Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link th:href="@{/public/hotel.css}" rel="stylesheet" />
+    <!-- для отображения звёзд: -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+   .hotel-section {
+  display: flex;
+  gap: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+  background: #fff;
+  cursor: pointer;
+}
+
+.hotel-section:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.photo-carousel {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.photo-container > div {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.photo-container > div:first-child {
+  display: block;
+}
+
+.photo-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  user-select: none;
+  pointer-events: none;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 28px;
+  background: rgba(0, 0, 0, 0.4);
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  border-radius: 50%;
+  user-select: none;
+  cursor: pointer;
+  transition: background 0.3s;
+  z-index: 5;
+}
+
+.arrow:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.arrow.left {
+  left: 10px;
+}
+
+.arrow.right {
+  right: 10px;
+}
+
+.hotel-description {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hotel-description h3 {
+  margin: 0 0 8px 0;
+  font-size: 22px;
+  color: #2c3e50;
+}
+
+.hotel-description p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.services {
+  margin-top: 15px;
+}
+
+.services h4 {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2980b9;
+}
+
+.services ul {
+  list-style: disc inside;
+  margin: 0;
+  padding-left: 15px;
+  color: #444;
+}
+
+.price {
+  margin-top: 15px;
+}
+
+.price h4 {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #27ae60;
+}
+
+.price h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #27ae60;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.actions a.btn {
+  padding: 6px 14px;
+  font-size: 14px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+  user-select: none;
+  transition: background-color 0.3s;
+}
+
+.actions a.btn-info {
+  background-color: #3498db;
+}
+
+.actions a.btn-info:hover {
+  background-color: #2980b9;
+}
+
+.actions a.btn-warning {
+  background-color: #f39c12;
+}
+
+.actions a.btn-warning:hover {
+  background-color: #d68910;
+}
+
+.actions a.btn-danger {
+  background-color: #e74c3c;
+}
+
+.actions a.btn-danger:hover {
+  background-color: #c0392b;
+}
+</style>
+
+
+</head>
+<body>
+
+  <!-- Баннер -->
+  <iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none; display: block;"></iframe>
+  
+  <!-- Навигационная панель -->
+  <iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block;"></iframe>
+  
+  <!-- Форма поиска отелей -->
+  <div id="search-form-container">
+    <div class="sfl-container sfl-layout-default sfl-theme-16886-xroomhotel" data-version="1.5">
+      <div class="sf-wrapper">
+        <div class="sf-controls-wrapper">
+
+          <!-- Город -->
+          <div class="sf-field-container sf-arrival-date-container">
+            <div class="sf-field-label sf-arrival-date-label">Куда вы хотите?</div>
+            <div class="input-with-datalist">
+              <input list="citiesSelect" id="Region" name="myCity" placeholder="Enter city name">
+              <datalist id="citiesSelect" onchange="updateInputValue()">
+                <option th:each="hotel : ${hotels}" th:value="${hotel.city}"></option>
+              </datalist>
+            </div>
+          </div>
+
+          <!-- Дата заезда -->
+          <div class="sf-field-container sf-arrival-date-container">
+            <div class="sf-field-label sf-arrival-date-label">Заезд</div>
+            <input type="date" id="arrivalDate">
+          </div>
+
+          <!-- Дата выезда -->
+          <div class="sf-field-container sf-departure-date-container">
+            <div class="sf-field-label sf-departure-date-label">Выезд</div>
+            <input type="date" id="arrivalDate2">
+          </div>
+
+          <!-- Количество гостей -->
+          <div class="guests-input-container">
+            <input type="text" class="sfl-guests-input" readonly id="guestsInput" pattern="[0-9]*" value="Нужно на 2">
+            <div class="guests-input-container-button">
+              <button onclick="updateGuests(-1)">-</button>
+              <button onclick="updateGuests(1)">+</button>
+            </div>
+          </div>
+
+          <!-- Кнопка отправки формы -->
+          <div class="sf-submit-button-container">
+            <form id="search-form" th:action="@{/hotels/search}" method="post">
+              <input type="hidden" id="cityInput" name="city">
+              <input type="button" class="sfl-submit-button" value="Найти номер" onclick="submitForm()">
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Список отелей -->
+  <div class="container">
+    <h2>Список отелей</h2>
+
+    <div th:each="hotel, stat : ${hotels}" class="hotel-section">
+      <section class="NDSPt L8lvE" itemscope="" itemtype="https://schema.org/Hotel" 
+               th:attr="onclick=|handleClick(event, '${hotel.id}')|"
+               style="cursor: pointer; user-select: text;">
+
+        <!-- Фотографии отеля -->
+        <div  onclick="event.stopPropagation();" class="photo-carousel">
+          <div class="photo-container">
+            <div th:each="photo : ${hotel.photos}" th:data-photo="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}">
+              <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo" />
+            </div>
+          </div>
+          <!-- Стрелки для пролистывания фотографий -->
+          <div class="arrow left" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}"
+               th:onclick="'showPrevPhoto(this, \'' + ${hotel.id} + '\')'">&lt;</div>
+          <div class="arrow right" th:data-hotel-id="${hotel.id}" th:data-total-photos="${hotel.photos.size()}"
+               th:onclick="'showNextPhoto(this, \'' + ${hotel.id} + '\')'">&gt;</div>
+        </div>
+
+        <!-- Описание отеля -->
+        <div class="hotel-description">
+          <h3 th:text="${hotel.name}"></h3>
+          <p><span th:text="${hotel.country + ', ' + hotel.city + ', ' + hotel.street + ', ' + hotel.house}"></span></p>
+        </div>
+
+
+
+
+
+
+
+<!-- Список доступных услуг отеля -->
+<div class="services">
+  <h4>Доступные услуги</h4>
+
+  <ul th:if="${hotelServicesMap[hotel.id] != null and !hotelServicesMap[hotel.id].isEmpty()}">
+    <li th:each="service : ${hotelServicesMap[hotel.id]}"
+        th:text="${service.name}">Название услуги</li>
+  </ul>
+
+  <p th:if="${hotelServicesMap[hotel.id] == null or hotelServicesMap[hotel.id].isEmpty()}">Услуги отсутствуют</p>
+</div>       
+    
+        
+        
+
+
+<div>
+  <span th:if="${averageEvaluation[hotel.id] != null and averageEvaluation[hotel.id] > 0}">
+    Средняя оценка: 
+    <span th:text="${#numbers.formatDecimal(averageEvaluation[hotel.id], 1, 1)}">0.0</span>
+
+    <span th:each="i : ${#numbers.sequence(1, 5)}">
+      <i class="fa"
+         th:classappend="${i <= averageEvaluation[hotel.id]} ? 'fa-star text-warning' : 
+                         (i - averageEvaluation[hotel.id] < 1 ? 'fa-star-half-alt text-warning' : 'fa-star-o text-muted')">
+      </i>
+    </span>
+  </span>
+</div>
+
+
+        <!-- Цена -->
+        <div class="price">
+          <h4>Цена</h4>
+          <div th:each="room : ${rooms[stat.index]}">
+            <h3 th:text="${room.price}"></h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- Действия для администраторов -->
+      <div class="actions">
+        <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-info btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Подробнее</a>
+        <a th:href="@{'/hotels/edit/' + ${hotel.id}}" class="btn btn-warning btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
+        <a th:href="@{'/hotels/delete/' + ${hotel.id}}" class="btn btn-danger btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Удалить</a>
+      </div>
+
+       <!-- <h2>Кооличесво коментариев при нажатие переход на этот отель .. оценка кол-во коменнтариве тип (отель хостель и так далее) </h2>
+ -->
+    </div>
+
+    <!-- Кнопка добавления нового отеля (для администраторов) -->
+    <a th:href="@{'/hotels/new'}" th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый отель</a>
+  </div>
+
+  <!-- Подключаем Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Подключаем дополнительные скрипты -->
+  <script src="/public/js/scripts.js"></script>hotel
+  <script src="/public/js/hotel.js"></script>
+ <!--  <script th:src="@{public/js/hotel.js}"></script> -->
+  <!-- Подключаем футер -->
+  <iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block;"></iframe>
+
+</body>
+</html>

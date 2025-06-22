@@ -1,29 +1,76 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <!-- Заголовок, стили и мета-теги -->
+  <meta charset="UTF-8">
   <title>Создание нового пользователя</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 30px;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-<!-- Заголовок страницы -->
-<h2>Создание нового пользователя</h2>
 
-<!-- Форма создания нового пользователя -->
-<form th:object="${user}" th:action="@{/users/new}" method="post">
-  <!-- Поля для ввода информации о новом пользователе -->
-  <label for="name">Имя:</label>
-  <input type="text" id="name" th:field="*{name}" />
+  <div class="container">
+    <h2 class="mb-4">Создание нового пользователя</h2>
 
-  <label for="lastName">Фамилия:</label>
-  <input type="text" id="lastName" th:field="*{lastName}" />
+    <!-- Форма создания нового пользователя -->
+    <form th:object="${user}" th:action="@{/users/new}" method="post">
+      <div class="form-group">
+        <label for="name">Имя:</label>
+        <input type="text" id="name" th:field="*{name}" class="form-control" required />
+      </div>
 
-  <!-- Добавьте другие поля пользователя по необходимости -->
+      <div class="form-group">
+        <label for="lastName">Фамилия:</label>
+        <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required />
+      </div>
 
-  <!-- Кнопка для отправки формы -->
-  <button type="submit">Создать</button>
-</form>
+      <div class="form-group">
+        <label for="year">Год:</label>
+        <input type="number" id="year" th:field="*{year}" class="form-control" />
+      </div>
 
-<!-- Ссылка на список пользователей -->
-<a th:href="@{/users/list}">Назад к списку</a>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" th:field="*{email}" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Телефон:</label>
+        <input type="text" id="phone" th:field="*{phone}" class="form-control" />
+      </div>
+
+   <!--    <div class="form-group">
+        <label for="photo">Фото (URL или путь):</label>
+        <input type="text" id="photo" th:field="*{photo}" class="form-control" />
+      </div> -->
+
+       <div class="form-group">
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" th:field="*{password}" class="form-control" required />
+      </div>
+<!--
+      <div class="form-group">
+        <label for="isAdmin">Администратор:</label>
+        <input type="checkbox" id="isAdmin" th:field="*{isAdmin}" />
+      </div>
+
+      <div class="form-group">
+        <label for="roles">Роли (через запятую):</label>
+        <input type="text" id="roles" th:field="*{roles}" class="form-control" placeholder="ROLE_USER,ROLE_ADMIN" />
+      </div> 
+-->
+      
+      <!-- Кнопка отправки -->
+      <button type="submit" class="btn btn-primary">Создать</button>
+      <a th:href="@{/users/list}" class="btn btn-secondary ml-2">Назад к списку</a>
+    </form>
+  </div>
+
 </body>
 </html>

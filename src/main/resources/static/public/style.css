@@ -2,12 +2,18 @@ body {
   background-color: #7DF9FF; /* Голубой цвет, можно изменить на свой вкус */
   padding: 1;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
 .navbar-brand {
   background-color: #7DF9FF;
 
  }
  /* чтобы ширина и высота включали границы и отступы внутри элемента.*/
 .image-container {
+    overflow: hidden; 
     background: #7DF9FF;
     position: relative;
     height: 150px;
@@ -20,6 +26,10 @@ body {
       /* Добавлено для корректного позиционирования .image-text */
    /* object-fit: cover; /* Заполнить контейнер, сохраняя соотношение сторон */
    /*  overflow: hidden;  Обрезать изображение, если оно не вмещается в контейнер */
+}.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Изображение будет покрывать весь контейнер, сохраняя пропорции */
 }
 img {
      width: 100%; /* Растягиваем изображение на всю ширину контейнера */
@@ -48,3 +58,8 @@ img {
 }
 
 
+
+.container {
+  margin-bottom: 30px;
+  margin-top: 30px;  /* Можно увеличить или уменьшить по вкусу */
+}

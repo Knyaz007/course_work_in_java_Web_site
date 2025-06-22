@@ -1,15 +1,21 @@
 package com.example.laba.models;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-
+import java.util.List;
 //import javax.persistence.*;
 
 import java.util.Objects;
-
-
-import java.util.Objects;
-
+ 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "User")
 public class User {
@@ -49,6 +55,16 @@ public class User {
     @Column(name = "Roles", nullable = true)
     private String roles;  // Поле для хранения ролей, например, "ROLE_USER,ROLE_ADMIN"
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Passport passport;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private InternationalPassport internationalPassport;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<BankCard> bankCards;
+
+    
     public Long getUserId() {
         return userId;
     }

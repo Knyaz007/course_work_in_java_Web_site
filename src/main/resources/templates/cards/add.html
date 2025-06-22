@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить банковскую карту</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Добавить банковскую карту</h2>
+
+    <!-- Форма для добавления новой карты -->
+    <form th:action="@{/cards/add}" method="post" th:object="${card}">
+        <div class="form-group">
+            <label for="cardNumber">Номер карты:</label>
+            <input type="text" id="cardNumber" th:field="*{cardNumber}" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="cardHolder">Имя владельца:</label>
+            <input type="text" id="cardHolder" th:field="*{cardHolder}" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="bankName">Название банка:</label>
+            <input type="text" id="bankName" th:field="*{bankName}" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="expiryDate">Срок действия (MM/YYYY):</label>
+            <input type="month" id="expiryDate" th:field="*{expiryDate}" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-success">Добавить карту</button>
+    </form>
+
+    <a href="/cards/list" class="btn btn-secondary mt-3">Назад к списку карт</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

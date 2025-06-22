@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Список бронирований</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      padding: 30px;
+    }
+
+    .card {
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      color: #007bff;
+    }
+
+    .card-text span {
+      font-weight: bold;
+    }
+
+    .actions a {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none;"></iframe>
+  <iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none;"></iframe>
+<div class="container">
+  <h2 class="mb-4">Список бронирований</h2>
+
+ <div class="row">
+  <div class="col-md-6 mb-4" th:each="booking : ${bookings}">
+    
+      <div class="card shadow-sm h-100">
+  <div class="card-body">
+    <h5 class="card-title">
+      Бронирование № <span th:text="${booking.bookingId}"></span>
+    </h5>
+
+    <!-- Поезд -->
+    <div th:if="${booking.trainTicket != null}">
+      <p>
+        <strong>Поезд:</strong> 
+        <span th:text="${booking.trainTicket.departureCity}"></span> → 
+        <span th:text="${booking.trainTicket.destinationCity}"></span>
+      </p>
+      <p><strong>Номер поезда:</strong> <span th:text="${booking.trainTicket.trainNumber}"></span></p>
+    </div>
+
+    <!-- Вагон -->
+    <div th:if="${booking.carriageInfo != null}">
+      <p><strong>Вагон:</strong> <span th:text="${booking.carriageInfo.type}"></span></p>
+      <p><strong>Свободных мест в вагоне:</strong> <span th:text="${booking.carriageInfo.availableSeats}"></span></p>
+      <p><strong>Цена за место:</strong> <span th:text="${booking.carriageInfo.minPrice}"></span></p>
+    </div>
+
+    <!-- Тур -->
+    <p class="card-text" th:if="${booking.tour != null}">
+      <span>Тур Id:</span> <span th:text="${booking.tour.tourId}"></span><br/>
+      <span>Тур Name:</span> <span th:text="${booking.tour.name}"></span>
+    </p>
+
+    <!-- Пользователь -->
+    <p class="card-text" th:if="${booking.user != null}">
+      <span>Пользователь: Имя</span> <span th:text="${booking.user.name}"></span>
+    </p>
+      <!-- Пользователь -->
+    <p class="card-text" th:if="${booking.user != null}">
+      <span>Пользователь: Почта</span> <span th:text="${booking.user.email}"></span>
+    </p>
+
+    <!-- Рейс -->
+    <p class="card-text" th:if="${booking.flight != null}">
+      <span>Рейс:</span> <span th:text="${booking.flight.flightNumber}"></span>
+    </p>
+
+    <!-- Отель -->
+    <p class="card-text" th:if="${booking.hotel != null}">
+      <span>Отель:</span> <span th:text="${booking.hotel.name}"></span>
+    </p>
+
+    <!-- Список вагонов по билету -->
+    <div th:if="${booking.trainTicket != null and #lists.size(booking.trainTicket.carriages) > 0}">
+      <p><strong>Маршрут:</strong> 
+        <span th:text="${booking.trainTicket.departureCity}"></span> → 
+        <span th:text="${booking.trainTicket.destinationCity}"></span>
+      </p>
+      <h5>Вагоны:</h5>
+      <ul>
+        <li th:each="carriage : ${booking.trainTicket.carriages}">
+          Тип: <span th:text="${carriage.type}"></span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Экскурсия -->
+    <p class="card-text" th:if="${booking.excursion != null}">
+      <span>Экскурсия:</span> <span th:text="${booking.excursion.title}"></span>
+    </p>
+
+    <!-- Участники -->
+    <p class="card-text" th:if="${booking.participantsCount > 0}">
+      <span>Участники:</span> <span th:text="${booking.participantsCount}"></span>
+    </p>
+
+    <!-- Дата бронирования -->
+    <p class="card-text" th:if="${booking.bookingDate != null}">
+      <span>Дата:</span> <span th:text="${#temporals.format(booking.bookingDate, 'dd.MM.yyyy HH:mm')}"></span>
+    </p>
+
+    <!-- Подтверждение -->
+    <p class="card-text" th:if="${booking.confirmed != null}">
+      <span>Подтверждено:</span>
+      <span th:text="${booking.confirmed ? 'Да' : 'Нет'}"
+            th:classappend="${booking.confirmed} ? 'text-success' : 'text-danger'"></span>
+    </p>
+
+    <!-- Кнопки -->
+    <div class="actions mt-3">
+      <a th:href="@{'/bookings/details/' + ${booking.bookingId}}" class="btn btn-info btn-sm">Подробнее</a>
+      <!-- <a th:href="@{'/bookings/edit/' + ${booking.bookingId}}" 
+         th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-warning btn-sm">Редактировать</a> -->
+      <a th:href="@{'/bookings/delete/' + ${booking.bookingId}}" 
+         th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-danger btn-sm">Удалить</a>
+    </div>
+  </div>
+</div>
+
+    
+  </div>
+</div>
+
+</div>
+
+
+  <!-- Bootstrap JS (необязательно) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

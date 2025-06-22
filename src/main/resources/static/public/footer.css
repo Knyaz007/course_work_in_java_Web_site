@@ -6,10 +6,16 @@ footer {
 
 }
 .footer {
+  margin: 0;
   display: flex;
   flex-direction:row;
   justify-content: space-between;
   flex-wrap: wrap; /* Allow items to wrap to the next row if needed */
+  overflow: hidden; /* Скрывает возможные прокрутки */
+  min-height: auto; /* Гарантирует, что футер не зафиксирован */
+  box-sizing: border-box; /* Учитывает padding в ширине */
+   
+  
 }*/
 
 .column {

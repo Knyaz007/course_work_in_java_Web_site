@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование билета</title>
+    <style>
+        form {
+            max-width: 600px;
+            margin: auto;
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            font-family: sans-serif;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="checkbox"] {
+            margin-left: 5px;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Редактировать билет</h2>
+
+<form th:action="@{/tickets/edit}" th:object="${trainTicket}" method="post">
+    <input type="hidden" th:field="*{ticketId}" />
+
+    <label>Номер поезда:</label>
+    <input type="text" th:field="*{trainNumber}" required />
+
+    <label>Станция отправления:</label>
+    <input type="text" th:field="*{departureStation}" required />
+
+    <label>Город отправления:</label>
+    <input type="text" th:field="*{departureCity}" required />
+
+    <label>Станция прибытия:</label>
+    <input type="text" th:field="*{destinationStation}" required />
+
+    <label>Город прибытия:</label>
+    <input type="text" th:field="*{destinationCity}" required />
+
+    <label>Дата отправления:</label>
+    <input type="date" th:field="*{departureDate}" required />
+
+    <label>Время отправления:</label>
+    <input type="time" th:field="*{departureTime}" required />
+
+    <label>Дата прибытия:</label>
+    <input type="date" th:field="*{arrivalDate}" required />
+    <input type="date" th:field="*{arrivalDate}" 
+       th:value="${#temporals.format(trainTicket.arrivalDate, 'yyyy-MM-dd')}" required />
+
+
+    <label>Время прибытия:</label>
+    <input type="time" th:field="*{arrivalTime}" required />
+<!-- 
+    <label>Доступные места:</label>
+    <input type="number" th:field="*{availableSeats}" min="0" required /> -->
+
+    <label>Цена:</label>
+    <input type="number" th:field="*{price}" step="0.01" min="0" required />
+
+  <!--   <label>Время в пути (часы):</label>
+    <input type="number" th:field="*{travelTime}" step="0.01" min="0" />
+ -->
+    <label>
+        <input type="checkbox" th:field="*{wifiAvailability}" />
+        Wi-Fi доступен
+    </label>
+
+    <label>Доступные способы оплаты:</label>
+    <input type="text" th:field="*{availablePaymentMethods}" />
+
+    <label>Правила багажа:</label>
+    <input type="text" th:field="*{luggagePolicy}" />
+
+    <label>Правила перевозки животных:</label>
+    <input type="text" th:field="*{petPolicy}" />
+
+    <button type="submit">Сохранить изменения</button>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!-- resources/templates/Employee2/employeesList.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Employees List</title>
+</head>
+<body>
+<h1>Employees List</h1>
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Photo</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Iterate over employees in the model and display them in the table -->
+  <tr th:each="employee : ${employees}">
+    <td th:text="${employee.employeeId2}"></td>
+    <td th:text="${employee.name}"></td>
+    <td th:text="${employee.email}"></td>
+    <td>
+      <!-- Check if employee has a photo path, and display the photo if available -->
+      <img th:if="${employee.photoPath != null}" th:src="@{${employee.photoPath}}" alt="Employee Photo">
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

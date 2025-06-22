@@ -1,183 +1,105 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8" />
   <title>Список сотрудников</title>
-  <!-- Подключаем Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link th:href="@{/public/iframe.css}" rel="stylesheet" />
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
   <style>
     body {
       padding: 20px;
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    h2 {
+      color: #343a40;
       margin-bottom: 20px;
+      font-weight: 600;
     }
-
-    th, td {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
+    table {
+      background-color: #ffffff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-
     th {
-      background-color: #f2f2f2;
+      background-color: #343a40;
+      color: #ffffff;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
-
-    a {
-      text-decoration: none;
-      margin-right: 10px;
+    td, th {
+      vertical-align: middle !important;
+    }
+    .btn-info {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+    .btn-info:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+    .btn-warning {
+      background-color: #ffc107;
+      border-color: #ffc107;
+      color: #212529;
+    }
+    .btn-warning:hover {
+      background-color: #e0a800;
+      border-color: #d39e00;
+      color: #212529;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+    .btn-danger:hover {
+      background-color: #a71d2a;
+      border-color: #a71d2a;
+    }
+    a.btn {
+      margin-right: 5px;
+      margin-bottom: 3px;
+    }
+    .btn-success {
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Турфирма Paradise</a>
-  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Отели
-  </button>
+  <!-- Баннер и навигация -->
+  <iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none; display: block;"></iframe>
+  <iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block;"></iframe>
 
-  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Авиабилета
-  </button>
-
-  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
-    Туры
-  </button>
-
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Реестр бронирования
-  </button>
-
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Клиенты
-  </button>
-
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Работники
-  </button>
-
-
-
-
-
-
-
-
-
-  <!-- Кнопка "Обратная связь" -->
-  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
-    Обратная связь
-  </button>
-
-  <!-- Модальное окно "Обратная связь" -->
-  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Форма обратной связи -->
-          <!-- Форма обратной связи -->
-          <form th:action="@{/send-email}" method="post">
-            <div class="form-group">
-              <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
-            </div>
-            <div class="form-group">
-              <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
-            </div>
-            <div class="form-group">
-              <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Отправить</button>
-          </form>
-
-        </div>
-      </div>
-    </div>
+  <div class="container">
+    <h2>Список сотрудников</h2>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Имя</th>
+          <th>Фамилия</th>
+          <th>Email</th>
+          <th>Телефон</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="employee : ${employees}">
+          <td th:text="${employee.name}"></td>
+          <td th:text="${employee.lastName}"></td>
+          <td>
+            <a th:href="'mailto:' + ${employee.email}" th:text="${employee.email}"></a>
+          </td>
+          <td th:text="${employee.phone}"></td>
+          <td>
+            <a th:href="@{'/employees/details/' + ${employee.employeeId}}" class="btn btn-info btn-sm">Подробнее</a>
+            <a th:href="@{'/employees/edit/' + ${employee.employeeId}}" class="btn btn-warning btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
+            <a th:href="@{'/employees/delete/' + ${employee.employeeId}}" class="btn btn-danger btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Удалить</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <a th:href="@{'/employees/new'}" class="btn btn-success">Добавить нового сотрудника</a>
   </div>
-
-
-
-
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <!-- Conditionally render user information or registration/login buttons -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <span class="nav-link" th:text="${authentication.name}"></span>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
-      </li>
-      <!-- Logout button -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <a class="nav-link" href="/logout">Выход</a>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" href="/login">Вход</a>
-      </li>
-    </ul>
-  </div>
-
-
-</nav>
-<div class="container">
-  <h2>Список сотрудников</h2>
-  <table class="table table-bordered">
-    <thead class="thead-light">
-    <tr>
-      <th>ID сотрудника</th>
-      <th>Имя</th>
-      <th>Фамилия</th>
-      <th>Email</th>
-      <th>Телефон</th>
-      <th>Действия</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="employee : ${employees}">
-      <td th:text="${employee.employeeId}"></td>
-      <td th:text="${employee.name}"></td>
-      <td th:text="${employee.lastName}"></td>
-      <td th:text="${employee.email}"></td>
-      <td th:text="${employee.phone}"></td>
-      <td>
-        <a th:href="@{'/employees/details/' + ${employee.employeeId}}" class="btn btn-info btn-sm">Подробнее</a>
-<!--        <a th:href="@{'/employees/edit/' + ${employee.employeeId}}" class="btn btn-warning btn-sm">Редактировать</a>-->
-<!--        <a th:href="@{'/employees/delete/' + ${employee.employeeId}}" class="btn btn-danger btn-sm">Удалить</a>-->
-
-
-        <a th:href="@{'/employees/edit/' + ${employee.employeeId}}" class="btn btn-warning btn-sm"
-           th:if="${roles.contains('ROLE_ADMIN')}"
-            >Редактировать</a>
-
-        <a th:href="@{'/employees/delete/' + ${employee.employeeId}}" class="btn btn-danger btn-sm"
-           th:if="${roles.contains('ROLE_ADMIN')}"
-            >Удалить</a>
-
-
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <a th:href="@{'/employees/new'}" class="btn btn-success">Добавить нового сотрудника</a>
-</div>
 </body>
 </html>

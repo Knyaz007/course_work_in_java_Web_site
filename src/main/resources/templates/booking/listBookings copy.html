@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Список бронирований</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 30px;
+      background-color: #f8f9fa;
+    }
+
+    h2 {
+      color: #343a40;
+      margin-bottom: 30px;
+    }
+
+    .table thead th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .table td, .table th {
+      vertical-align: middle;
+    }
+
+    .btn + .btn {
+      margin-left: 5px;
+    }
+
+    iframe {
+      margin-bottom: 15px;
+      border: none;
+    }
+
+    .table-wrapper {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no"></iframe>
+  <iframe id="navbar-frame" th:src="@{/navbar}" width="100%"></iframe>
+
+  <div class="container-fluid">
+    <div class="table-wrapper">
+      <h2>Список бронирований</h2>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Тур</th>
+              <th>Пользователь</th>
+              <th>Рейс</th>
+              <th>Отель</th>
+              <th>Карета</th>
+              <th>Экскурсия</th>
+              <th>Участники</th>
+              <th>Дата</th>
+              <th>Подтверждено</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="booking : ${bookings}">
+              <td th:text="${booking.bookingId}"></td>
+              <td th:text="${booking.tourId}"></td>
+              <td th:text="${booking.userId}"></td>
+              <td th:text="${booking.flightId}"></td>
+              <td th:text="${booking.hotelId}"></td>
+              <td th:text="${booking.carriageInfoId}"></td>
+              <td th:text="${booking.excursionId}"></td>
+              <td th:text="${booking.participantsCount}"></td>
+              <td th:text="${#temporals.format(booking.bookingDate, 'dd.MM.yyyy HH:mm')}"></td>
+              <td>
+                <span th:text="${booking.confirmed ? 'Да' : 'Нет'}"
+                      th:classappend="${booking.confirmed} ? 'text-success' : 'text-danger'">
+                </span>
+              </td>
+              <td>
+                <a th:href="@{'/bookings/details/' + ${booking.bookingId}}" class="btn btn-sm btn-info">Подробнее</a>
+                <a th:href="@{'/bookings/edit/' + ${booking.bookingId}}" 
+                   th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-sm btn-warning">Редактировать</a>
+                <a th:href="@{'/bookings/delete/' + ${booking.bookingId}}" 
+                   th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-sm btn-danger">Удалить</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional: Bootstrap JS (if needed) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/public/js/scripts.js"></script>
+</body>
+</html>

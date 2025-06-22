@@ -1,30 +1,30 @@
 package com.example.laba.models;
 
-
 import com.example.laba.controllers.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
+    private final AuthenticationSuccessHandler successHandler;
 
-
-
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    public SecurityConfig(CustomUserDetailsService userDetailsService, AuthenticationSuccessHandler successHandler) {
+        this.userDetailsService = userDetailsService;
+        this.successHandler = successHandler;
     }
 
     @Bean
@@ -32,31 +32,40 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // AuthenticationManager нужен, чтобы вручную настроить userDetailsService и passwordEncoder
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/css/**", "/images/**", "/static/**", "/public/**", "/uploads/**").permitAll()
+                .requestMatchers(
+                    "/login", "/", "/send-email", "/footer", "/banner", "/navbar", "/feedback",
+                    "/employees/**", "/tours/**", "/users/**", "/flights/**", "/excursions/details/**",
+                    "/register", "/tour/details/**", "/hotels/**", "/tickets/**"
+                ).permitAll()
+                .requestMatchers("/students/delete/**", "/students/update/**", "/departments/new","/excursions/edit/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/perform_login")
+                .usernameParameter("email") //метод  getLoggedInUser надо теперь изменить 
+                .passwordParameter("password")
+                .successHandler(successHandler)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/")
+                .permitAll()
+            )
+            // Отключаем защиту от кликов (для iframe, если нужно)
+            .headers(headers -> headers.frameOptions().disable());
 
-                .authorizeRequests(authorize -> authorize
-                        .requestMatchers("/css/**","/public/**").permitAll()
-//                         Разрешение доступа ко всем URL
-                        .requestMatchers("http://localhost:8080/**","/public/**","/login","/","/send-email",  "/employees/**","/tours/**","/users/**","/flights/**","/employees/**","/register" ,"/tour/details/{tourId}","/hotels/new").permitAll() // Allow access to the main page without authentication
-                        .requestMatchers("/students/delete/**", "/students/update/**", "/departments/new").hasAnyRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .formLogin(login -> login
-
-//                        .usernameParameter ("email") // Имя параметра для электронной почты
-//                        .passwordParameter("password") // Имя параметра для пароля
-//                        .defaultSuccessUrl("/").permitAll()
-
-                       //  .loginPage("/login") //Можно использовать для перенаправления на свою страницу  login  в  RegistrationController
-
-
-                        .defaultSuccessUrl("/").permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/")
-                );
         return http.build();
     }
 }

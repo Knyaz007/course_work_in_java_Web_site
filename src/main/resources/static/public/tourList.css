@@ -1,0 +1,303 @@
+/*  1 */
+  /* Центрируем все элементы внутри контейнера */
+  #search-form-container, .sfl-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* height: 100vh; */
+  }
+
+  /* Центрируем форму и элементы внутри нее */
+  #search-form-container1, .sf-field-container, .guests-input-container {
+    
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Убедимся, что кнопки и input в форме не растягиваются на всю ширину */
+  #search-form input, #search-form button, .guests-input-container input {
+     
+    width: auto;
+    
+  }
+
+  /* Стили для input и кнопок */
+  #tourInput, #arrivalDate, #guestsInput {
+    padding: 8px;
+    font-size: 16px;
+  }
+
+/*    !1 */
+ 
+
+
+
+
+/* Container styles */
+body #search-form-container {
+
+width: 55%;
+position: relative;
+/*   max-width: 400px; */
+margin: 20px;
+margin-left: auto;
+margin-right: auto;
+
+}
+.sf-controls-wrapper
+{
+padding: 10px;
+justify-content: center;
+display:flex;
+flex-flow: row nowrap;
+}
+
+
+
+/*
+#arrivalDate, #arrivalDate2 { #foo {} будет оформлять единственный элемент, объявленный с атрибутом id="foo"
+z-index: 1;
+border: none;
+/* width: 120px;  */
+/*   height: 40px;
+padding: 5px;
+box-sizing: border-box;
+}
+*/
+#arrivalDateInput {
+z-index: 2;
+border: none;
+width: 100px;
+padding: 5px;
+box-sizing: border-box;
+position: absolute;
+left: 130px;
+}
+
+
+
+.sf-field-label {
+ font-size: 14px;
+ font-weight: bold;
+ margin-bottom: 5px;
+ color: #333;
+}
+
+.sf-field-container sf-arrival-date-container input{
+height: 30px;
+width: 120px;
+}
+.sf-submit-button-container{
+padding: 10px;
+}
+.sf-field-container input{
+
+}
+.guests-input-container input {
+                        height: 30px;
+                        overflow: visible;
+                        width: 120px;
+                        display: flex;
+
+                    }
+.guests-input-container button {
+                                                height: 30px;
+                                                overflow: visible;
+                                                width: 60px;
+                                                display: flex;
+
+                                            }
+.guests-input-container-button{
+display:flex;
+}
+
+
+
+
+
+
+
+
+
+button {
+  margin: 5px;
+}
+
+
+.container{
+display: block;
+}
+.hotel-section {
+position: relative;
+margin-bottom: 20px;
+border: 1px solid #ccc;
+padding: 10px;
+cursor: pointer;
+}
+.hotel-section section {
+display: flex;
+}
+
+
+
+
+
+.sfl-container {
+background-color: #eaeef2;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+border-radius: 8px;
+overflow: hidden;
+}
+
+.sf-wrapper {
+
+}
+
+/* Title and top blocks styles */
+.sf-title-container {
+font-size: 20px;
+font-weight: bold;
+margin-bottom: 10px;
+}
+
+.sf-top-block-1,
+.sf-top-block-2 {
+font-size: 14px;
+color: #888;
+margin-bottom: 10px;
+}
+
+
+
+/* Label styles */
+.sf-field-label {
+font-size: 14px;
+font-weight: bold;
+margin-bottom: 5px;
+color: #333;
+}
+
+/* Input styles */
+.sfl-date-control,
+.sfl-nights,
+.sfl-adults,
+.sfl-promo-code-input,
+.sfl-guests-input {
+width: 60%;
+padding: 10px;
+border: 1px solid #ddd;
+border-radius: 4px;
+box-sizing: border-box;
+}
+
+/* Calendar button styles */
+.sf-calendar-button {
+width: 30px;
+height: 30px;
+background-color: #4CAF50;
+color: #fff;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+}
+
+/* Button styles */
+.sfl-submit-button {
+width: 100%;
+padding: 15px;
+background-color: #3498db;
+color: #fff;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+font-size: 16px;
+margin-top: 10px;
+}
+
+/* Additional styles for compact view button */
+.sfl-submit-button.compact-view-button {
+background-color: #e74c3c;
+}
+
+/* Promo code info styles */
+.sf-promo-code-info {
+font-size: 12px;
+color: #888;
+}
+
+/* Backlink styles */
+.sf-backlink-container {
+margin-top: 20px;
+text-align: center;
+font-size: 14px;
+}
+
+.sf-backlink-container a {
+color: #3498db;
+text-decoration: none;
+}
+
+.sf-backlink-container a:hover {
+text-decoration: underline;
+}
+
+/* Стили для стрелок */
+.slick-prev,
+.slick-next {
+font-size: 24px;
+color: white;
+background: rgba(0, 0, 0, 0.5);
+border: none;
+border-radius: 50%;
+width: 40px;
+height: 40px;
+line-height: 40px;
+text-align: center;
+cursor: pointer;
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+z-index: 1;
+display: none;
+}
+
+.slick-prev:hover,
+.slick-next:hover {
+background: rgba(0, 0, 0, 0.8);
+}
+
+.slick-prev {
+left: 10px;
+}
+
+.slick-next {
+right: 10px;
+}
+
+
+
+
+
+
+/* Поле вода поиска */
+.input-with-datalist {
+position: relative;
+width: 100%;
+}
+
+.input-with-datalist input {
+width: calc(100% - 20px); /* Ширина поля минус ширина скроллбара */
+/*padding-right: 20px; /* Правый отступ для кнопки */
+box-sizing: border-box; /* Учитываем padding в общей ширине */
+}
+
+
+
+
+
+
+
+
+
+ 

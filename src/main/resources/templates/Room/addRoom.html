@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Добавить / Редактировать комнату</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    #hotel-image {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 8px;
+    }
+    .hotel-photo {
+      width: 100px;
+      height: 75px;
+      object-fit: cover;
+      margin: 5px;
+      border-radius: 4px;
+    }
+    .form-section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-5">
+  <h2 class="mb-4">Добавить комнату</h2>
+
+  <form th:action="@{'/rooms/add'}" th:object="${room}" method="post" enctype="multipart/form-data">
+    <div class="card p-4 shadow-sm">
+
+      <!-- Описание комнаты -->
+      <div class="form-group form-section">
+        <label for="description">Описание</label>
+        <input type="text" th:field="*{description}" class="form-control" id="description" placeholder="Введите описание комнаты" required>
+      </div>
+
+      <!-- Цена -->
+      <div class="form-group form-section">
+        <label for="price">Цена</label>
+        <input type="text" th:field="*{price}" class="form-control" id="price" placeholder="Введите цену" required>
+      </div>
+
+      <!-- Скрытое поле с ID отеля -->
+      <input type="hidden" name="id" th:value="${hotels.id}">
+
+      <!-- Информация об отеле -->
+      <div class="form-section">
+        <h4>Информация об отеле</h4>
+        <h5 th:text="${hotels.city}"></h5>
+        <p id="hotel-name"></p>
+        <p id="hotel-address"></p>
+        <img id="hotel-image" src="" alt="Фото отеля" class="img-thumbnail">
+        <div id="hotel-photos" class="d-flex flex-wrap"></div>
+      </div>
+
+       <!-- Цена за питание -->
+    <!--   <div class="form-group form-section">
+        <label for="mealPrice">Цена за питание</label>
+        <input type="number" step="0.01" th:field="*{mealPrice}" class="form-control" id="mealPrice" placeholder="Введите цену питания">
+      </div> -->
+
+      <!-- Загрузка фотографий комнаты -->
+      <div class="form-group form-section">
+        <label for="photos">Фотографии комнаты</label>
+        <input type="file" name="photos23" class="form-control-file" id="photos" multiple>
+      </div>
+
+      <!-- Кнопка сохранения -->
+      <button type="submit" class="btn btn-primary">Сохранить</button>
+    </div>
+  </form>
+</div>
+
+<!-- Скрипт для отображения информации об отеле -->
+<script>
+  function displayHotelInfo() {
+    const selectedHotel = document.getElementById("hotel");
+    const selectedOption = selectedHotel.options[selectedHotel.selectedIndex];
+    
+    if (!selectedOption) return;
+
+    const hotelName = selectedOption.getAttribute("data-name");
+    const hotelAddress = selectedOption.getAttribute("data-address");
+    const hotelPhotos = selectedOption.getAttribute("data-photos")?.split(",") || [];
+    const imageUrl = selectedOption.getAttribute("data-image");
+
+    document.getElementById("hotel-name").innerText = hotelName;
+    document.getElementById("hotel-address").innerText = hotelAddress;
+    document.getElementById("hotel-image").src = imageUrl;
+
+    const photoContainer = document.getElementById("hotel-photos");
+    photoContainer.innerHTML = "";
+
+    hotelPhotos.forEach(path => {
+      const img = document.createElement("img");
+      img.src = path.trim();
+      img.alt = "Фото отеля";
+      img.classList.add("hotel-photo");
+      photoContainer.appendChild(img);
+    });
+
+    const hotelId = selectedOption.value;
+    const hiddenId = document.getElementById("selectedHotelId");
+    if (hiddenId) hiddenId.value = hotelId;
+  }
+</script>
+</body>
+</html>

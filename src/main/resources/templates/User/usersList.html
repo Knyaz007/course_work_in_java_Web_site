@@ -1,180 +1,128 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <!-- Заголовок, стили и мета-теги -->
+  <meta charset="UTF-8">
   <title>Список пользователей</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <style>
     body {
       padding: 20px;
+      background-color: #f8f9fa; /* Light background for a modern look */
     }
-
-    table {
+    .container-fluid { /* Use container-fluid for full width content */
+      max-width: 1200px; /* Limit width for better readability on large screens */
+      margin: 0 auto;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+      text-align: center; /* Center align table content */
+    }
+    .table thead th {
+      background-color: #007bff; /* Primary color for table header */
+      color: white;
+      border-color: #007bff;
+    }
+    .table-hover tbody tr:hover {
+      background-color: #e2f0ff; /* Light blue on hover */
+    }
+    .action-buttons a {
+      margin: 0 3px; /* Slightly adjust margin for buttons */
+    }
+    .card {
+      margin-top: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for the card */
+      border: none;
+    }
+    .card-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid #dee2e6;
+      padding: 1.25rem 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #343a40;
+    }
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+    .btn-info {
+      background-color: #17a2b8;
+      border-color: #17a2b8;
+    }
+    .btn-warning {
+      background-color: #ffc107;
+      border-color: #ffc107;
+      color: #212529; /* Ensure good contrast for warning button text */
+    }
+    .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+    /* Style for embedded iframes */
+    #banner-frame, #navbar-frame, #footer-frame {
+      display: block;
       width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
+      border: none;
+      /* Consider setting a min-height if the content in iframes is dynamic */
+      min-height: 50px; /* Example min-height, adjust as needed */
     }
-
-    th, td {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
-    a {
-      text-decoration: none;
-      margin-right: 10px;
+    #footer-frame {
+      margin-top: 40px; /* Keep consistent margin */
     }
   </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Турфирма Paradise</a>
-  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Отели
-  </button>
 
-  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Авиабилета
-  </button>
+  <iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no"></iframe>
+  <iframe id="navbar-frame" th:src="@{/navbar}" width="100%"></iframe>
 
-  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
-    Туры
-  </button>
-
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Реестр бронирования
-  </button>
-
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Клиенты
-  </button>
-
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Работники
-  </button>
-
-
-
-
-
-
-
-
-
-  <!-- Кнопка "Обратная связь" -->
-  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
-    Обратная связь
-  </button>
-
-  <!-- Модальное окно "Обратная связь" -->
-  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-users mr-2"></i>Список пользователей</span> <a th:href="@{/users/new}" class="btn btn-success">
+          <i class="fas fa-plus-circle mr-1"></i>Добавить пользователя
+        </a>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+              <tr>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="user : ${users}">
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td class="action-buttons">
+                  <a th:href="@{/users/details/{userId}(userId=${user.userId})}" class="btn btn-info btn-sm" title="Подробнее">
+                    <i class="fas fa-eye"></i> </a>
+                  <a th:href="@{/users/edit/{userId}(userId=${user.userId})}"
+                     th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-warning btn-sm" title="Редактировать">
+                    <i class="fas fa-edit"></i> </a>
+                  <a th:href="@{/users/delete/{userId}(userId=${user.userId})}"
+                     th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-danger btn-sm" title="Удалить">
+                    <i class="fas fa-trash-alt"></i> </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="modal-body">
-          <!-- Форма обратной связи -->
-          <!-- Форма обратной связи -->
-          <form th:action="@{/send-email}" method="post">
-            <div class="form-group">
-              <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
-            </div>
-            <div class="form-group">
-              <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
-            </div>
-            <div class="form-group">
-              <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Отправить</button>
-          </form>
-
+        <div th:if="${#lists.isEmpty(users)}" class="alert alert-info text-center mt-3" role="alert">
+          Пользователи не найдены. Добавьте нового пользователя, чтобы начать.
         </div>
       </div>
     </div>
   </div>
 
+  <iframe id="footer-frame" th:src="@{/footer}" width="100%"></iframe>
 
-
-
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <!-- Conditionally render user information or registration/login buttons -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <span class="nav-link" th:text="${authentication.name}"></span>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
-      </li>
-      <!-- Logout button -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <a class="nav-link" href="/logout">Выход</a>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" href="/login">Вход</a>
-      </li>
-    </ul>
-  </div>
-
-
-</nav>
-<!-- Заголовок страницы -->
-<h2>Список пользователей</h2>
-
-<!-- Таблица с пользователями -->
-<table>
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Имя</th>
-    <th>Фамилия</th>
-    <!-- Добавьте другие поля пользователя по необходимости -->
-    <th>Действия</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="user : ${users}">
-    <td th:text="${user.userId}"></td>
-    <td th:text="${user.name}"></td>
-    <td th:text="${user.lastName}"></td>
-    <!-- Добавьте другие поля пользователя по необходимости -->
-    <td>
-      <!-- Ссылки на детали, редактирование и удаление пользователя -->
-      <a th:href="@{/users/details/{userId}(userId=${user.userId})}" class="btn btn-info btn-sm">Подробнее</a>
-
-<!--      <a th:href="@{/users/edit/{userId}(userId=${user.userId})}">Редактировать</a>-->
-<!--      |-->
-<!--      <a th:href="@{/users/delete/{userId}(userId=${user.userId})}">Удалить</a>-->
-
-      <a th:href="@{/users/edit/{userId}(userId=${user.userId})}" th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-warning btn-sm"
-      >Редактировать</a>
-
-      <a  th:href="@{/users/delete/{userId}(userId=${user.userId})}" th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-danger btn-sm"
-      >Удалить</a>
-
-
-    </td>
-  </tr>
-  </tbody>
-</table>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script th:src="@{/public/js/scripts.js}"></script>
 </body>
 </html>

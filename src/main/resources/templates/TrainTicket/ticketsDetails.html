@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о билете</title>
+    <link th:href="@{/public/iframe.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+<body>
+
+<!-- Вставка баннера и навигационной панели -->
+<iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none; display: block;"></iframe>
+<iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block; height: 10px;"></iframe>
+<style>
+  .card-body.fs-5 {
+    background: linear-gradient(135deg, #fff8e1, #fff3c4);
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(255, 193, 7, 0.3);
+  }
+</style>
+<div class="container mt-5">
+  <h1 class="mb-4 text-center fw-bold text-primary">Информация о билете</h1>
+
+  <div class="card shadow-sm mb-5">
+    <div class="card-body fs-5">
+      <p><strong>Поезд №:</strong> <span th:text="${ticket.trainNumber}">123</span></p>
+      <p><strong>Маршрут:</strong>
+        <span th:text="${ticket.departureStation}">Станция А</span> →
+        <span th:text="${ticket.destinationStation}">Станция Б</span>
+      </p>
+      <p><strong>Дата и время отправления:</strong>
+        <span th:text="${#temporals.format(ticket.departureDate, 'dd.MM.yyyy')}">01.01.2024</span>,
+        <span th:text="${ticket.departureTime}">10:00</span>
+      </p>
+      <p><strong>Дата и время прибытия:</strong>
+        <span th:text="${#temporals.format(ticket.arrivalDate, 'dd.MM.yyyy')}">01.01.2024</span>,
+        <span th:text="${ticket.arrivalTime}">18:00</span>
+      </p>
+      <p><strong>Цена:</strong> <span th:text="${ticket.price + ' ₽'}">1500 ₽</span></p>
+    </div>
+  </div>
+
+  <h2 class="mb-3 fw-semibold text-secondary">Информация о вагонах</h2>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle text-center">
+      <thead class="table-light">
+        <tr>
+          <th>Тип вагона</th>
+          <th>Свободные места</th>
+          <th>Минимальная цена</th>
+          <th>Тип места</th>
+          <th>Класс билета</th>
+          <th>Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="carriage : ${carriages}">
+          <td th:text="${carriage.type}">Купе</td>
+          <td th:text="${carriage.availableSeats}">30</td>
+          <td th:text="${carriage.minPrice + ' ₽'}">1200 ₽</td>
+          <td th:text="${carriage.seatType}">Нижнее</td>
+          <td th:text="${carriage.ticketClass}">2-й</td>
+          <td>
+            <div th:if="${roles.contains('ROLE_ADMIN') or roles.contains('ROLE_USER')}">
+              <form th:action="@{/tickets/bookingTickets}" method="post" class="d-inline">
+                <input type="hidden" name="carriageInfoId" th:value="${carriage.carriageInfoId}" />
+                <input type="hidden" name="ticketTrain" th:value="${ticket.ticketId}" />
+                <button type="submit" class="btn btn-success btn-sm px-3">Забронировать</button>
+              </form>
+            </div>
+            <div th:if="${!(roles.contains('ROLE_ADMIN') or roles.contains('ROLE_USER'))}">
+              <form th:action="@{/login}" method="get" class="d-inline">
+                <input type="hidden" name="redirect" th:value="${currentUrl}" />
+                <button type="submit" class="btn btn-outline-primary btn-sm px-3">Войти для бронирования</button>
+              </form>
+            </div>
+            <div th:if="${successMessage}" class="alert alert-success mt-2 py-1 px-2 small">
+              <p class="mb-0" th:text="${successMessage}"></p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <a href="/tickets" class="btn btn-secondary mt-4 d-inline-flex align-items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
+    </svg>
+    Назад к списку билетов
+  </a>
+</div>
+
+<a th:if="${roles.contains('ROLE_ADMIN')}" th:href="@{'/carriages/add?ticketId=' + ${ticket.ticketId}}" class="btn btn-primary mb-3">
+    Добавить вагон
+</a>
+
+<!-- Подвал -->
+<iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block; margin-top: 40px;"></iframe>
+
+<!-- JS скрипты -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/public/js/scripts.js"></script>
+
+</body>
+</html>

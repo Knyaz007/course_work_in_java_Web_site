@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список рейсов</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link th:href="@{/public/flights.css}" rel="stylesheet"/>
+    <link th:href="@{/public/iframe.css}" rel="stylesheet"/>
+    <style> 
+        #footer-frame {
+            height: 200px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <!-- Вставка баннера и навбара -->
+    <iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none; display: block;"></iframe>
+    <iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block;"></iframe>
+
+    <!-- Поисковая форма -->
+    <form action="/flights/search" method="get" class="border p-4 rounded bg-light">
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="origin">Откуда</label>
+                <input type="text" class="form-control" id="origin" name="origin" placeholder="Введите город отправления">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="destination">Куда</label>
+                <input type="text" class="form-control" id="destination" name="destination" placeholder="Введите город назначения">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="departureDate">Дата отправления</label>
+                <input type="date" class="form-control" id="departureDate" name="departureDate">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="arrivalDate">Дата возвращения</label>
+                <input type="date" class="form-control" id="arrivalDate" name="arrivalDate">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Найти рейс</button>
+    </form>
+
+    <!-- Фрагмент: результаты поиска рейсов туда-обратно -->
+   <div th:fragment="roundTripResults (roundTrips)">
+    <div class="mt-5" th:if="${#lists.size(roundTrips) > 0}">
+        <h2 class="mb-4">Результаты поиска</h2>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>Рейс туда</th>
+                    <th>Рейс обратно</th>
+                    <th>Общая цена</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="trip : ${roundTrips}">
+                    <td>
+                        <strong th:text="'Город отправления: ' + ${trip.departure.departure}"></strong><br>
+                        <span th:text="'Город назначения: ' + ${trip.departure.destination}"></span><br>
+                        <span th:text="'Дата: ' + ${trip.departure.departureDate} + ' ' + ${trip.departure.departureTime}"></span><br>
+                        <span th:text="'Цена: ' + ${trip.departure.price} + ' ₽'"></span>
+                    </td>
+                    <td>
+                        <strong th:text="'Город отправления: ' + ${trip.returnFlight.departure}"></strong><br>
+                        <span th:text="'Город назначения: ' + ${trip.returnFlight.destination}"></span><br>
+                        <span th:text="'Дата: ' + ${trip.returnFlight.departureDate} + ' ' + ${trip.returnFlight.departureTime}"></span><br>
+                        <span th:text="'Цена: ' + ${trip.returnFlight.price} + ' ₽'"></span>
+                    </td>
+                    <td th:text="${trip.totalPrice} + ' ₽'"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Форма бронирования для первого (или единственного) рейса -->
+        <form   th:action="@{/flights/bookingRoundFlight}" method="post">
+            <!-- Передаём ID первого найденного рейса туда-обратно -->
+            <input type="hidden" name="departureFlightId" th:value="${roundTrips[0].departure.flightId}" />
+            <input type="hidden" name="returnFlightId" th:value="${roundTrips[0].returnFlight.flightId}" />
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="btn btn-success">Забронировать</button>
+        </form>
+    </div>
+</div>
+
+
+    <div class="mt-4" th:if="${roles.contains('ROLE_ADMIN')}">
+        <a th:href="@{'/flights/new'}" class="btn btn-success">Добавить новый рейс</a>
+        <a th:href="@{'/flights/import'}" class="btn btn-secondary ml-2">Импортировать рейсы</a>
+    </div>
+
+    <!-- Подвал -->
+    <iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block; margin-top: 40px;"></iframe>
+
+</body>
+</html>

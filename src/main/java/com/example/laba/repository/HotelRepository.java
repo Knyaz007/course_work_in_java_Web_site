@@ -1,6 +1,7 @@
 package com.example.laba.repository;
 
 
+import com.example.laba.models.Flight;
 import com.example.laba.models.Hotel;
 
 import com.example.laba.models.Room;
@@ -14,4 +15,12 @@ public interface HotelRepository extends CrudRepository<Hotel, Long> {
 
     @Query("SELECT h.photos FROM Hotel h WHERE h.id = :hotelId")
     List<String> getHotelPhotosById(Long hotelId);
+
+   /*  для поиска  */
+    List<Hotel> findByCityContainingIgnoreCaseOrCountryContainingIgnoreCase(String city, String country);
+
+    List<Hotel> findByCityIgnoreCaseOrCountryIgnoreCase(String city, String country);
+    List<Hotel> findAll();
+
+
 }

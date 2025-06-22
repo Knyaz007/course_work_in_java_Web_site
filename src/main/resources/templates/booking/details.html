@@ -1,21 +1,182 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
   <meta charset="UTF-8"/>
   <title>Подробности о бронировании</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      padding: 30px;
+    }
+
+    .card {
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .card-title {
+      color: #007bff;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      color: #343a40;
+      border-bottom: 1px solid #dee2e6;
+      padding-bottom: 5px;
+    }
+
+    .info-item {
+      margin-bottom: 10px;
+    }
+
+    .info-item strong {
+      display: inline-block;
+      width: 220px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-<h2>Подробности о бронировании</h2>
-<p>
-  ID бронирования: <span th:text="${booking.bookingId}"></span><br>
-  ID тура: <span th:text="${booking.tourId}"></span><br>
-  ID пользователя: <span th:text="${booking.userId}"></span><br>
-  ID авиабилета: <span th:text="${booking.flightId}"></span><br>
-  ID отеля: <span th:text="${booking.hotelId}"></span><br>
-  Количество участников: <span th:text="${booking.participantsCount}"></span><br>
-  Дата бронирования: <span th:text="${#temporals.format(booking.bookingDate, 'dd.MM.yyyy')}"></span><br>
-  Подтверждено: <span th:text="${booking.isConfirmed}"></span>
-</p>
-<a th:href="@{'/bookings/list'}">Назад к списку бронирований</a>
+
+<div class="container">
+  <div class="card p-4">
+    <div class="card-body">
+      <h4 class="card-title">Подробности о бронировании</h4>
+      <div class="info-item">
+  <strong>Подтверждено:</strong>
+  <span th:if="${booking.isConfirmed}">
+    ✅ Подтверждено
+  </span>
+  <span th:unless="${booking.isConfirmed}">
+    ❌ Не подтверждено
+  </span>
+</div>
+
+      <div class="info-item">
+        <strong>ID бронирования:</strong> <span th:text="${booking.bookingId}"></span>
+      </div>
+
+      <div class="info-item">
+        <strong>Количество участников:</strong> <span th:text="${booking.participantsCount}"></span>
+      </div>
+
+      <div class="info-item">
+        <strong>Дата бронирования:</strong> <span th:text="${#temporals.format(booking.bookingDate, 'dd.MM.yyyy HH:mm')}"></span>
+      </div>
+
+      <div class="info-item">
+        <strong>Подтверждено:</strong> <span th:text="${booking.isConfirmed ? 'Да' : 'Нет'}"></span>
+      </div>
+
+      <!-- Пользователь -->
+      <div th:if="${booking.user != null}">
+        <div class="section-title">Информация о пользователе</div>
+        <div class="info-item"><strong>Имя:</strong> <span th:text="${booking.user.name}"></span></div>
+        <div class="info-item"><strong>Email:</strong> <span th:text="${booking.user.email}"></span></div>
+        <div class="info-item"><strong>Телефон:</strong> <span th:text="${booking.user.phone}"></span></div>
+      </div>
+
+      <!-- Тур -->
+      <div th:if="${booking.tour != null}">
+        <div class="section-title">Информация о туре</div>
+        <div class="info-item"><strong>ID тура:</strong> <span th:text="${booking.tour.tourId}"></span></div>
+        <div class="info-item"><strong>Название:</strong> <span th:text="${booking.tour.name}"></span></div>
+        <div class="info-item"><strong>Описание:</strong> <span th:text="${booking.tour.description}"></span></div>
+        <div class="info-item"><strong>Цена:</strong> <span th:text="${booking.tour.price}"></span></div>
+      </div>
+
+      <!-- Авиабилет -->
+      <div th:if="${booking.flight != null}">
+        <div class="section-title">Информация об авиаперелёте</div>
+      <!--  <div class="info-item"><strong>ID авиабилета:</strong> <span th:text="${booking.flight.flightId}"></span></div>
+      --> <!--   <div class="info-item"><strong>Авиакомпания:</strong> <span th:text="${booking.flight.airline}"></span></div>
+    -->     <div class="info-item"><strong>Откуда:</strong> <span th:text="${booking.flight.departureAirport}"></span></div>
+        <div class="info-item"><strong>Куда:</strong> <span th:text="${booking.flight.arrivalAirport}"></span></div>
+        <div class="info-item"><strong>Дата вылета:</strong> <span th:text="${#temporals.format(booking.flight.departureTime, 'dd.MM.yyyy HH:mm')}"></span></div>
+        </div>
+
+      <!-- Отель -->
+      <div th:if="${booking.hotel != null}">
+        <div class="section-title">Информация об отеле</div>
+        <div class="info-item"><strong>ID отеля:</strong> <span th:text="${booking.hotel.id}"></span></div>
+       <div class="info-item"><strong>Название:</strong> <span th:text="${booking.hotel.name}"></span></div>
+         <div class="info-item"><strong>Город:</strong> <span th:text="${booking.hotel.city}"></span></div>
+       <div class="info-item">
+    <strong>Адрес:</strong>
+    <span th:text="${booking.hotel.country + ', ' + booking.hotel.region + ', ' + booking.hotel.city + ', ул. ' + booking.hotel.street + ', д. ' + booking.hotel.house}"></span>
+</div>
+</div>
+
+   <!-- Комната -->
+      <div th:if="${booking.room != null}">
+        <div class="section-title">Информация о комнате</div>
+        <div class="info-item"><strong>ID комнаты:</strong> <span th:text="${booking.room.id}"></span></div>
+        <div class="info-item"><strong>Описание:</strong> <span th:text="${booking.room.description}"></span></div>
+        <div class="info-item"><strong>Цена за ночь:</strong> <span th:text="${booking.room.price}"></span></div>
+      </div>
+
+      <!-- ЖД билет -->
+      <div th:if="${booking.trainTicket != null}">
+        <div class="section-title">Информация о железнодорожном билете</div>
+        <div class="info-item"><strong>ID билета:</strong> <span th:text="${booking.trainTicket.ticketId}"></span></div>
+        <div class="info-item"><strong>Поезд:</strong> <span th:text="${booking.trainTicket.trainNumber}"></span></div>
+        <div class="info-item"><strong>Маршрут:</strong> <span th:text="${booking.trainTicket.departureCity} + ' → ' + ${booking.trainTicket.destinationCity}"></span></div>
+        <div class="info-item"><strong>Дата отправления:</strong> <span th:text="${#temporals.format(booking.trainTicket.departureDate, 'dd.MM.yyyy')}"></span></div>
+      </div>
+
+   
+      <!-- Вагон -->
+      <div th:if="${booking.carriageInfo != null}">
+        <div class="section-title">Информация о вагоне</div>
+        <div class="info-item"><strong>ID вагона:</strong> <span th:text="${booking.carriageInfo.carriageInfoId}"></span></div>
+        <div class="info-item"><strong>Тип вагона:</strong> <span th:text="${booking.carriageInfo.type}"></span></div>
+        <div class="info-item"><strong>Свободных мест:</strong> <span th:text="${booking.carriageInfo.availableSeats}"></span></div>
+        <div class="info-item"><strong>Цена за место:</strong> <span th:text="${booking.carriageInfo.minPrice}"></span></div>
+      </div>
+
+      <!-- Экскурсия -->
+      <div th:if="${booking.excursion != null}">
+        <div class="section-title">Информация об экскурсии</div>
+        <div class="info-item"><strong>ID экскурсии:</strong> <span th:text="${booking.excursion.excursionId}"></span></div>
+        <div class="info-item"><strong>Название:</strong> <span th:text="${booking.excursion.title}"></span></div>
+         <div class="info-item"><strong>Дата:</strong> <span th:text="${#temporals.format(booking.excursion.dateTime, 'dd.MM.yyyy')}"></span></div>
+       <!--   <div class="info-item"><strong>Гид:</strong> <span th:text="${booking.excursion.guideName}"></span></div>
+    -->   </div>
+
+
+
+      <!-- Кнопка Подтвердить -->
+   <div th:if="${!booking.confirmed}">
+  <form  th:if="${roles.contains('ROLE_ADMIN')}" th:action="@{/bookings/confirm/{id}(id=${booking.bookingId})}" method="post">
+    <button type="submit" class="btn btn-success mt-3">Подтвердить бронирование</button>
+  </form>
+</div>
+<!-- Кнопка удалить бронь -->
+<form  th:action="@{/bookings/delete/{id}(id=${booking.bookingId})}" method="get" 
+      onsubmit="return confirm('Вы уверены, что хотите удалить это бронирование?');">
+  <button type="submit" class="btn btn-danger mt-3">Удалить бронь</button>
+</form>
+
+      <!-- Ссылка Назад -->
+   <a th:if="${roles.contains('ROLE_USER')}"  th:href="@{'/users/edit/' + ${booking.user.userId}}"  class="btn btn-outline-primary back-link"  >← Назад к списку бронирований</a>
+   
+      <a th:if="${roles.contains('ROLE_ADMIN')}"  class="btn btn-outline-primary back-link" th:href="@{/bookings/list}">← Назад к списку бронирований</a>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

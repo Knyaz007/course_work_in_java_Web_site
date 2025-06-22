@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+  <!-- Подключаем Bootstrap CSS -->
+  <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <!-- <button onclick="window.open('/hotels/list', '_blank');" type="button" class="btn btn-link">
+    Отели
+  </button> -->
+  <button onclick="top.location.href='/hotels/list'" type="button" class="btn btn-link"  >
+    Отели
+  </button>
+  <!-- <button onclick="top.location.href='/rooms/listRooms'" type="button" class="btn btn-link"  >
+    Комнаты
+  </button> -->
+ <!--  <button onclick="top.location.href='/things/listThings'" type="button" class="btn btn-link"  >
+    вещи комнат
+  </button> -->
+  <button onclick="top.location.href='/flights/list'" type="button" class="btn btn-link" >
+    Авиабилеты
+  </button>
+  
+  <button onclick="top.location.href='/tickets/list'" type="button" class="btn btn-link" >
+    Ж/д Билеты
+  </button>
+
+  <button onclick="top.location.href='/excursions/list'" type="button" class="btn btn-link" >
+    Экскурсии
+  </button>
+
+  <button onclick="top.location.href='/tours/list'" type="button" class="btn btn-link" >
+    Туры
+  </button>
+
+  <button onclick="top.location.href='/bookings/list'" type="button" class="btn btn-link"
+          th:if="${roles.contains('ROLE_ADMIN') or roles.contains('ROLE_MANAGER')}">
+    Реестр бронирования
+  </button>
+
+<!-- Кнопка "Клиенты" -->
+<button onclick="top.location.href='/users/list'" type="button" class="btn btn-link"
+        th:if="${roles.contains('ROLE_ADMIN') or roles.contains('ROLE_MANAGER')}">
+  Клиенты
+</button>
+
+<!-- Кнопка "Работники" -->
+<!-- <button onclick="top.location.href='/employees/list'" type="button" class="btn btn-link"
+        th:if="${roles.contains('ROLE_ADMIN')}">
+  Работники
+</button> -->
+
+
+  <!-- <button onclick="top.location.href='/employees/list'" type="button" class="btn btn-link"
+          th:if="${roles.contains('ROLE_ADMIN')}">
+    Финансовый учёт и отчётность
+  </button> -->
+
+  <!-- Кнопка "Обратная связь" -->
+  <button onclick="top.location.href='/feedback'" type="button" class="btn btn-link">
+    Обратная связь
+  </button>
+  
+  <!-- Модальное окно "Обратная связь" -->
+  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Форма обратной связи -->
+          <!-- Форма обратной связи -->
+          <form th:action="@{/send-email}" method="post">
+            <div class="form-group">
+              <label for="feedbackName">Ваше имя</label>
+              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
+            </div>
+            <div class="form-group">
+              <label for="feedbackEmail">Ваш Email</label>
+              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
+            </div>
+            <div class="form-group">
+              <label for="feedbackMessage">Сообщение</label>
+              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<style>
+  .nav-link {
+  cursor: pointer;
+}
+</style>
+
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <!-- Conditionally render user information or registration/login buttons -->
+      <!-- <li class="nav-item" th:if="${loggedIn}">
+        <a class="nav-link" onclick="top.location.href='/'" th:text="${authentication.name}"></a>
+      </li> -->
+      <li class="nav-item" th:if="${loggedIn}">
+        <a class="nav-link" th:href="@{'/users/edit/' + ${userId}}"  target="_top" th:text="${authentication.name}"></a>
+    </li>
+     <li class="nav-item" th:if="${loggedIn}">
+        <a class="nav-link" th:href="@{'/users/edit/' + ${userId}}"  target="_top" >Личный кабинет</a>
+    </li>
+     
+
+    
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" onclick="top.location.href='/register'"    data-toggle="modal">Регистрация</a>
+      </li>
+      <!-- Logout button -->
+      <li class="nav-item" th:if="${loggedIn}">
+        <a class="nav-link" onclick="top.location.href='/logout'"   >Выход</a>
+      </li>
+      <li class="nav-item" th:unless="${loggedIn}">
+        <a class="nav-link" onclick="top.location.href='/login'" >Вход</a>
+      </li>
+    </ul>
+  </div>
+
+
+</nav>
+</body>
+
+<!-- Подключаем jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!-- Подключаем Popper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+<!-- Подключаем Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

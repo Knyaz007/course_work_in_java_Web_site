@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Список экскурсий</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/public/iframe.css}" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+<!-- Banner & Navbar -->
+<iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none;"></iframe>
+<iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none;"></iframe>
+
+<div class="container mt-5">
+    <!-- Заголовок и кнопка "Добавить" -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary">Список экскурсий</h1>
+        <a th:href="@{'/excursions/new'}" th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success">
+            Добавить экскурсию
+        </a>
+    </div>
+
+    <!-- Форма поиска -->
+   <form th:action="@{/excursions/search}" method="get" class="card card-body shadow-sm mb-4">
+    <div class="row g-3 align-items-end">
+        <!--
+        <div class="col-md-4">
+            <label for="title" class="form-label">Название</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Поиск по названию" />
+        </div>
+        -->
+        <div class="col-md-4">
+            <label for="city" class="form-label">Город</label>
+            <input type="text" class="form-control" id="city" name="city" placeholder="Поиск по городу" />
+        </div>
+        <div class="col-md-3">
+            <label for="date" class="form-label">Дата</label>
+            <input type="date" class="form-control" id="date" name="date" />
+        </div>
+        <div class="col-md-1 text-end">
+            <button type="submit" class="btn btn-primary w-100">Поиск</button>
+        </div>
+    </div>
+</form>
+
+
+    <!-- Список экскурсий -->
+    <div th:each="exc : ${excursions}" class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${exc.title}">Название экскурсии</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+                
+                <strong>Город:</strong>
+                <span th:text="${exc.location}">Локация</span>
+            </h6>
+            <p class="card-text">
+                <strong>Дата и время:</strong>
+                <span th:text="${#temporals.format(exc.dateTime, 'dd.MM.yyyy HH:mm')}">Дата</span><br />
+                <strong>Цена:</strong>
+                <span th:text="${exc.price + ' ₽'}">Цена</span><br />
+                <strong>Описание:</strong>
+                <span th:text="${exc.description}">Описание</span><br />
+              <!--   <span th:if="${exc.tour != null}">
+                    <strong>Тур:</strong>
+                    <span th:text="${exc.tour.name}">Название тура</span>
+                </span> -->
+            </p>
+            <div class="mt-3">
+                <a th:href="@{/excursions/details/{id}(id=${exc.excursionId})}" 
+ 
+                   class="btn btn-outline-primary btn-sm me-1 mb-1">
+                    Детали
+                </a>
+                <a th:href="@{/excursions/edit/{id}(id=${exc.excursionId})}" 
+                   th:if="${roles.contains('ROLE_ADMIN')}" 
+                   class="btn btn-outline-warning btn-sm me-1 mb-1">
+                    Редактировать
+                </a>
+                <a th:href="@{/excursions/delete/{id}(id=${exc.excursionId})}" 
+                   th:if="${roles.contains('ROLE_ADMIN')}" 
+                   class="btn btn-outline-danger btn-sm mb-1">
+                    Удалить
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Подвал -->
+<iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block; margin-top: 40px;"></iframe>
+
+<!-- JS скрипты -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/public/js/scripts.js"></script>
+
+</body>
+</html>

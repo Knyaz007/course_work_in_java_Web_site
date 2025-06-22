@@ -4,6 +4,9 @@ import com.example.laba.models.User;
 import com.example.laba.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RegistrationController {
@@ -58,30 +62,48 @@ public class RegistrationController {
         return "registration/registration";
     }
 
-    @PostMapping("/register")
-    public String registerUser(User user) {
-        // Обработка регистрации пользователя
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        // Добавьте другие необходимые поля, например, email, phone, и т.д.
-
-        // Сохраняем пользователя в базе данных
-        userRepository.save(user);
-
-        return "redirect:/login";
+@PostMapping("/register")
+public String registerUser(User user, Model model) {
+    // Проверка на существование email
+    Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+    if (optionalUser.isPresent()) {
+        model.addAttribute("error", "Пользователь с таким email уже существует.");
+        return "registration/registration";
+    }
+    Optional<User> optionalUser2 = userRepository.findByPhone(user.getPhone());
+    // Проверка на существование номера телефона
+    if (optionalUser2.isPresent()) {
+        model.addAttribute("error", "Пользователь с таким номером телефона уже существует.");
+        return "registration/registration";
     }
 
-
-    @GetMapping("/login")
-    public String login(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        // Check if the user is already authenticated
-        if (authentication != null && authentication.isAuthenticated()) {
-            // User is already authenticated, redirect to the main page or a dashboard
-            return "redirect:/"; // Update the URL accordingly
-        }
-
-        // User is not authenticated, proceed with the login logic
-        return "login"; // return the name of your login page template
+    // Установка роли по умолчанию, если не задана
+    if (user.getRoles() == null || user.getRoles().isBlank()) {
+        user.setRoles("USER");
     }
+
+    // Шифруем пароль
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+    // Сохраняем пользователя в базу данных
+    userRepository.save(user);
+
+    return "redirect:/login";
+}
+
+
+  @GetMapping("/login")
+public String login(@RequestParam(value = "redirect", required = false) String redirect,
+                    Authentication authentication,
+                    Model model) {
+    if (authentication != null && authentication.isAuthenticated()) {
+        return "redirect:/"; // Уже авторизован
+    }
+    model.addAttribute("redirect", redirect); // передаём redirect в форму логина
+    return "login"; // шаблон login.html
+}
+
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         // Add any additional logout logic here

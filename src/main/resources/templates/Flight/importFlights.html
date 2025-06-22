@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Импорт рейсов</title>
+</head>
+<body>
+    <h1>Импорт рейсов из CSV</h1>
+
+    <form method="post" enctype="multipart/form-data" th:action="@{/flights/import}">
+        <input type="file" name="file" accept=".csv" required />
+        <button type="submit">Загрузить</button>
+    </form>
+
+    <div th:if="${message}">
+        <p th:text="${message}"></p>
+    </div>
+</body>
+</html>

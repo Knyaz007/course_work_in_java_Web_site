@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link th:href="@{/public/tourList.css}" rel="stylesheet" />
+  <link th:href="@{/public/iframe.css}" rel="stylesheet" />
+  <link th:href="@{/public/tourList.js}" rel="stylesheet" />
+  <title>Список туров</title>
+</head>
+<body>
+
+<iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none; display: block;"></iframe>
+<iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block;"></iframe>
+
+<div id="search-form-container">
+  <div class="sfl-container sfl-layout-default sfl-theme-16886-xroomhotel" data-version="1.5">
+    <div class="sf-wrapper">
+      <div class="sf-controls-wrapper">
+
+        <!-- Поиск по турам -->
+        <div id="search-form-container1">
+          <form id="search-form" th:action="@{/tours/search}" method="get">
+            <input type="text" id="tourInput" name="tour" placeholder="Введите тур или город">
+            <button type="submit">Искать</button>
+          </form>
+        </div>
+
+        <!-- Дата начала -->
+        <div class="sf-field-container sf-arrival-date-container">
+          <input type="date" id="arrivalDate">
+          <div class="sf-field-label sf-arrival-date-label">Дата начала</div>
+        </div>
+
+        <!-- Гости -->
+        <div class="guests-input-container">
+          <input type="text" class="sfl-guests-input" readonly id="guestsInput" value="Нужно на 2">
+          <div class="guests-input-container-button">
+            <button type="button" onclick="updateGuests(-1)">-</button>
+            <button type="button" onclick="updateGuests(1)">+</button>
+          </div>
+        </div>
+ 
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #search-form-container, .sfl-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #search-form-container1, .sf-field-container, .guests-input-container {
+    width: 100%;
+    text-align: center;
+  }
+
+  #search-form input, #search-form button, .guests-input-container input {
+    width: auto;
+  }
+
+  #tourInput, #arrivalDate, #guestsInput {
+    padding: 8px;
+    font-size: 16px;
+  }
+</style>
+
+<div class="container">
+  <h2 class="mb-4 text-center">Список Туров</h2>
+  <div class="d-flex flex-column">
+    <div class="card mb-3" th:each="tour : ${tours}">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <!-- Если будет картинка -->
+          <!-- <img th:src="${tour.imageUrl}" class="img-fluid rounded-start" alt="Изображение тура"> -->
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${tour.name}">Название тура</h5>
+            <p class="card-text">
+              <strong>Дата:</strong>
+              <span th:text="${#temporals.format(tour.startDate, 'dd.MM.yyyy')}"></span> –
+              <span th:text="${#temporals.format(tour.endDate, 'dd.MM.yyyy')}"></span>
+            </p>
+            <p class="card-text"><strong>Цена:</strong> <span th:text="${tour.price} + ' руб.'"></span></p>
+            <p class="card-text" th:text="${tour.description}">Описание</p>
+
+            <p class="card-text" th:if="${tour.hotel != null}">
+              <strong>Отель:</strong> <span th:text="${tour.hotel.name}">Название отеля</span>
+            </p>
+            <p class="card-text" th:if="${tour.room != null}">
+              <strong>Комната:</strong> <span th:text="${tour.room.type}">Тип комнаты</span>
+            </p>
+            <p class="card-text" th:if="${tour.flight != null}">
+              <strong>Авиаперелёт:</strong> <span th:text="${tour.flight.flightNumber}">Рейс</span>
+            </p>
+            <p class="card-text" th:if="${tour.trainTicket != null}">
+              <strong>Билет на поезд:</strong> <span th:text="${tour.trainTicket.trainNumber}">Поезд</span>
+            </p>
+            <p class="card-text" th:if="${tour.excursion != null}">
+              <strong>Экскурсия:</strong> <span th:text="${tour.excursion.name}">Название</span>
+            </p>
+
+          </div>
+          <div class="card-footer text-center">
+            <a th:href="@{'/tours/details/' + ${tour.tourId}}" class="btn btn-info btn-sm">Подробнее</a>
+            <a th:href="@{'/tours/edit/' + ${tour.tourId}}" class="btn btn-warning btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
+            <a th:href="@{'/tours/delete/' + ${tour.tourId}}" class="btn btn-danger btn-sm" th:if="${roles.contains('ROLE_ADMIN')}">Удалить</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a th:href="@{'/tours/new'}" th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый тур</a>
+  <a th:href="@{'/tours/custom'}" class="btn btn-primary mt-2">Создать собственный тур</a>
+</div>
+
+<iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block;"></iframe>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/public/js/scripts.js"></script>
+<script src="/public/js/tourList.js"></script>
+</body>
+</html>

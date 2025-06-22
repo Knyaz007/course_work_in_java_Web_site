@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Авиабилеты</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2>Дешёвые авиабилеты</h2>
+  <div th:if="${tickets != null}">
+    <div class="list-group">
+      <div class="list-group-item" th:each="ticket : ${tickets}">
+        <h5 th:text="'Из ' + ${ticket.origin} + ' в ' + ${ticket.destination}"></h5>
+        <p>
+          Цена: <span th:text="${ticket.price} + ' руб.'"></span><br>
+          Дата вылета: <span th:text="${ticket.departureAt}"></span><br>
+          Авиакомпания: <span th:text="${ticket.airline}"></span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Поиск билетов туда-обратно</title>
+    <style>
+        /* Основные стили и шрифты */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            margin: 40px auto;
+            max-width: 900px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        /* Форма поиска */
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        form input[type="text"],
+        form input[type="date"] {
+            flex: 1 1 200px;
+            margin: 10px 10px 10px 0;
+            padding: 12px 15px;
+            border: 1.8px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        form input[type="text"]:focus,
+        form input[type="date"]:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px #3498db;
+        }
+
+        form button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: auto;
+            transition: background-color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        form button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Результаты поиска */
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+
+        .ticket-pair {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .ticket-pair:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+
+        .ticket-info {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .ticket-info strong {
+            color: #2980b9;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin-top: 15px;
+        }
+
+        /* Сообщение при отсутствии билетов */
+        .no-tickets {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #888;
+            margin-top: 50px;
+            font-style: italic;
+        }
+        .selected-carriage {
+    background-color: #d4edda;
+    padding: 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+        /* Мобильная адаптация */
+        @media (max-width: 600px) {
+            form {
+                flex-direction: column;
+            }
+            form input[type="text"],
+            form input[type="date"] {
+                margin-right: 0;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+            form button {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Поиск билетов туда-обратно</h1>
+
+    <form method="get" action="/search">
+        <input type="text" name="origin" placeholder="Город отправления"
+               th:value="${param.origin}" required />
+        <input type="text" name="destination" placeholder="Город прибытия"
+               th:value="${param.destination}" required />
+        <input type="date" name="departureDate"
+               th:value="${param.departureDate}" required />
+        <input type="date" name="arrivalDate"
+               th:value="${param.arrivalDate}" />
+        <button type="submit">Поиск</button>
+    </form>
+
+    <!-- Отображение пар билетов туда-обратно -->
+    <div th:if="${roundTrips != null and #lists.size(roundTrips) > 0}">
+        <h2>Найдено пар билетов: <span th:text="${#lists.size(roundTrips)}"></span></h2>
+        <div th:each="pair : ${roundTrips}" class="ticket-pair">
+            <p class="ticket-info">
+                <strong>Туда:</strong> <span th:text="${pair.departureTicket.departureCity}"></span> →
+                <span th:text="${pair.departureTicket.destinationCity}"></span> |
+                Дата: <span th:text="${pair.departureTicket.departureDate}"></span>
+            </p>
+            <p class="ticket-info">
+                <strong>Обратно:</strong> <span th:text="${pair.returnTicket.departureCity}"></span> →
+                <span th:text="${pair.returnTicket.destinationCity}"></span> |
+                Дата: <span th:text="${pair.returnTicket.departureDate}"></span>
+            </p>
+            <hr/>
+
+            <!-- Вагончики туда -->
+<!-- Вагоны туда -->
+<h4>Вагоны туда:</h4>
+<div th:each="carriage : ${pair.departureTicket.carriages}"
+     th:with="depBtnId=${'depBtn_' + carriage.carriageInfoId}, depDivId=${'depDiv_' + carriage.carriageInfoId}">
+    <div th:id="${depDivId}">
+        <p>
+            Тип: <span th:text="${carriage.type}"></span> | 
+            Места: <span th:text="${carriage.availableSeats}"></span> | 
+            Цена: <span th:text="${carriage.minPrice}"></span>
+            <button type="button"
+                    th:id="${depBtnId}"
+                    th:onclick="'selectCarriage(' + ${pair.departureTicket.ticketId} + ',' + ${carriage.carriageInfoId} + ', true)'">
+                Выбрать
+            </button>
+        </p>
+    </div>
+</div>
+
+<!-- Вагоны обратно -->
+<h4>Вагоны обратно:</h4>
+<div th:each="carriage : ${pair.returnTicket.carriages}"
+     th:with="retBtnId=${'retBtn_' + carriage.carriageInfoId}, retDivId=${'retDiv_' + carriage.carriageInfoId}">
+    <div th:id="${retDivId}">
+        <p>
+            Тип: <span th:text="${carriage.type}"></span> | 
+            Места: <span th:text="${carriage.availableSeats}"></span> | 
+            Цена: <span th:text="${carriage.minPrice}"></span>
+            <button type="button"
+                    th:id="${retBtnId}"
+                    th:onclick="'selectCarriage(' + ${pair.returnTicket.ticketId} + ',' + ${carriage.carriageInfoId} + ', false)'">
+                Выбрать
+            </button>
+        </p>
+    </div>
+</div>
+ 
+
+<form id="bookingForm"
+     th:if="${roles.contains('ROLE_ADMIN') or roles.contains('ROLE_USER')}"
+      th:action="@{/tickets/bookingRoundTicket}" 
+      method="post" style="margin-top: 20px;">
+
+    <input type="hidden" id="departureTicketId" name="departureTicketId" />
+    <input type="hidden" id="returnTicketId" name="returnTicketId" />
+    <input type="hidden" id="departureCarriageId" name="departureCarriageIds" />
+    <input type="hidden" id="returnCarriageId" name="returnCarriageIds" />
+
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <button type="submit" class="btn btn-success" disabled id="submitBtn">Забронировать</button>
+</form>
+
+
+
+<!-- Скрипт -->
+<script>
+    let selectedDeparture = false;
+    let selectedReturn = false;
+
+    let prevDepDiv = null;
+    let prevRetDiv = null;
+
+    function selectCarriage(ticketId, carriageId, isDeparture) {
+        if (isDeparture) {
+            document.getElementById("departureTicketId").value = ticketId;
+            document.getElementById("departureCarriageId").value = carriageId;
+            selectedDeparture = true;
+
+            // Подсветка
+            if (prevDepDiv) prevDepDiv.classList.remove('selected-carriage');
+            const newDiv = document.getElementById("depDiv_" + carriageId);
+            newDiv.classList.add('selected-carriage');
+            prevDepDiv = newDiv;
+
+            // Скрытие кнопки
+            const btn = document.getElementById("depBtn_" + carriageId);
+            if (btn) btn.style.display = 'none';
+
+        } else {
+            document.getElementById("returnTicketId").value = ticketId;
+            document.getElementById("returnCarriageId").value = carriageId;
+            selectedReturn = true;
+
+            if (prevRetDiv) prevRetDiv.classList.remove('selected-carriage');
+            const newDiv = document.getElementById("retDiv_" + carriageId);
+            newDiv.classList.add('selected-carriage');
+            prevRetDiv = newDiv;
+
+            const btn = document.getElementById("retBtn_" + carriageId);
+            if (btn) btn.style.display = 'none';
+        }
+
+        if (selectedDeparture && selectedReturn) {
+            document.getElementById("submitBtn").disabled = false;
+        }
+    }
+</script>
+
+
+
+
+        </div>
+    </div>
+
+    <div th:if="${roundTrips == null or #lists.size(roundTrips) == 0}" class="no-tickets">
+        <p>Билеты не найдены.</p>
+    </div>
+
+  <!-- Подвал  оjs влияет-->
+ <iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block;"></iframe>
+
+  <!-- Подключаем Bootstrap JS (необходим для работы модальных окон и других компонентов) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Подключаем скрипт -->
+  <script src="/public/js/scripts.js"></script>
+
+</body>
+</html>

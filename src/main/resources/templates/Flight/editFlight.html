@@ -9,57 +9,34 @@
       font-family: Arial, sans-serif;
       margin: 20px;
     }
-
     h2 {
       color: #333;
     }
-
     form {
-      max-width: 400px;
+      max-width: 600px;
       margin: 20px 0;
     }
-
     label {
       display: block;
       margin-bottom: 10px;
     }
-
-    input {
+    input, select {
       width: 100%;
       padding: 8px;
       margin-bottom: 10px;
     }
-
     input[type="submit"] {
       background-color: #4caf50;
       color: white;
       cursor: pointer;
     }
-
     input[type="submit"]:hover {
       background-color: #45a049;
     }
-
     a {
       display: inline-block;
-      padding: 8px 16px;
+      margin-top: 10px;
       text-decoration: none;
-      background-color: #ddd;
-      color: #333;
-      border-radius: 4px;
-    }
-
-    a:hover {
-      background-color: #bbb;
-    }
-
-    /* Стили Thymeleaf */
-    .error {
-      color: red;
-    }
-
-    .info {
-      color: green;
     }
   </style>
 </head>
@@ -67,16 +44,84 @@
 <h2>Редактирование Рейса</h2>
 <form th:action="@{'/flights/edit'}" th:object="${flight}" method="post">
   <input type="hidden" th:field="*{flightId}"/>
-  <label>Номер Рейса: <input type="text" th:field="*{flightNumber}"/></label><br/>
-  <label>Отправление: <input type="text" th:field="*{departure}"/></label><br/>
-  <label>Пункт Назначения: <input type="text" th:field="*{destination}"/></label><br/>
-  <label>Дата и Время Отправления: <input type="text" th:field="*{departureDateTime}"/></label><br/>
+
+  <label>Номер Рейса:
+    <input type="text" th:field="*{flightNumber}"/>
+  </label>
+
+  <label>Город Отправления:
+    <input type="text" th:field="*{departure}"/>
+  </label>
+
+  <label>Аэропорт Отправления:
+    <input type="text" th:field="*{departureAirport}"/>
+  </label>
+
+  <label>Город Назначения:
+    <input type="text" th:field="*{destination}"/>
+  </label>
+
+  <label>Аэропорт Прибытия:
+    <input type="text" th:field="*{arrivalAirport}"/>
+  </label>
+
+  <label>Дата Отправления:
+    <input type="date" th:field="*{departureDate}"/>
+  </label>
+
+<!-- 
+  <input type="date" id="departureDate" name="departureDate"/>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  let date = /*[[${flight.departureDate}]]*/ '1970-01-01';
+  document.getElementById('departureDate').value = date;
+  /*]]>*/
+</script> -->
+
+  <label>Время Отправления:
+    <input type="time" th:field="*{departureTime}"/>
+  </label>
+
+  <label>Дата Прибытия:
+    <input type="date" th:field="*{arrivalDate}"/>
+  </label>
+
+  <label>Время Прибытия:
+    <input type="time" th:field="*{arrivalTime}"/>
+  </label>
+
+  <label>Доступные Места:
+    <input type="number" th:field="*{availableSeats}" min="0"/>
+  </label>
+
+  <label>Цена:
+    <input type="number" th:field="*{price}" step="0.01" min="0"/>
+  </label>
+
+  <label>Время Полета (часы):
+    <input type="number" th:field="*{flightTime}" step="0.1" min="0"/>
+  </label>
+
+  <label>Наличие Wi-Fi:
+    <select th:field="*{wifiAvailability}">
+      <option th:value="true">Да</option>
+      <option th:value="false">Нет</option>
+    </select>
+  </label>
+
+  <label>Методы Оплаты:
+    <input type="text" th:field="*{availablePaymentMethods}"/>
+  </label>
+
+  <label>Политика по Животным:
+    <input type="text" th:field="*{petPolicy}"/>
+  </label>
+
   <input type="submit" value="Сохранить" class="btn btn-success"/>
 </form>
-<a th:href="@{'/flights/list'}" style="text-decoration: none;">
-  <button style="background-color: #337ab7; color: #fff; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
-    Отмена
-  </button>
+
+<a th:href="@{'/flights/list'}">
+  <button class="btn btn-secondary">Отмена</button>
 </a>
 </body>
 </html>

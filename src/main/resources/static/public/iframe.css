@@ -1,0 +1,24 @@
+/* Общие стили для вставки страниц  */
+iframe {
+  margin: 0;
+  padding: 0;
+}
+iframe {
+  /* line-height: normal; */
+}
+iframe {
+  flex-shrink: 0;
+  /*  height: 10px; /* Или конкретную высоту */
+}
+iframe {
+  display: block;
+  height: 10px;
+}
+iframe {
+  overflow: hidden;
+   
+  top: 0;
+  left: 0;
+  width: 100%;
+   
+}

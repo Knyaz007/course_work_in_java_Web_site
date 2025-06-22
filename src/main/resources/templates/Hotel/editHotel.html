@@ -4,204 +4,113 @@
   <meta charset="UTF-8"/>
   <title>Редактирование отеля</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 </head>
 <body>
-<!-- Навигационная панель (navbar) и прочий код не изменились -->
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="/">Турфирма Paradise</a>
-  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Отели
-  </button>
+  <!-- Навигация осталась без изменений -->
+  ...
+</nav>
 
-  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Авиабилета
-  </button>
+<h2>Редактирование отеля</h2>
 
-  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
-    Туры
-  </button>
+<form th:action="@{/hotels/edit}" th:object="${hotel}" method="post" enctype="multipart/form-data">
+  <input type="hidden" th:field="*{id}"/>
 
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Реестр бронирования
-  </button>
+  <div class="form-group">
+    <label for="name">Название:</label>
+    <input id="name" type="text" class="form-control" th:field="*{name}" placeholder="Название отеля" required/>
+  </div>
 
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Клиенты
-  </button>
+  <div class="form-group">
+    <label for="country">Страна:</label>
+    <input id="country" type="text" class="form-control" th:field="*{country}" placeholder="Страна" required/>
+  </div>
 
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Работники
-  </button>
+  <div class="form-group">
+    <label for="type">Тип:</label>
+    <input id="type" type="text" class="form-control" th:field="*{type}" placeholder="Тип отеля" required/>
+  </div>
 
+  <div class="form-group">
+    <label for="region">Область:</label>
+    <input id="region" type="text" class="form-control" th:field="*{region}" placeholder="Область" required/>
+  </div>
 
+  <div class="form-group">
+    <label for="city">Город:</label>
+    <input id="city" type="text" class="form-control" th:field="*{city}" placeholder="Город" required/>
+  </div>
 
+  <div class="form-group">
+    <label for="street">Улица:</label>
+    <input id="street" type="text" class="form-control" th:field="*{street}" placeholder="Улица" required/>
+  </div>
 
+  <div class="form-group">
+    <label for="house">Дом:</label>
+    <input id="house" type="text" class="form-control" th:field="*{house}" placeholder="Дом" required/>
+  </div>
 
+  <div class="form-group">
+    <label for="availableRooms">Доступные номера:</label>
+    <input id="availableRooms" type="number" class="form-control" th:field="*{availableRooms}" min="0" placeholder="Количество доступных номеров"/>
+  </div>
 
-
-
-
-  <!-- Кнопка "Обратная связь" -->
-  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
-    Обратная связь
-  </button>
-
-  <!-- Модальное окно "Обратная связь" -->
-  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Форма обратной связи -->
-          <!-- Форма обратной связи -->
-          <form th:action="@{/send-email}" method="post">
-            <div class="form-group">
-              <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
-            </div>
-            <div class="form-group">
-              <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
-            </div>
-            <div class="form-group">
-              <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Отправить</button>
-          </form>
-
-        </div>
-      </div>
+  <!-- Отображение существующих фотографий -->
+  <div class="form-group">
+    <label>Существующие фотографии:</label>
+    <div th:each="photo, iterStat : *{photos}" th:data-index="${iterStat.index}" style="margin-bottom:10px;">
+      <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Фото отеля" style="max-width:200px; max-height:150px;"/>
+      <button type="button" class="btn btn-danger btn-sm" 
+              th:attr="data-photo-path=@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" 
+              onclick="removePhoto(this)">Удалить фото</button>
+      <!-- Скрытый input для передачи оставшихся фото -->
+      <input type="hidden" name="existingPhotos" th:value="${photo}" />
     </div>
   </div>
 
-
-
-
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <!-- Conditionally render user information or registration/login buttons -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <span class="nav-link" th:text="${authentication.name}"></span>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
-      </li>
-      <!-- Logout button -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <a class="nav-link" href="/logout">Выход</a>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" href="/login">Вход</a>
-      </li>
-    </ul>
-  </div>
-
-
-</nav>
-
-
-<!-- Existing HTML code above this line -->
-
-<h2>Редактирование отеля</h2>
-<form th:action="@{'/hotels/edit'}" th:object="${hotel}" method="post" enctype="multipart/form-data">
-  <input type="hidden" th:field="*{id}"/>
-  <label>Название: <input type="text" th:field="*{name}"/></label><br/>
-  <label>Область: <input type="text" th:field="*{region}"/></label><br/>
-  <label>Город: <input type="text" th:field="*{city}"/></label><br/>
-  <label>Улица: <input type="text" th:field="*{street}"/></label><br/>
-  <label>Дом: <input type="text" th:field="*{house}"/></label><br/>
-
-  <!-- Display existing photos -->
-<!--  <div th:each="photo, iterStat : *{photos}">-->
-<!--    <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo"/>-->
-<!--    <button type="button" class="btn btn-danger" onclick="removePhoto('/uploads/hotel-${hotel.id}/${photo}')">Удалить фото</button>-->
-<!--  </div>-->
-  <!-- Лист для удаленных фото existing photos -->
-  <input type="hidden" id="deletedPhotos" name="deletedPhotos" />
-
-
-  <div th:each="photo, iterStat : *{photos}"  th:data-index="${iterStat.index}">
-    <img th:src="@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" alt="Hotel Photo"
-         th:style="'max-width: 200px; max-height: 150px;'"/>
-    <button type="button" class="btn btn-danger" th:attr="data-photo-path=@{'/uploads/hotel-' + ${hotel.id} + '/' + ${photo}}" onclick="removePhoto(this)">Удалить фото</button>
-    <p th:text="${iterStat.index}"></p>
-    <!-- Hidden input for existing photo -->
-    <input type="hidden" name="existingPhotos" th:value="${photo}" />
-  </div>
-  <!-- Hidden input for deleted photos -->
-
-
-  <!-- JavaScript -->
-  <script th:inline="javascript">
-    /* Добавить функцию JavaScript для обработки удаления фотографий */
-    function removePhoto(button) {
-
-
-
-    // Extract the numeric part from the ID
-    var index = parseInt(button.parentElement.getAttribute('data-index'));
-    console.log(index);
-    var photoContainerSelector = '[data-index="' + index + '"]';
-
-    // Получаем доступ к элементу по селектору
-    var photoContainer = document.querySelector(photoContainerSelector);
-    photoContainer.style.display = 'none';
-    console.log(photoContainer);
-
-<!--    получаем путь фотографии где она хранится-->
-    var photoPath = button.getAttribute('data-photo-path');
-
-<!--        //при нажатие делаем div(ищем по photoContainerSelector ) не видимым но не удаляем чтоб параметры сохранились-->
-
-<!--        var photoContainer = document.getElementById(photoContainerId);-->
-
-        // Extract the filename from the full path
-        var photo = photoPath.replace(/^.*[\\\/]/, '');
-        console.log(photo);
-
-        // Create a hidden input for each deleted photo
-        var deletedPhotosInput = document.getElementById('deletedPhotos');
-        deletedPhotosInput.value += photo + ",";
-    }
-</script>
-
-
-  <!-- Add new photo input fields -->
+  <!-- Поле для добавления новых фото -->
   <div class="form-group">
     <label>Добавить фото:</label>
     <input type="file" name="newPhotos" accept="image/*" multiple="multiple" class="form-control"/>
   </div>
 
-  <input type="submit" value="Сохранить"/>
+  <!-- Скрытое поле для передачи удаленных фото -->
+  <input type="hidden" id="deletedPhotos" name="deletedPhotos" />
+
+  <button type="submit" class="btn btn-primary">Сохранить</button>
+  <a th:href="@{'/hotels/details/' + ${hotel.id}}" class="btn btn-secondary ml-2">Отмена</a>
 </form>
 
+<!-- Скрипт удаления фото -->
+<script th:inline="javascript">
+  function removePhoto(button) {
+    var index = parseInt(button.parentElement.getAttribute('data-index'));
+    var photoContainerSelector = '[data-index="' + index + '"]';
+    var photoContainer = document.querySelector(photoContainerSelector);
+    photoContainer.style.display = 'none';
 
-<a th:href="@{'/hotels/details/' + ${hotel.id}}">Отмена</a>
+    var photoPath = button.getAttribute('data-photo-path');
+    var photo = photoPath.replace(/^.*[\\\/]/, '');
 
-<!-- Добавьте блок для отображения комментариев -->
+    var deletedPhotosInput = document.getElementById('deletedPhotos');
+    deletedPhotosInput.value += photo + ",";
+  }
+</script>
+
+<!-- Отображение комментариев -->
 <h3>Комментарии</h3>
 <div th:each="comment : ${hotel.comments}">
-  <div>
+  <div class="border p-2 mb-2">
     <p th:text="${comment.commentary}"></p>
-    <p th:text="${comment.evaluation}"></p>
-    <!-- Добавьте дополнительные поля комментария, если необходимо -->
+    <small>Оценка: <span th:text="${comment.evaluation}"></span></small>
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

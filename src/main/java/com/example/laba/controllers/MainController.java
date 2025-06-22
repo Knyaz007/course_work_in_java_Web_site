@@ -1,6 +1,8 @@
 package com.example.laba.controllers;
 
 import com.example.laba.models.Tour;
+import com.example.laba.models.UserDetailsImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +29,43 @@ public class MainController {
     public String mainPage() {
         return "main"; // return the name of your main page template
     }
+
+    @GetMapping("/banner")
+    public String banner() {
+        return "banner";
+    }
+    @GetMapping("/navbar")
+public String navbar(Model model) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    
+    List<String> roles = authentication.getAuthorities()
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList());
+
+    model.addAttribute("roles", roles);
+    model.addAttribute("authentication", authentication);
+
+    boolean loggedIn = authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
+    model.addAttribute("loggedIn", loggedIn);
+
+
+   // Получаем ID пользователя, если он аутентифицирован
+    if (authentication.getPrincipal() instanceof UserDetailsImpl) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Long aas = userDetails.getId();
+        model.addAttribute("userId", userDetails.getId());  // Добавляем userId в модель
+    }
+
+    return "navbar";
+}
+
+
+    @GetMapping("/footer")
+    public String getFooter() {
+        return "footer"; // Название вашего шаблона без расширения
+    }
+
     @GetMapping("/")
     public String home(Model model) {
         List<Tour> tours = new ArrayList<>();

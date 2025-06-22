@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать экскурсию</title>
+</head>
+<body>
+<h1>Редактировать экскурсию</h1>
+
+<form th:action="@{/excursions/edit}" th:object="${excursion}" method="post">
+    <!-- Скрытое поле для передачи ID -->
+    <input type="hidden" th:field="*{excursionId}" />
+
+    <label>Название:</label><br/>
+    <input type="text" th:field="*{title}" required /><br/><br/>
+
+    <label>Место:</label><br/>
+    <input type="text" th:field="*{location}" /><br/><br/>
+
+    <label>Дата и время:</label><br/>
+    <input type="datetime-local" th:field="*{dateTime}" /><br/><br/>
+
+    <label>Цена:</label><br/>
+    <input type="number" step="0.01" th:field="*{price}" /><br/><br/>
+
+    <label>Описание:</label><br/>
+    <textarea th:field="*{description}"></textarea><br/><br/>
+
+    <!-- Если есть выбор туров -->
+ <!--    <div th:if="${#lists.size(tours) > 0}">
+        <label>Тур:</label><br/>
+        <select th:field="*{tour}">
+            <option th:each="tour : ${tours}" th:value="${tour}" th:text="${tour.name}"
+                    th:selected="${tour.id == excursion.tour?.id}">Выберите тур</option>
+        </select><br/><br/>
+    </div> -->
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<a href="/excursions/">Назад</a>
+</body>
+</html>

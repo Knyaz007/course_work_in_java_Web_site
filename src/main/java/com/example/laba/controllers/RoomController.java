@@ -1,9 +1,14 @@
 package com.example.laba.controllers;
 
+import com.example.laba.models.Booking;
 import com.example.laba.models.Hotel;
 import com.example.laba.models.Room;
+import com.example.laba.models.User;
 import com.example.laba.repository.HotelRepository;
 import com.example.laba.repository.RoomRepository;
+import com.example.laba.repository.UserRepository;
+import com.example.laba.repository.bookingRepository;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -13,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +26,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +52,7 @@ public class RoomController {
         model.addAttribute("room", new Room());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("authentication", authentication);
-        return "Room/room_form";
+        return "Room/addRoom";
     }
 
     @PostMapping("/add")
@@ -67,6 +76,56 @@ public class RoomController {
 //        return "redirect:/rooms/listRooms";
         return "redirect:/hotels/list";
     }
+
+      @Autowired
+    private UserRepository UserRepository;
+    // Замените этот метод на ваш способ получения текущего пользователя
+    private User getLoggedInUser(Principal principal) {
+        if (principal != null) {
+            return UserRepository.findByEmail(principal.getName()).orElse(null);
+        }
+        return null;
+    }
+
+    @Autowired
+    private bookingRepository bookingRepository;
+
+    @PostMapping("/bookRoom")
+public String bookRoom(@RequestParam Long roomId, @RequestParam Long hotelId, Principal principal, RedirectAttributes redirectAttributes ) {
+    // Получаем аутентифицированного пользователя
+    User loggedInUser = getLoggedInUser(principal);
+
+    if (loggedInUser != null) {
+        // Получаем объект Room по ID из репозитория
+        Optional<Room> roomOpt = roomRepository.findById(roomId);
+        if (roomOpt.isEmpty()) {
+            return "redirect:/error"; // Комната не найдена
+        }
+
+        Room room = roomOpt.get();
+
+        Optional<Hotel> HotelOpt = hotelRepository.findById(hotelId);
+        Hotel hotel = HotelOpt.get();
+
+        // Создаем объект Booking (предполагается, что есть сущность Booking для комнаты)
+        Booking booking = new Booking();
+        booking.setHotel(hotel);
+        booking.setRoom(room); // Устанавливаем комнату (нужен соответствующий сеттер в модели)
+        booking.setUser(loggedInUser);
+        booking.setBookingDate(LocalDateTime.now());
+        booking.setConfirmed(false); // По логике можно изменить
+
+        // Сохраняем бронирование (предполагается, что bookingRepository есть как поле контроллера)
+        bookingRepository.save(booking);
+        redirectAttributes.addFlashAttribute("successMessage", "Отель успешно забронирован!"); 
+       
+        return "redirect:/"; // Возврат на главную страницу
+    }
+
+    return "redirect:/login"; // Если пользователь не аутентифицирован
+}
+
+
     private void savePhotos(Hotel hotel, Room room, List<MultipartFile> photos) throws IOException {
         // Получаем ID отеля
         Long hotelId = hotel.getId();
@@ -223,24 +282,67 @@ public class RoomController {
         return text;
     }
 
-    @GetMapping("/edit/{id}")
-    public String showEditRoomForm(@PathVariable("id") Long id, Model model)  {
-        Optional<Room> room = roomRepository.findById(id);
+ @GetMapping("/edit/{id}")
+public String showEditRoomForm(@PathVariable("id") Long id, Model model) {
+    Optional<Room> room = roomRepository.findById(id);
 
-        model.addAttribute("room", room);
-        model.addAttribute("hotelRoom", room.get().getHotel());
-        model.addAttribute("hotels", hotelRepository.findAll());
-
-        return "Room/room_form_edit";
+    if (room.isEmpty()) {
+        // обработка случая, если комната не найдена
+        return "redirect:/error"; // или другая страница
     }
 
-    @PostMapping("/edit")
-    public String updateRoom(@ModelAttribute("room") Room room)  throws IOException{
-        //room.setId(id);
-        roomRepository.save(room);
-        // Перенаправление на метод для отображения списка комнат
-        return "redirect:/rooms/listRooms";
+    Hotel hotel = room.get().getHotel();
+
+    model.addAttribute("room", room.get());
+    model.addAttribute("hotelRoom", hotel); // сам отель комнаты
+
+    return "Room/editRoom"; // шаблон для редактирования
+}
+
+@PostMapping("/edit")
+public String updateRoom(@ModelAttribute("room") Room room,
+                         @RequestParam("hotelId") Long hotelId,
+                         @RequestParam(value = "photos", required = false) MultipartFile[] photos,
+                         @RequestParam(value = "existingPhotos", required = false) List<String> existingPhotos) throws IOException {
+
+    Hotel hotel = hotelRepository.findById(hotelId)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid hotel ID: " + hotelId));
+    room.setHotel(hotel);
+
+    List<String> finalPhotoList = new ArrayList<>();
+    
+    // добавляем старые пути
+    if (existingPhotos != null) {
+        finalPhotoList.addAll(existingPhotos);
     }
+
+    // сохраняем новые фото и добавляем их пути
+    if (photos != null) {
+        String uploadDir = "uploads/hotel-" + hotel.getId() + "/room-" + room.getId();
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        for (MultipartFile photo : photos) {
+            if (!photo.isEmpty()) {
+                String filename = photo.getOriginalFilename();
+                photo.transferTo(uploadPath.resolve(filename));
+                finalPhotoList.add(filename);
+            }
+        }
+    }
+
+    // сохраняем список всех (старых + новых) фото
+    room.setPhotos(finalPhotoList);
+
+    roomRepository.save(room);
+
+     return "redirect:/hotels/list";
+}
+
+
+
 
     @GetMapping("/delete/{id}")
     public String deleteRoom(@PathVariable("id") Long id) {

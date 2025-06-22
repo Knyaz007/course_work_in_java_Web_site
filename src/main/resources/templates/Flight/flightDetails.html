@@ -2,165 +2,127 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
-  <title th:text="${flight.flightNumber} + ' Детали'"></title>
+  <title th:text="|${flight.flightNumber} Детали|"></title>
+  <link th:href="@{/public/flights.css}" rel="stylesheet" />
+  <link th:href="@{/public/iframe.css}" rel="stylesheet" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     body {
+      background-color: #f8f9fa;
+    }
+
+    .card {
+      margin-top: 30px;
       padding: 20px;
-      font-family: Arial, sans-serif;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
     h2 {
       text-align: center;
+      margin-top: 30px;
       color: #007bff;
+      font-weight: bold;
     }
 
-    p {
-      font-size: 18px;
-      margin-bottom: 5px;
-    }
-
-    h3 {
-      color: #007bff;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
+    .flight-detail p {
+      font-size: 16px;
       margin-bottom: 10px;
     }
 
-    a {
-      display: block;
+    .comment-list {
       margin-top: 20px;
-      color: #28a745;
-      text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
+    .btn-back {
+      margin-top: 30px;
     }
 
-    .table {
-      margin-top: 20px;
+    .section-title {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 5px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-weight: bold;
+      font-size: 20px;
+      color: #007bff;
     }
   </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Турфирма Paradise</a>
-  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Отели
-  </button>
 
-  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Авиабилета
-  </button>
+  <iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none; display: block;"></iframe>
+  <iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block;"></iframe>
 
-  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
-    Туры
-  </button>
+  <div class="container">
+    <h2 th:text="|${flight.flightNumber} Детали|"></h2>
 
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Реестр бронирования
-  </button>
-
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Клиенты
-  </button>
-
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Работники
-  </button>
-
-
-
-
-
-
-
-
-
-  <!-- Кнопка "Обратная связь" -->
-  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
-    Обратная связь
-  </button>
-
-  <!-- Модальное окно "Обратная связь" -->
-  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Форма обратной связи -->
-          <!-- Форма обратной связи -->
-          <form th:action="@{/send-email}" method="post">
-            <div class="form-group">
-              <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
-            </div>
-            <div class="form-group">
-              <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
-            </div>
-            <div class="form-group">
-              <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Отправить</button>
-          </form>
-
-        </div>
+    <div class="card">
+      <div class="flight-detail">
+        <p><strong>Номер рейса:</strong> <span th:text="${flight.flightNumber}"></span></p>
+        <p><strong>Город отправления:</strong> <span th:text="${flight.departure}"></span></p>
+        <p><strong>Аэропорт отправления:</strong> <span th:text="${flight.departureAirport}"></span></p>
+        <p><strong>Город назначения:</strong> <span th:text="${flight.destination}"></span></p>
+        <p><strong>Аэропорт прибытия:</strong> <span th:text="${flight.arrivalAirport}"></span></p>
+        <p><strong>Дата отправления:</strong> <span th:text="${flight.departureDate}"></span></p>
+        <p><strong>Время отправления:</strong> <span th:text="${flight.departureTime}"></span></p>
+        <p><strong>Дата прибытия:</strong> <span th:text="${flight.arrivalDate}"></span></p>
+        <p><strong>Время прибытия:</strong> <span th:text="${flight.arrivalTime}"></span></p>
+        <p><strong>Время полета (ч):</strong> <span th:text="${flight.flightTime}"></span></p>
+        <p><strong>Доступные места:</strong> <span th:text="${flight.availableSeats}"></span></p>
+        <p><strong>Цена билета:</strong> <span th:text="${flight.price}"></span> ₽</p>
+        <p><strong>Наличие Wi-Fi:</strong> <span th:text="${flight.wifiAvailability} ? 'Да' : 'Нет'"></span></p>
+        <p><strong>Методы оплаты:</strong> <span th:text="${flight.availablePaymentMethods}"></span></p>
+        <p><strong>Политика по животным:</strong> <span th:text="${flight.petPolicy}"></span></p>
       </div>
+
+
+
+      <!-- Форма для бронирования тура -->
+<form  th:if="${roles.contains('ROLE_ADMIN') or roles.contains('ROLE_USER')}"  th:action="@{/flights/bookingFlight}" method="post">
+  <!-- Включите tourId как скрытое поле в форме -->
+  <input type="hidden" name="flightId" th:value="${flight.flightId}" />
+  <!-- Добавьте другие поля формы, если необходимо -->
+  <button type="submit" name="action" value="book" class="btn btn-success">Забронировать</button>
+</form>
+
+
+
+  <!-- Кнопки действий -->
+    <div class="btn-actions">
+      
+          <div th:if="${!(roles.contains('ROLE_ADMIN') or roles.contains('ROLE_USER'))}">
+                        <form th:action="@{/login}" method="get" class="d-inline">
+                            <input type="hidden" name="redirect" th:value="${currentUrl}" />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Войти для бронирования</button>
+                        </form>
+                    </div>
+
+      
+    </div>
+
+
+
+
+      <!-- <div class="section-title">Комментарии</div> -->
+      <ul class="list-group comment-list" th:if="${flight.comments}">
+        <li class="list-group-item" th:each="comment : ${flight.comments}" th:text="${comment.text}">Комментарий</li>
+     <!--  </ul>
+      <p th:if="${#lists.isEmpty(flight.comments)}" class="text-muted">Комментариев пока нет.</p> -->
+
+      <a th:href="@{/flights/list}" class="btn btn-secondary btn-back">Назад к списку</a>
     </div>
   </div>
 
 
+  <!-- Подвал  оjs влияет-->
+<iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block; margin-top: 40px;"></iframe>
+<!-- JS скрипты -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/public/js/scripts.js"></script>
 
-
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <!-- Conditionally render user information or registration/login buttons -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <span class="nav-link" th:text="${authentication.name}"></span>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
-      </li>
-      <!-- Logout button -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <a class="nav-link" href="/logout">Выход</a>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" href="/login">Вход</a>
-      </li>
-    </ul>
-  </div>
-
-
-</nav>
-
-<h2 th:text="${flight.flightNumber} + ' Детали'"></h2>
-<p>Номер рейса: <span th:text="${flight.flightNumber}"></span></p>
-<p>Пункт отправления: <span th:text="${flight.departure}"></span></p>
-<p>Пункт назначения: <span th:text="${flight.destination}"></span></p>
-<p>Дата и время отправления: <span th:text="${flight.departureDateTime}"></span></p>
-<a th:href="@{'/flights/list'}" class="btn btn-secondary">Назад к списку</a>
+  
 </body>
 </html>

@@ -1,38 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-  <meta charset="UTF-8">
-  <title>Новый Рейс</title>
-  <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <style>
+    <meta charset="UTF-8">
+    <title>Новый Рейс</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
             margin: 20px;
         }
-
         h2 {
             color: #333;
             border-bottom: 2px solid #333;
             padding-bottom: 5px;
         }
-
         form {
-            max-width: 600px;
+            max-width: 800px;
             margin: 20px auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
         label {
             display: block;
             margin: 10px 0 5px;
             color: #555;
         }
-
         input,
         textarea {
             width: 100%;
@@ -42,7 +37,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-
         button {
             background-color: #4caf50;
             color: #fff;
@@ -51,11 +45,9 @@
             border-radius: 4px;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #45a049;
         }
-
         .alert-danger {
             color: #721c24;
             background-color: #f8d7da;
@@ -68,141 +60,65 @@
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Турфирма Paradise</a>
-  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Отели
-  </button>
-
-  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Авиабилета
-  </button>
-
-  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
-    Туры
-  </button>
-
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Реестр бронирования
-  </button>
-
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Клиенты
-  </button>
-
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Работники
-  </button>
-
-
-
-
-
-
-
-
-
-  <!-- Кнопка "Обратная связь" -->
-  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
-    Обратная связь
-  </button>
-
-  <!-- Модальное окно "Обратная связь" -->
-  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Форма обратной связи -->
-          <!-- Форма обратной связи -->
-          <form th:action="@{/send-email}" method="post">
-            <div class="form-group">
-              <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
-            </div>
-            <div class="form-group">
-              <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
-            </div>
-            <div class="form-group">
-              <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Отправить</button>
-          </form>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <!-- Conditionally render user information or registration/login buttons -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <span class="nav-link" th:text="${authentication.name}"></span>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
-      </li>
-      <!-- Logout button -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <a class="nav-link" href="/logout">Выход</a>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" href="/login">Вход</a>
-      </li>
-    </ul>
-  </div>
-
-
-</nav>
-
 <h2>Новый Рейс</h2>
 
 <form th:action="@{'/flights/new'}" method="post" th:object="${flight}">
-  <!-- Валидационные сообщения -->
-  <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
-    <p th:each="error : ${#fields.errors('*')}" th:text="${error}"></p>
-  </div>
+    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+        <p th:each="error : ${#fields.errors('*')}" th:text="${error}"></p>
+    </div>
 
-  <!-- Поля формы -->
-  <label for="flightNumber">Номер Рейса:</label>
-  <input type="text" id="flightNumber" name="flightNumber" th:field="*{flightNumber}" />
+    <label for="flightNumber">Номер рейса:</label>
+    <input type="text" id="flightNumber" th:field="*{flightNumber}" />
 
-  <label for="departure">Место Отправления:</label>
-  <input type="text" id="departure" name="departure" th:field="*{departure}" />
+    <label for="departure">Город отправления:</label>
+    <input type="text" id="departure" th:field="*{departure}" />
 
-  <label for="destination">Место Назначения:</label>
-  <input type="text" id="destination" name="destination" th:field="*{destination}" />
+    <label for="departureAirport">Аэропорт отправления:</label>
+    <input type="text" id="departureAirport" th:field="*{departureAirport}" />
 
-  <label for="departureDateTime">Дата и Время Отправления:</label>
-  <input type="text" id="departureDateTime" name="departureDateTime" th:field="*{departureDateTime}" />
+    <label for="destination">Город назначения:</label>
+    <input type="text" id="destination" th:field="*{destination}" />
 
-  <!-- Кнопка отправки формы -->
-  <button type="submit">Сохранить</button>
+    <label for="arrivalAirport">Аэропорт прибытия:</label>
+    <input type="text" id="arrivalAirport" th:field="*{arrivalAirport}" />
+
+    <label for="departureDate">Дата отправления:</label>
+    <input type="date" id="departureDate" th:field="*{departureDate}" />
+
+    <label for="departureTime">Время отправления:</label>
+    <input type="time" id="departureTime" th:field="*{departureTime}" />
+
+    <label for="arrivalDate">Дата прибытия:</label>
+    <input type="date" id="arrivalDate" th:field="*{arrivalDate}" />
+
+    <label for="arrivalTime">Время прибытия:</label>
+    <input type="time" id="arrivalTime" th:field="*{arrivalTime}" />
+
+    <label for="availableSeats">Доступные места:</label>
+    <input type="number" id="availableSeats" th:field="*{availableSeats}" min="0" />
+
+    <label for="price">Стоимость:</label>
+    <input type="number" step="0.01" id="price" th:field="*{price}" />
+
+    <label for="flightTime">Время полета (в часах):</label>
+    <input type="number" step="0.1" id="flightTime" th:field="*{flightTime}" />
+
+    <label for="wifiAvailability">Wi-Fi на борту:</label>
+    <input type="checkbox" id="wifiAvailability" th:field="*{wifiAvailability}" />
+
+    <label for="availablePaymentMethods">Методы оплаты:</label>
+    <input type="text" id="availablePaymentMethods" th:field="*{availablePaymentMethods}" placeholder="Visa, PayPal и т.д." />
+
+    <label for="petPolicy">Политика перевозки животных:</label>
+    <textarea id="petPolicy" th:field="*{petPolicy}" rows="3"></textarea>
+
+    <button type="submit">Сохранить</button>
 </form>
+
 <a th:href="@{'/flights/list'}" style="text-decoration: none;">
-  <button style="background-color: #337ab7; color: #fff; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
-    Отмена
-  </button>
+    <button style="background-color: #337ab7; color: #fff; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
+        Отмена
+    </button>
 </a>
 </body>
-
 </html>

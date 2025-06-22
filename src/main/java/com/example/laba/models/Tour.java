@@ -1,15 +1,23 @@
 package com.example.laba.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-//import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "Tour")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tour {
 
     @Id
@@ -20,110 +28,64 @@ public class Tour {
     @Column(name = "Name", nullable = false)
     private String name;
 
-    @Column(name = "Description", columnDefinition = "TEXT") // Указываем новый тип столбца
+    @Column(name = "Description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "Price")
     private double price;
 
-
     @Column(name = "StartDate")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @Column(name = "EndDate")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-
-//    @Column(name = "StartDate")
-//    @Temporal(TemporalType.DATE)
-//    private Date startDate;
-//
-//    @Column(name = "EndDate")
-//    @Temporal(TemporalType.DATE)
-//    private Date endDate;
 
     @Column(name = "AvailableSpots")
     private int availableSpots;
 
+    @ManyToOne
+    @JoinColumn(name = "HotelId")
+    private Hotel hotel;
+
+    @ManyToOne
+    @JoinColumn(name = "RoomId")
+    private Room room;
+
+    @ManyToOne
+    @JoinColumn(name = "TrainTicketId")
+    private TrainTicket trainTicket;
+
+    @Column(name = "is_archived", nullable = false)
+    private Boolean isArchived = false;
+
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public Long getTourId() {
-        return tourId;
-    }
+   @ManyToMany
+@JoinTable(
+    name = "Tour_Excursion",
+    joinColumns = @JoinColumn(name = "TourId"),
+    inverseJoinColumns = @JoinColumn(name = "ExcursionId")
+)
+private List<Excursion> excursions = new ArrayList<>();
 
-    public void setTourId(Long tourId) {
-        this.tourId = tourId;
-    }
 
-    public String getName() {
-        return name;
-    }
+     @ManyToMany
+    @JoinTable(
+        name = "Tour_Flight",
+        joinColumns = @JoinColumn(name = "TourId"),
+        inverseJoinColumns = @JoinColumn(name = "FlightId")
+    )
+    private List<Flight> flights = new ArrayList<>(); // МОЖЕТ БЫТЬ ПУСТОЙ
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @ManyToMany
+@JoinTable(
+    name = "Tour_TrainTicket",
+    joinColumns = @JoinColumn(name = "TourId"),
+    inverseJoinColumns = @JoinColumn(name = "Ticket_Id")
+)
+private List<TrainTicket> trainTickets = new ArrayList<>();
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public LocalDate getStartDate() {
-        return this.startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return this.endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-//    public Date getStartDate() {
-//        return startDate;
-//    }
-//
-//    public void setStartDate(Date startDate) {
-//        this.startDate = startDate;
-//    }
-//
-//    public Date getEndDate() {
-//        return endDate;
-//    }
-//
-//    public void setEndDate(Date endDate) {
-//        this.endDate = endDate;
-//    }
-
-    public int getAvailableSpots() {
-        return availableSpots;
-    }
-
-    public void setAvailableSpots(int availableSpots) {
-        this.availableSpots = availableSpots;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
 }

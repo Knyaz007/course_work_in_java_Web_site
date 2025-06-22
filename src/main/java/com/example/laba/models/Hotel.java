@@ -1,10 +1,11 @@
 package com.example.laba.models;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-//import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "Hotel")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Hotel {
 
     @Id
@@ -22,155 +27,82 @@ public class Hotel {
     @Column(name = "Name", nullable = false)
     private String name;
 
-//    @Column(name = "Address", nullable = false)
-//    private String address;
-
     @Column(name = "Сountry", nullable = false)
     private String country;
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
+    @Column(name = "Type", nullable = false)
+    private String type;
 
     @Column(name = "Region", nullable = false)
     private String region;
+
     @Column(name = "City", nullable = false)
     private String city;
+
     @Column(name = "Street", nullable = false)
     private String street;
-
 
     @Column(name = "House", nullable = false)
     private String house;
 
-    //@Column(name = "Distance_to_the_center")
     @Column(name = "AvailableRooms")
     private Integer availableRooms;
 
+    // Список комментариев
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE) //связанные комментарии также будут удалены.
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Comment> comments = new ArrayList<>();
-    public Double getAverageCommentEvaluation() {
-        if (comments == null || comments.isEmpty()) {
-            return 0.0;
-        }
 
-        int sum = 0;
-        for (Comment comment : comments) {
-            sum += comment.getEvaluation();
-        }
-
-        return (double) sum / comments.size();
-    }
-
-    @ElementCollection //    @ElementCollection не имеет каскадной операции удаления.
+    // Список фотографий
+    @ElementCollection
     @CollectionTable(name = "HotelPhotos", joinColumns = @JoinColumn(name = "hotel_id"))
     @Column(name = "photo_path", nullable = true)
     private List<String> photos = new ArrayList<>();
+
+    // Список предоставляемых услуг
+    @ManyToMany
+    @JoinTable(
+        name = "hotel_service",
+        joinColumns = @JoinColumn(name = "hotel_id"),
+        inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private List<Service> services = new ArrayList<>();
+
+    // Удобный метод для добавления фотографии
     public void addPhoto(String photoPath) {
         this.photos.add(photoPath);
     }
 
+    // Удаление фотографии по пути
     public void removePhoto(String photoPath) {
         Iterator<String> iterator = this.photos.iterator();
-
         while (iterator.hasNext()) {
             String path = iterator.next();
             if (path.equals(photoPath)) {
                 iterator.remove();
-                break; // Exit the loop once the photo is removed
+                break;
             }
         }
-
-
-    }
-    public List<String> getPhotos() {
-        return photos;
     }
 
-    public void setPhotos(List<String> photos) {
-        this.photos = photos;
+    // Добавление сервиса
+    public void addService(Service service) {
+        this.services.add(service);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getHouse() {
-        return house;
-    }
-    public String getCity() {
-        return city;
-    }
-
-    public void setHouse(String house) {
-        this.house = house;
-    }
-
-//    public String getAddress() {
-//        return address;
-//    }
-//
-//    public void setAddress(String address) {
-//        this.address = address;
-//    }
-
-    public Integer getAvailableRooms() {
-        return availableRooms;
-    }
-
-    public void setAvailableRooms(Integer availableRooms) {
-        this.availableRooms = availableRooms;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    // Подсчёт средней оценки по комментариям
+    public Double getAverageCommentEvaluation() {
+        if (comments == null || comments.isEmpty()) {
+            return 0.0;
+        }
+        int sum = comments.stream().mapToInt(Comment::getEvaluation).sum();
+        return (double) sum / comments.size();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Hotel)) return false;
         Hotel hotel = (Hotel) o;
         return Objects.equals(id, hotel.id);
     }
@@ -179,7 +111,4 @@ public class Hotel {
     public int hashCode() {
         return Objects.hash(id);
     }
-
-
-
 }

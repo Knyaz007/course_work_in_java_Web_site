@@ -1,127 +1,155 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Список Туров</title>
   <link th:href="@{/public/style.css}" rel="stylesheet" />
   <link th:href="@{/public/footer.css}" rel="stylesheet" />
-
+  <link th:href="@{/public/iframe.css}" rel="stylesheet" />
 
   <!-- Подключаем Bootstrap CSS -->
-  <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
 
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
 
-    th, td {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
-    a {
-      text-decoration: none;
-      margin-right: 10px;
-    }
   </style>
 </head>
+
 <body>
-<div class="image-container">
-  <!--  <img th:src="@{/public/images/main.jpeg}" alt="main Image"/>-->
+
+  <div th:if="${successMessage}" class="alert alert-success">
+    <p th:text="${successMessage}"></p>
+</div>
+
+  <!--<div class="image-container">
+   Переехали на banner.html Изображение 
+
+  <div class="image-container">
+ 
   <img th:src="@{/public/images/main22.jpg}" alt="main Image"/>
   <div class="image-text">
     <p>Paradise</p>
   </div>
 </div>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link"  >
-    Отели
-  </button>
-  <button onclick="window.location.href='/rooms/listRooms'" type="button" class="btn btn-link"  >
-    Комнаты
-  </button>
-  <button onclick="window.location.href='/things/listThings'" type="button" class="btn btn-link"  >
-    вещи комнат
-  </button>
-  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" >
-    Авиабилета
-  </button>
 
-  <button onclick="window.location.href='/'" type="button" class="btn btn-link" >
-    Туры
-  </button>
+</div>-->
 
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Реестр бронирования
-  </button>
+  <iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no"
+    style="border: none; display: block;"></iframe>
 
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Клиенты
-  </button>
 
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Работники
-  </button>
-
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Финансовый учёт и отчётность
-  </button>
+  <iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block;"></iframe>
 
 
 
-
-
-
-
-
-  <!-- Кнопка "Обратная связь" -->
-  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
-    Обратная связь
-  </button>
-
-  <!-- Модальное окно "Обратная связь" -->
-  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+  <div class="container">
+    <h2 class="text-center mt-4">Популярные направления</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card text-white position-relative">
+          <img th:src="@{/public/images/maldives.jpg}" class="card-img" alt="Мальдивы">
+          <div class="card-img-overlay d-flex flex-column justify-content-end bg-overlay">
+            <h5 class="card-title">Мальдивы</h5>
+            <p class="card-text">Райские острова с белым песком и лазурной водой.</p>
+            <a th:href="@{/tours/search(tour='Мальдивы')}" class="btn btn-primary">Подробнее</a>
+          </div>
         </div>
-        <div class="modal-body">
-          <!-- Форма обратной связи -->
-          <!-- Форма обратной связи -->
-          <form th:action="@{/send-email}" method="post">
-            <div class="form-group">
-              <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
-            </div>
-            <div class="form-group">
-              <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
-            </div>
-            <div class="form-group">
-              <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Отправить</button>
-          </form>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white position-relative">
+          <img th:src="@{/public/images/london.jpg}" class="card-img" alt="Мальдивы">
+          <div class="card-img-overlay d-flex flex-column justify-content-end bg-overlay">
+            <h5 class="card-title">Лондон</h5>
+            <p class="card-text">Исторические памятники и королевские традиции.</p>
 
+            <a th:href="@{/tours/search(tour='Лондон')}" class="btn btn-primary">Подробнее</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white position-relative">
+          <img th:src="@{/public/images/venice.jpg}" class="card-img" alt="Мальдивы">
+          <div class="card-img-overlay d-flex flex-column justify-content-end bg-overlay">
+            <h5 class="card-title">Венеция</h5>
+            <p class="card-text">Город на воде с уникальной архитектурой.</p>
+          
+
+            <a th:href="@{/tours/search(tour='Венеция')}" class="btn btn-primary">Подробнее</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white position-relative">
+          <img th:src="@{/public/images/rio.jpg}" class="card-img" alt="Мальдивы">
+          <div class="card-img-overlay d-flex flex-column justify-content-end bg-overlay">
+            <h5 class="card-title">Рио-де-Жанейро</h5>
+            <p class="card-text">Карнавалы, пляжи и статуя Христа.</p>
+            
+
+            <a th:href="@{/tours/search(tour='Карнавалы')}" class="btn btn-primary">Подробнее</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white position-relative">
+          <img th:src="@{/public/images/paris.jpg}" class="card-img" alt="Париж">
+          <div class="card-img-overlay d-flex flex-column justify-content-end bg-overlay">
+            <h5 class="card-title">Париж</h5>
+            <p class="card-text">Романтическое путешествие в город любви.</p>
+           
+
+            <a th:href="@{/tours/search(tour='Париж')}" class="btn btn-primary">Подробнее</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white position-relative">
+          <img th:src="@{/public/images/thailand.jpg}" class="card-img" alt="Таиланд">
+          <div class="card-img-overlay d-flex flex-column justify-content-end bg-overlay">
+            <h5 class="card-title">Таиланд</h5>
+            <p class="card-text">Экзотическая природа, яркие пляжи и вкусная кухня.</p>
+            
+            <a th:href="@{/tours/search(tour='Таиланд')}" class="btn btn-primary">Подробнее</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white position-relative">
+          <img th:src="@{/public/images/dubai.jpg}" class="card-img" alt="Таиланд">
+          <div class="card-img-overlay d-flex flex-column justify-content-end bg-overlay">
+            <h5 class="card-title">Дубай</h5>
+            <p class="card-text">Город небоскребов и роскошных курортов.</p>
+            
+
+            <a th:href="@{/tours/search(tour='Дубай')}" class="btn btn-primary">Подробнее</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white position-relative">
+          <img th:src="@{/public/images/sydney.jpg}" class="card-img" alt="Таиланд">
+          <div class="card-img-overlay d-flex flex-column justify-content-end bg-overlay">
+            <h5 class="card-title">Сидней</h5>
+            <p class="card-text">Опера, пляжи и австралийский колорит.</p>
+             
+
+            <a th:href="@{/tours/search(tour='Сидней')}" class="btn btn-primary">Подробнее</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white position-relative">
+          <img th:src="@{/public/images/barcelona.jpg}" class="card-img" alt="Таиланд">
+          <div class="card-img-overlay d-flex flex-column justify-content-end bg-overlay">
+            <h5 class="card-title">Барселона</h5>
+            <p class="card-text">Гауди, пляжи и испанская атмосфера.</p>
+             
+
+            <a th:href="@{/tours/search(tour='Барселона')}" class="btn btn-primary">Подробнее</a>
+          </div>
         </div>
       </div>
     </div>
@@ -130,121 +158,91 @@
 
 
 
+  <style>
+    .col-md-4 {
+      padding: 5px;
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <!-- Conditionally render user information or registration/login buttons -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <span class="nav-link" th:text="${authentication.name}"></span>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" onclick="window.location.href='/register'"    data-toggle="modal">Регистрация</a>
-      </li>
-      <!-- Logout button -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <a class="nav-link"  href="/logout">Выход</a>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link"  href="/login">Вход</a>
-      </li>
-    </ul>
-  </div>
+    }
+
+    .card {
+      border: none;
+      margin: 10;
+      height: 200px;
+      padding: 10;
+    }
+
+    .card-img-overlay {
+      background: rgba(82, 81, 81, 0.5);
+      /* Затемнение */
+      color: white;
+      padding: 20px;
+    }
+
+    .card-img {
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  </style>
 
 
-</nav>
 
-<!--<div th:include="~{fragments/header.html :: div}"></div>-->
-
+  <!-- 
 <div class="container">
-  <h2>Список Туров</h2>
-  <table class="table table-bordered">
-    <thead class="thead-light">
-    <tr>
-      <!--      <th>ID</th>-->
-      <th>Название</th>
-      <th>Начало</th>
-      <th>Окончание</th>
-      <th>Действия</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="tour : ${tours}">
-      <!--      <td th:text="${tour.tourId}"></td>-->
-      <td th:text="${tour.name}"></td>
-      <td th:text="${#temporals.format(tour.startDate, 'dd.MM.yyyy')}"></td>
-      <td th:text="${#temporals.format(tour.endDate, 'dd.MM.yyyy')}"></td>
-      <td>
-        <a th:href="@{'/tours/details/' + ${tour.tourId}}" class="btn btn-info btn-sm">Подробнее</a>
-
-        <a th:href="@{'/tours/edit/' + ${tour.tourId}}" class="btn btn-warning btn-sm"
-           th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</a>
-
-        <a th:href="@{'/tours/delete/' + ${tour.tourId}}" class="btn btn-danger btn-sm"
-           th:if="${roles.contains('ROLE_ADMIN')}">Удалить</a>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-
-  <a th:href="@{'/tours/new'}" th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый тур</a>
-</div>
-<footer>
-  <div class="footer">
-    <div class="column">
-      <!-- Информация о копирайте -->
-
-
-      <!-- Ссылки -->
-      <nav>
-        <ul>
-          <li><a href="/privacy-policy">Политика конфиденциальности</a></li>
-          <li><a href="/contact">Контакты</a></li>
-
-          <li><a href="/home">Главная</a></li>
-          <li><a href="/products">Продукты</a></li>
-          <li><a href="/services">Услуги</a></li>
-        </ul>
-      </nav>
-
-      <!-- Контактная информация -->
-
-    </div>
-
-    <div class="column">
-      <!-- Ссылки на важные разделы сайта -->
-      <address>
-        <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
-        <p>Телефон: 8 800 770 65 65</p>
-        <p>Адрес: Россия, Владимирская область, Муром, ул.Орловская, дом 25"б", 412</p>
-      </address>
-      <div class="social-media">
-        <a href="https://twitter.com/example" target="_blank"><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></a>
-        <a href="https://www.facebook.com/example" target="_blank"><img th:src="@{/public/images/facebook-icon.png}" alt="Facebook"></a>
-        <!-- Добавьте другие иконки или ссылки на социальные сети -->
+  <h2 class="text-center mt-4">🔎 Найдите свой идеальный тур</h2>
+  <form>
+    <div class="row">
+      <div class="col-md-4">
+        <label>Направление</label>
+        <input type="text" class="form-control" placeholder="Введите страну">
       </div>
-      <!-- Ссылки на социальные сети -->
-
-
-      <!-- Логотипы и брендирование -->
-
+      <div class="col-md-3">
+        <label>Дата вылета</label>
+        <input type="date" class="form-control">
+      </div>
+      <div class="col-md-3">
+        <label>Количество дней</label>
+        <select class="form-control">
+          <option>3-5 дней</option>
+          <option>7-10 дней</option>
+          <option>Больше 10 дней</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-success mt-4">🔍 Искать</button>
+      </div>
     </div>
-    <div class="branding">
+  </form>
+</div>
 
-      <a href="https://www.mivlgu.ru/" target="_blank"><img th:src="@{/public/images/mi-vlgu.jpg}" alt="mi-vlgu"></a>
 
-      <!-- Добавьте другие логотипы или элементы брендирования -->
-    </div>
-  </div>
-  <p>&copy; 2024 My Website. The rights are not protected..</p>
-</footer>
+ -->
 
-<!-- Подключаем Bootstrap JS (необходим для работы модальных окон и других компонентов) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+  <!--<footer>
+   Переехали на footer.html  
+  
+</footer>-->
+  <iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block;"></iframe>
+
+  <!-- Подключаем Bootstrap JS (необходим для работы модальных окон и других компонентов) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Подключаем скрипт -->
+  <script src="/public/js/scripts.js"></script>
+
 </body>
+
 </html>

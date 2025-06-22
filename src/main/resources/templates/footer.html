@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Список Туров</title>
+  <link th:href="@{/public/style.css}" rel="stylesheet" />
+  <link th:href="@{/public/footer.css}" rel="stylesheet" />
+
+
+  <!-- Подключаем Bootstrap CSS -->
+  <link  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    a {
+      text-decoration: none;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<footer>
+  <div class="footer">
+    <div class="column">
+      <!-- Информация о копирайте -->
+
+
+      <!-- Ссылки -->
+      <nav>
+        <ul>
+          <li><a href="/privacy-policy">Политика конфиденциальности</a></li>
+          <li><a href="/contact">Контакты</a></li>
+
+          <li><a href="/home">Главная</a></li>
+          <li><a href="/products">Продукты</a></li>
+          <li><a href="/services">Услуги</a></li>
+        </ul>
+      </nav>
+
+      <!-- Контактная информация -->
+
+    </div>
+
+    <div class="column">
+      <!-- Ссылки на важные разделы сайта -->
+      <address>
+        <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+        <p>Телефон: 8 800 770 65 65</p>
+        <p>Адрес: Россия, Владимирская область, Муром, ул.Орловская, дом 25"б", 412</p>
+      </address>
+      <div class="social-media">
+        <a href="https://twitter.com/example" target="_blank"><img th:src="@{/public/images/twitter-icon.png}" alt="Twitter"></a>
+        <a href="https://www.facebook.com/example" target="_blank"><img th:src="@{/public/images/facebook-icon.png}" alt="Facebook"></a>
+        <!-- Добавьте другие иконки или ссылки на социальные сети -->
+      </div>
+      <!-- Ссылки на социальные сети -->
+
+
+      <!-- Логотипы и брендирование -->
+
+    </div>
+    <div class="branding">
+
+      <a href="https://www.mivlgu.ru/" target="_blank"><img th:src="@{/public/images/mi-vlgu.jpg}" alt="mi-vlgu"></a>
+
+      <!-- Добавьте другие логотипы или элементы брендирования -->
+    </div>
+  </div>
+  <p>&copy; 2024 My Website. The rights are not protected..</p>
+</footer>
+
+<!-- Подключаем Bootstrap JS (необходим для работы модальных окон и других компонентов) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+
+</body>
+
+
+</html>

@@ -1,9 +1,20 @@
 package com.example.laba.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
-//import javax.persistence.*;
-import java.util.Date;
+import com.example.laba.models.enums.TicketClass;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 
 @Entity
 @Table(name = "Booking")
@@ -14,89 +25,53 @@ public class Booking {
     @Column(name = "BookingId")
     private Long bookingId;
 
-    @Column(name = "TourId")
-    private Long tourId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TourId")
+    private Tour tour;
 
-    @Column(name = "UserId")
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UserId")
+    private User user;
 
-    @Column(name = "FlightId")
-    private Long flightId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FlightId")
+    private Flight flight;
 
-    @Column(name = "HotelId")
-    private Long hotelId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "HotelId")
+    private Hotel hotel;
+
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TrainTicketId")
+    private TrainTicket trainTicket;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RoomId")
+    private Room room;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CarriageInfoId")
+    private CarriageInfo carriageInfo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ExcursionId")
+    private Excursion excursion;
 
     @Column(name = "ParticipantsCount")
     private int participantsCount;
 
     @Column(name = "BookingDate")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date bookingDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime bookingDate;
 
     @Column(name = "IsConfirmed")
     private boolean isConfirmed;
 
-    public Long getBookingId() {
-        return bookingId;
-    }
-
-    public void setBookingId(Long bookingId) {
-        this.bookingId = bookingId;
-    }
-
-    public Long getTourId() {
-        return tourId;
-    }
-
-    public void setTourId(Long tourId) {
-        this.tourId = tourId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getFlightId() {
-        return flightId;
-    }
-
-    public void setFlightId(Long flightId) {
-        this.flightId = flightId;
-    }
-
-    public Long getHotelId() {
-        return hotelId;
-    }
-
-    public void setHotelId(Long hotelId) {
-        this.hotelId = hotelId;
-    }
-
-    public int getParticipantsCount() {
-        return participantsCount;
-    }
-
-    public void setParticipantsCount(int participantsCount) {
-        this.participantsCount = participantsCount;
-    }
-
-    public Date getBookingDate() {
-        return bookingDate;
-    }
-
-    public void setBookingDate(Date bookingDate) {
-        this.bookingDate = bookingDate;
-    }
-
-    public boolean isConfirmed() {
-        return isConfirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
+    @PrePersist
+    public void prePersist() {
+        if (this.bookingDate == null) {
+            this.bookingDate = LocalDateTime.now();
+        }
     }
 }

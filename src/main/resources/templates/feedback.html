@@ -1,41 +1,46 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feedback Button</title>
-  <style>
-        /* styles.css */
-
-/* Пример стилей для кнопки "Обратная связь" */
-.btn-feedback {
-    /* Ваши стили для кнопки */
-    background-color: #007bff; /* Цвет фона кнопки */
-    color: #fff; /* Цвет текста кнопки */
-    border: none; /* Убираем границу кнопки */
-    padding: 10px 20px; /* Отступы внутри кнопки */
-    font-size: 16px; /* Размер шрифта */
-    cursor: pointer; /* Изменяем курсор при наведении */
-    border-radius: 5px; /* Скругление углов */
-}
-
-.btn-feedback:hover {
-    /* Стили при наведении на кнопку */
-    background-color: #0056b3; /* Новый цвет фона при наведении */
-}
-
-    </style>
-  <!-- Добавьте ссылки на ваши стили и скрипты, если необходимо -->
+    <meta charset="UTF-8">
+    <title>Обратная связь</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 
-<!-- Ваш контент страницы -->
+    
+<div class="container mt-5">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Обратная связь</h5>
+            </div>
+            <div class="modal-body">
+                <!-- Форма обратной связи -->
+                <form th:action="@{/send-email}" method="post">
+                    <div class="form-group">
+                        <label for="feedbackName">Ваше имя</label>
+                        <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
+                    </div>
+                    <div class="form-group">
+                        <label for="feedbackEmail">Ваш Email</label>
+                        <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="feedbackMessage">Сообщение</label>
+                        <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                    <a href="/" class="btn btn-secondary">Назад</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-<button onclick="window.location.href='/feedback'" type="button" class="btn btn-primary ml-2">
-  Обратная связь
-</button>
+<!-- Скрипты Bootstrap (если нужно) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Возможно, у вас также есть другой контент на странице -->
 
 </body>
 </html>

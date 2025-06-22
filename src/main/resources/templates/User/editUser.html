@@ -1,103 +1,336 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <!-- Заголовок, стили и мета-теги -->
+  <!-- Метаданные и стили -->
   <title>Редактирование пользователя</title>
-
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
-    body {
-      padding: 20px;
-      font-family: Arial, sans-serif;
-    }
-
-    h2 {
-      text-align: center;
-      color: #007bff;
-    }
-
-    label {
-      font-size: 18px;
-      margin-top: 10px;
-    }
-
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    a {
-      display: block;
-      margin-top: 20px;
-      color: #28a745;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
+    body { padding: 20px; font-family: Arial, sans-serif; }
+    h2 { text-align: center; color: #007bff; }
+    .form-group label { font-size: 18px; margin-top: 10px; }
+    .form-group input { width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 15px; }
+    .btn-primary { padding: 10px 20px; font-size: 18px; background-color: #007bff; color: #fff; border: none; cursor: pointer; }
+    .btn-primary:hover { background-color: #0056b3; }
+    .btn-secondary { margin-top: 20px; }
+    .table th, .table td { text-align: center; }
   </style>
 </head>
 <body>
-<!-- Заголовок страницы -->
-<h2>Редактирование пользователя</h2>
 
-<!-- Форма редактирования пользователя -->
-<form th:object="${user}" th:action="@{/users/edit}" method="post">
-  <!-- Скрытое поле для передачи ID пользователя -->
-  <input type="hidden" th:field="*{userId}" />
+  <!-- Заголовок страницы -->
+  <h2>Редактирование пользователя</h2>
 
-  <!-- Поля для редактирования информации о пользователе -->
+  <!-- Форма редактирования пользователя -->
+  <form th:object="${user}" th:action="@{/users/edit}" method="post">
+    
+    <!-- ID пользователя -->
+    <input type="hidden" th:field="*{userId}" />
+
+    <!-- Личные данные -->
+    <fieldset>
+      <legend>Личная информация</legend>
+      <div class="form-group">
+        <label for="name">Имя:</label>
+        <input type="text" id="name" th:field="*{name}" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Фамилия - ошибка при обновление:</label>
+        <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="year">Возраст:</label>
+        <input type="number" id="year" th:field="*{year}" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" th:field="*{email}" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Телефон:</label>
+        <input type="text" id="phone" th:field="*{phone}" class="form-control" />
+      </div>
+      <div class="form-group">
+        <button onclick="top.location.href='/auth/forgot-password'" type="button" class="btn btn-link">
+          Сменить пароль
+          </button>
+      </div>
+    
+ 
+    </fieldset>
+
+    <!-- Паспортные данные -->
+<fieldset>
+  <legend>Паспортные данные</legend>
+
   <div class="form-group">
-    <label for="name">Имя:</label>
-    <input type="text" id="name" th:field="*{name}" class="form-control" required/>
+    <label for="passportNumber">Номер паспорта:</label>
+    <input type="text" id="passportNumber" th:field="*{passport.passportNumber}" class="form-control" required />
   </div>
 
   <div class="form-group">
-    <label for="lastName">Фамилия:</label>
-    <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required/>
+    <label for="issuedBy">Кем выдан:</label>
+    <input type="text" id="issuedBy" th:field="*{passport.issuedBy}" class="form-control" required />
   </div>
 
   <div class="form-group">
-    <label for="year">Возраст:</label>
-    <input type="number" id="year" th:field="*{year}" class="form-control"/>
+    <label for="issueDate">Дата выдачи:</label>
+    <input type="date" id="issueDate" th:field="*{passport.issueDate}" class="form-control" required />
+  </div>
+</fieldset>
+
+<!-- Заграничный паспорт -->
+<fieldset>
+  <legend>Заграничный паспорт</legend>
+
+  <div class="form-group">
+    <label for="internationalPassportPassportNumber">Номер паспорта:</label>
+    <input type="text" id="internationalPassportPassportNumber" th:field="*{internationalPassport.passportNumber}" class="form-control" required />
   </div>
 
   <div class="form-group">
-    <label for="email">Email:</label>
-    <input type="email" id="email" th:field="*{email}" class="form-control" required/>
+    <label for="internationalPassportIssuedBy">Кем выдан:</label>
+    <input type="text" id="internationalPassportIssuedBy" th:field="*{internationalPassport.issuedBy}" class="form-control" required />
   </div>
 
   <div class="form-group">
-    <label for="phone">Телефон:</label>
-    <input type="text" id="phone" th:field="*{phone}" class="form-control"/>
+    <label for="internationalPassportIssueDate">Дата выдачи:</label>
+    <input type="date" id="internationalPassportIssueDate" th:field="*{internationalPassport.issueDate}" class="form-control" />
   </div>
 
-  <!-- Добавьте другие поля пользователя по необходимости -->
+  <div class="form-group">
+    <label for="internationalPassportExpiryDate">Дейсвут до:</label>
+    <input type="date" id="internationalPassportExpiryDate" th:field="*{internationalPassport.expiryDate}" class="form-control" />
+  </div>
+</fieldset>
 
-  <!-- Кнопка для отправки формы -->
-  <button type="submit" class="btn btn-primary">Сохранить</button>
-</form>
 
-<!-- Ссылка на список пользователей -->
-<a th:href="@{/users/list}" class="btn btn-secondary">Назад к списку</a>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Список банковских карт -->
+    <fieldset>
+      <legend>Банковские карты</legend>
+      
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Номер карты</th>
+            <th>Название банка</th>
+            <th>Срок действия</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="card : ${cards}">
+            <td th:text="${card.cardNumber}"></td>
+            <td th:text="${card.bankName}"></td>
+            <td th:text="${#temporals.format(card.expiryDate, 'dd.MM.yyyy')}"></td>
+            <td>
+              <a th:href="@{/cards/edit/{id}(id=${card.id})}" class="btn btn-warning btn-sm"  >Редактировать</a>
+              <a th:href="@{/cards/delete/{id}(id=${card.id})}" class="btn btn-danger btn-sm"  >Удалить</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+<!--     Форма для добавления новой карты 
+  <form th:action="@{/cards/add}" method="post" th:object="${newCard}">
+    <div class="form-group">
+      <label for="cardNumber">Номер карты:</label>
+      <input type="text" id="cardNumber" th:field="*{cardNumber}" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="cardHolder">Имя владельца:</label>
+      <input type="text" id="cardHolder" th:field="*{cardHolder}" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="bankName">Название банка:</label>
+      <input type="text" id="bankName" th:field="*{bankName}" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="expiryDate">Срок действия (MM/YYYY):</label>
+      <input type="month" id="expiryDate" th:field="*{expiryDate}" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-success">Добавить карту</button>
+  </form> -->
+
+  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#addCardModal">
+    Добавить карту
+  </button>
+    </fieldset>
+
+
+ 
+
+    <!-- Кнопка сохранения -->
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+  </form>
+ 
+  <!-- Модальное окно для добавления карты --> 
+  <div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-labelledby="addCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCardModalLabel">Добавить новую карту</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body"> 
+          <!-- Форма для добавления новой карты -->
+          <form th:action="@{/users/cards/add}" method="post" th:object="${newCard}">
+            <div class="form-group">
+              <input type="hidden" name="userId" th:value="${user.userId}" />
+              <label for="cardNumber">Номер карты:</label>
+              <input type="text" id="cardNumber" th:field="*{cardNumber}" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+              <label for="cardHolder">Имя владельца:</label>
+              <input type="text" id="cardHolder" th:field="*{cardHolder}" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+              <label for="bankName">Название банка:</label>
+              <input type="text" id="bankName" th:field="*{bankName}" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+              <label for="expiryDate">Срок действия (MM/YYYY):</label>
+              <input type="date" id="expiryDate" th:field="*{expiryDate}" class="form-control" required />
+            </div>
+
+            
+
+            <button type="submit" class="btn btn-success">Добавить карту</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ 
+
+
+<!-- <form th:action="@{/users/cards/add}" method="post" th:object="${newCard}">
+  <div class="form-group">
+    <label for="cardNumber">Номер карты:</label>
+    <input type="hidden" name="userId" th:value="${user.userId}" />
+    <input type="text" id="cardNumber" th:field="*{cardNumber}" class="form-control" required />
+  </div>
+
+  <div class="form-group">
+    <label for="cardHolder">Имя владельца:</label>
+    <input type="text" id="cardHolder" th:field="*{cardHolder}" class="form-control" required />
+  </div>
+
+  <div class="form-group">
+    <label for="bankName">Название банка:</label>
+    <input type="text" id="bankName" th:field="*{bankName}" class="form-control" required />
+  </div>
+
+  <div class="form-group">
+    <label for="expiryDate">Срок действия (MM/YYYY):</label>
+    <input type="date" id="expiryDate" th:field="*{expiryDate}" class="form-control" required />
+  </div>
+
+  <button type="submit" class="btn btn-success">Добавить карту</button>
+</form> -->
+
+
+
+<div class="container">
+  <h2 class="mb-4">Мои бронирования</h2>
+
+  <div class="row">
+    <div class="col-md-6 mb-4" th:each="booking : ${userBookings}">
+
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">
+            Бронирование № <span th:text="${booking.bookingId}"></span>
+          </h5>
+
+          <!-- Поезд -->
+          <div th:if="${booking.trainTicket != null}">
+            <p>
+              <strong>Поезд:</strong> 
+              <span th:text="${booking.trainTicket.departureCity}"></span> → 
+              <span th:text="${booking.trainTicket.destinationCity}"></span>
+            </p>
+            <p><strong>Номер поезда:</strong> <span th:text="${booking.trainTicket.trainNumber}"></span></p>
+          </div>
+
+          <!-- Вагон -->
+          <div th:if="${booking.carriageInfo != null}">
+            <p><strong>Вагон:</strong> <span th:text="${booking.carriageInfo.type}"></span></p>
+            <p><strong>Свободных мест:</strong> <span th:text="${booking.carriageInfo.availableSeats}"></span></p>
+            <p><strong>Цена:</strong> <span th:text="${booking.carriageInfo.minPrice}"></span></p>
+          </div>
+
+          <!-- Тур -->
+          <p class="card-text" th:if="${booking.tour != null}">
+            <span>Тур:</span> <span th:text="${booking.tour.name}"></span>
+          </p>
+
+          <!-- Рейс -->
+          <p class="card-text" th:if="${booking.flight != null}">
+            <span>Рейс:</span> <span th:text="${booking.flight.flightNumber}"></span>
+          </p>
+
+          <!-- Отель -->
+          <p class="card-text" th:if="${booking.hotel != null}">
+            <span>Отель:</span> <span th:text="${booking.hotel.name}"></span>
+          </p>
+
+          <!-- Экскурсия -->
+          <p class="card-text" th:if="${booking.excursion != null}">
+            <span>Экскурсия:</span> <span th:text="${booking.excursion.title}"></span>
+          </p>
+
+          <!-- Участники -->
+          <p class="card-text" th:if="${booking.participantsCount > 0}">
+            <span>Участники:</span> <span th:text="${booking.participantsCount}"></span>
+          </p>
+
+          <!-- Дата -->
+          <p class="card-text" th:if="${booking.bookingDate != null}">
+            <span>Дата:</span> <span th:text="${#temporals.format(booking.bookingDate, 'dd.MM.yyyy HH:mm')}"></span>
+          </p>
+
+          <!-- Подтверждено -->
+          <p class="card-text" th:if="${booking.confirmed != null}">
+            <span>Подтверждено:</span>
+            <span th:text="${booking.confirmed ? 'Да' : 'Нет'}"
+                  th:classappend="${booking.confirmed} ? 'text-success' : 'text-danger'"></span>
+          </p>
+
+          <!-- Подробнее -->
+          <div class="actions mt-3">
+            <a th:href="@{'/bookings/details/' + ${booking.bookingId}}" class="btn btn-primary btn-sm">Подробнее</a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Ссылка на список пользователей -->
+  <a th:href="@{/users/list}" class="btn btn-secondary">Назад к списку</a>
+
+  <!-- Скрипты -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

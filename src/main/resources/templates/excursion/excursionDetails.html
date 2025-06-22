@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали экскурсии</title>
+    <link th:href="@{/public/iframe.css}" rel="stylesheet"/>
+</head>
+<body>
+<style> 
+.excursion-details {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.excursion-details h1 {
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 25px;
+}
+
+.excursion-details p {
+    font-size: 16px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+    color: #444;
+}
+
+.excursion-details strong {
+    color: #000;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+    
+</style>
+<!-- Вставка баннера и навбара -->
+<iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none; display: block;"></iframe>
+<iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block;"></iframe>
+
+<div class="container excursion-details">
+    <h1 th:text="${excursion.title}">Название экскурсии</h1>
+
+    <p><strong>Место:</strong> <span th:text="${excursion.location}">Локация</span></p>
+
+    <p><strong>Дата и время:</strong>
+        <span th:text="${#temporals.format(excursion.dateTime, 'dd.MM.yyyy HH:mm')}">Дата и время</span>
+    </p>
+
+    <p><strong>Цена:</strong> <span th:text="${excursion.price} + ' ₽'">Цена</span></p>
+
+    <p><strong>Описание:</strong></p>
+    <p th:text="${excursion.description}">Описание</p>
+
+    <!-- <div th:if="${excursion.tour != null}">
+        <p><strong>Тур:</strong> <span th:text="${excursion.tour.name}">Название тура</span></p>
+    </div> -->
+
+    <form th:if="${roles.contains('ROLE_ADMIN')} or ${roles.contains('ROLE_USER')}" th:action="@{/excursions/bookingExcursions}" method="post">
+        <input type="hidden" name="excursionId" th:value="${excursion.excursionId}" />
+        <button type="submit" class="btn btn-success">Забронировать</button>
+    </form>
+
+    <a href="/excursions/" class="btn btn-secondary mt-3">Назад</a>
+</div>
+
+
+<!-- Подвал -->
+<iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block; margin-top: 40px;"></iframe>
+
+<!-- JS скрипты -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/public/js/scripts.js"></script>
+
+</body>
+</html>

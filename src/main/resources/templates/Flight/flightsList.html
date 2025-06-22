@@ -1,288 +1,177 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link th:href="@{/public/flights.css}" rel="stylesheet" />
-  <style>
-    body {
-      padding: 20px;
-    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список рейсов</title>
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-    th, td {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
+    <!-- Custom CSS -->
+    <link th:href="@{/public/flights.css}" rel="stylesheet"/>
+    <link th:href="@{/public/iframe.css}" rel="stylesheet"/>
+    <style> 
+    #footer-frame {
+  height: 200px;
+  background-color: red;
+}
 
-    th {
-      background-color: #f2f2f2;
-    }
-
-    a {
-      text-decoration: none;
-      margin-right: 10px;
-    }
-  </style>
-  <title>Список рейсов</title>
+</style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Турфирма Paradise</a>
-  <button onclick="window.location.href='/hotels/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Отели
-  </button>
 
-  <button onclick="window.location.href='/flights/list'" type="button" class="btn btn-link" data-dismiss="modal">
-    Авиабилета
-  </button>
+<!-- Вставка баннера и навбара -->
+<iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none; display: block;"></iframe>
+<iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block;"></iframe>
 
-  <button onclick="window.location.href='/'" type="button" class="btn btn-link" data-dismiss="modal">
-    Туры
-  </button>
+<div class="container mt-4">
 
-  <button onclick="window.location.href='/bookings/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Реестр бронирования
-  </button>
+    <div id="formAlert" class="alert alert-warning alert-dismissible fade show d-none" role="alert">
+    Пожалуйста, заполните хотя бы одно поле для поиска.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Закрыть">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 
-  <button onclick="window.location.href='/users/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Клиенты
-  </button>
-
-  <button onclick="window.location.href='/employees/list'" type="button" class="btn btn-link" data-dismiss="modal"
-          th:if="${roles.contains('ROLE_ADMIN')}">
-    Работники
-  </button>
-
-
-
-
-
-
-
-
-
-  <!-- Кнопка "Обратная связь" -->
-  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">
-    Обратная связь
-  </button>
-
-  <!-- Модальное окно "Обратная связь" -->
-  <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel2">Обратная связь</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Форма обратной связи -->
-          <!-- Форма обратной связи -->
-          <form th:action="@{/send-email}" method="post">
-            <div class="form-group">
-              <label for="feedbackName">Ваше имя</label>
-              <input type="text" class="form-control" id="feedbackName" name="name" placeholder="Введите ваше имя">
-            </div>
-            <div class="form-group">
-              <label for="feedbackEmail">Ваш Email</label>
-              <input type="email" class="form-control" id="feedbackEmail" name="email" placeholder="Введите ваш Email">
-            </div>
-            <div class="form-group">
-              <label for="feedbackMessage">Сообщение</label>
-              <textarea class="form-control" id="feedbackMessage" name="message" rows="4" placeholder="Введите ваше сообщение"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Отправить</button>
-          </form>
-
-        </div>
-      </div>
+   <!-- Поисковая форма -->
+<form action="/flights/search" method="get" class="border p-4 rounded bg-light" onsubmit="return validateCities()">
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="origin">Откуда</label>
+      <input type="text" class="form-control" id="origin" name="origin" placeholder="Введите город отправления">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="destination">Куда</label>
+      <input type="text" class="form-control" id="destination" name="destination" placeholder="Введите город назначения">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="departureDate">Дата отправления</label>
+      <input type="date" class="form-control" id="departureDate" name="departureDate">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="arrivalDate">Дата прибытие</label>
+      <input type="date" class="form-control" id="arrivalDate" name="arrivalDate">
     </div>
   </div>
+  <button type="submit" class="btn btn-primary">Найти рейс</button>
+</form>
 
-
-
-
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <!-- Conditionally render user information or registration/login buttons -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <span class="nav-link" th:text="${authentication.name}"></span>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" onclick="window.location.href='/register'"   data-toggle="modal">Регистрация</a>
-      </li>
-      <!-- Logout button -->
-      <li class="nav-item" th:if="${loggedIn}">
-        <a class="nav-link" href="/logout">Выход</a>
-      </li>
-      <li class="nav-item" th:unless="${loggedIn}">
-        <a class="nav-link" href="/login">Вход</a>
-      </li>
-    </ul>
-  </div>
-
-
-</nav>
-<div id="search-form-container"  >
-  <div class="sfl-container sfl-layout-default sfl-theme-16886-xroomhotel" data-version="1.5">
-    <div class="sf-wrapper">
-
-      <div class="sf-controls-wrapper">
-        <!-- Hotel Select -->
-        <div class="sf-field-container sf-arrival-date-container">
-          <div class="sf-field-label sf-arrival-date-label">Куда вы хотите?</div>
-          <input type="text" id="Region">
-        </div>
-
-
-
-
-
-
-
-
-        <!-- Arrival Date -->
-        <div class="sf-field-container sf-arrival-date-container">
-          <div class="sf-field-label sf-arrival-date-label">Заезд</div>
-          <input type="date" id="arrivalDate">
-        </div>
-
-
-        <!-- Departure Date -->
-        <div class="sf-field-container sf-departure-date-container">
-          <div class="sf-field-label sf-departure-date-label">Выезд</div>
-          <input type="date" id="arrivalDate2">
-        </div>
-
-
-        <div class="guests-input-container">
-          <input type="text" class="sfl-guests-input" readonly="" inputmode="none" id="guestsInput" pattern="[0-9]*" value="Нужно на 2">
-          <div class="guests-input-container-button">
-            <button onclick="decrementAdults()">-</button>
-            <button onclick="incrementAdults()">+</button>
-          </div>
-        </div>
-
-        <script>
-  var adultsCount = 2; // начальное количество взрослых
-
-  function updateGuestsInput() {
-    var guestsInput = document.getElementById('guestsInput');
-    guestsInput.value = 'Нужно на ' + adultsCount;
-  }
-
-  function incrementAdults() {
-    if (adultsCount < 4) { // проверка максимального значения
-      adultsCount++;
-      updateGuestsInput();
-    }
-  }
-
-  function decrementAdults() {
-    if (adultsCount > 0) {
-      adultsCount--;
-      updateGuestsInput();
-    }
-  }
-</script>
-
-
-
-        <!-- Nights -->
-        <!--          <div class="sf-field-container sf-Number-of-guests-container">-->
-        <!--            <div class="sf-field-label sf-Number-of-guests-label">Количество гостей</div>-->
-        <!--            <select class="sfl-nights">-->
-        <!--              &lt;!&ndash; Options for nights &ndash;&gt;-->
-        <!--              <option value="1">1 ночь</option>-->
-        <!--              <option value="2">2 ночи</option>-->
-        <!--              <option value="3">3 ночи</option>-->
-        <!--            </select>-->
-        <!--          </div>-->
-
-
-        <!-- Submit Buttons -->
-        <div class="sf-submit-button-container sf-submit-button-input-container">
-          <input type="button" class="sfl-submit-button sfl-submit-button-input standard-view-button" value="Найти номер" >
-          <!--  <input type="button" class="sfl-submit-button sfl-submit-button-input compact-view-button" value="Забронировать"> -->
-        </div>
-
-
-        <!--        работает толко надо под кнопку найти номер сделать-->
-        <div id="search-form-container1">
-          <form id="search-form" th:action="@{/hotels/search}" method="post">
-            <input type="text" id="cityInput" name="city" placeholder="Введите название города">
-            <button type="submit">Искать</button>
-          </form>
-        </div>
-
-
-
-
-
-
-
+<!-- Модальное окно Bootstrap -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="errorModalLabel">Ошибка</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Закрыть">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Пожалуйста, введите хотя бы одно из полей: «Откуда» или «Куда».
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Ок</button>
       </div>
     </div>
   </div>
 </div>
-<h2>Список рейсов</h2>
-<table border="1">
-  <thead>
-  <tr>
-    <th>Номер рейса</th>
-    <th>Пункт отправления</th>
-    <th>Пункт назначения</th>
-    <th>Дата и время отправления</th>
-    <th>Действия</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="flight : ${flights}">
-    <td th:text="${flight.flightNumber}"></td>
-    <td th:text="${flight.departure}"></td>
-    <td th:text="${flight.destination}"></td>
+
+<!-- JS скрипт -->
+<script>
+  function validateCities() {
+    const origin = document.getElementById("origin").value.trim();
+    const destination = document.getElementById("destination").value.trim();
+
+    if (!origin && !destination) {
+      $('#errorModal').modal('show'); // Показываем модалку
+      return false; // Остановить отправку формы
+    }
+    return true;
+  }
+</script>
+
+<script>
+    document.querySelector("form").addEventListener("submit", function (e) {
+        const origin = document.getElementById("origin").value.trim();
+        const destination = document.getElementById("destination").value.trim();
+        const departureDate = document.getElementById("departureDate").value;
+        const arrivalDate = document.getElementById("arrivalDate").value;
+        const alertBox = document.getElementById("formAlert");
+
+        // Скрыть предыдущее предупреждение
+        alertBox.classList.add("d-none");
+
+        if (!origin && !destination && !departureDate && !arrivalDate) {
+            e.preventDefault();
+            alertBox.classList.remove("d-none");
+        }
+    });
+</script>
 
 
-    <td th:text="${#temporals.format(flight.departureDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+    <!-- Таблица с рейсами -->
+    <div class="mt-5">
+        <h2>Список рейсов</h2>
+        <table th:if="${flights != null and #lists.size(flights) > 0}" class="table table-bordered table-hover mt-3">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Номер рейса</th>
+                    <th>Откуда</th>
+                    <th>Куда</th>
+                    <th>Дата отправления</th>
+                    <th>Время отправления</th>
+                    <th>Дата прибытия</th>
+                    <th>Время прибытия</th>
+                    <th>Места</th>
+                    <th>Цена</th>
+                    <th>Wi-Fi</th>
+                    <th>Животные</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="flight : ${flights}">
+                    <td th:text="${flight.flightNumber}"></td>
+                    <td th:text="${flight.departure}"></td>
+                    <td th:text="${flight.destination}"></td>
+                    <td th:text="${#temporals.format(flight.departureDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"></td>
+                    <td th:text="${#temporals.format(flight.arrivalDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></td>
+                    <td th:text="${flight.availableSeats}"></td>
+                    <td th:text="${flight.price} + ' ₽'"></td>
+                    <td th:text="${flight.wifiAvailability ? 'Есть' : 'Нет'}"></td>
+                    <td th:text="${flight.petPolicy}"></td>
+                    <td>
+                        <a th:href="@{'/flights/details/' + ${flight.flightId}}" class="btn btn-info btn-sm">Подробнее</a>
+                        <a th:href="@{'/flights/edit/' + ${flight.flightId}}" th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-warning btn-sm">Редактировать</a>
+                        <a th:href="@{'/flights/delete/' + ${flight.flightId}}" th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-danger btn-sm">Удалить</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
+     
 
-    <td>
-      <a th:href="@{'/flights/details/' + ${flight.flightId}}" class="btn btn-info btn-sm">Подробнее</a>
+    
+</div>
 
+<div class="mt-4" th:if="${roles.contains('ROLE_ADMIN')}">
+        <a th:href="@{'/flights/new'}" class="btn btn-success">Добавить новый рейс</a>
+        <a th:href="@{'/flights/import'}" class="btn btn-secondary ml-2">Импортировать рейсы</a>
+</div>
 
-      <a  th:href="@{'/flights/edit/' + ${flight.flightId}}"
-         th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-warning btn-sm">Редактировать</a>
+<!-- Подвал -->
+<iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block; margin-top: 40px;"></iframe>
 
-      <a  th:href="@{'/flights/delete/' + ${flight.flightId}}"
-         th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-danger btn-sm">Удалить</a>
-
-
-    </td>
-  </tr>
-  </tbody>
-</table>
-<a th:href="@{'/flights/new'}"  th:if="${roles.contains('ROLE_ADMIN')}" class="btn btn-success mt-3">Добавить новый рейс</a>
-
-<!-- Подключаем Bootstrap JS (необходим для работы модальных окон и других компонентов) -->
+<!-- JS скрипты -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/public/js/scripts.js"></script>
+
 </body>
 </html>

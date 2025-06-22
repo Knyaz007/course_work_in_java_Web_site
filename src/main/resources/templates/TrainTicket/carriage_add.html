@@ -1,0 +1,48 @@
+<h2>Добавить вагон к билету № [[${ticketId}]]</h2>
+
+<form th:action="@{/tickets/{ticketId}/carriages/add(ticketId=${ticketId})}" th:object="${carriageInfo}" method="post">
+    <label>Тип вагона:</label>
+    <input type="text" th:field="*{type}" required />
+
+    <label>Свободные места:</label>
+    <input type="number" th:field="*{availableSeats}" min="0" required />
+
+    <label>Минимальная цена:</label>
+    <input type="number" step="0.01" th:field="*{minPrice}" min="0" required />
+
+    <label>Тип места:</label>
+    <input type="text" th:field="*{seatType}" required />
+
+    <label>Класс билета:</label>
+    <input type="text" th:field="*{ticketClass}" required />
+
+    <button type="submit">Добавить вагон ➕</button>
+</form>
+
+<h3>Уже добавленные вагоны:</h3>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Тип вагона</th>
+            <th>Свободные места</th>
+            <th>Минимальная цена</th>
+            <th>Тип места</th>
+            <th>Класс билета</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="carriage : ${carriages}">
+            <td th:text="${carriage.type}">Плацкарт</td>
+            <td th:text="${carriage.availableSeats}">50</td>
+            <td th:text="${carriage.minPrice}">1200.00</td>
+            <td th:text="${carriage.seatType}">Верхнее</td>
+            <td th:text="${carriage.ticketClass}">2-й</td>
+        </tr>
+    </tbody>
+</table>
+
+<br/>
+ 
+<button onclick="top.location.href='/tickets/list'" type="button" class="btn btn-link" >
+    Ж/д Билеты
+  </button>

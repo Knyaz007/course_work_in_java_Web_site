@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список билетов</title>
+    <meta charset="UTF-8">
+    <link th:href="@{/public/iframe.css}" rel="stylesheet"/>
+    <link th:href="@{/public/footer.css}" rel="stylesheet"/>
+
+       <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f8fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        a.nav-link {
+            display: inline-block;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        form label {
+            margin-right: 10px;
+        }
+
+        form input {
+            margin-right: 20px;
+            padding: 5px;
+        }
+
+        form button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .action-buttons a button {
+            margin: 0 2px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .top-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .top-buttons a button {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .top-buttons a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Вставка баннера и навбара -->
+<iframe id="banner-frame" th:src="@{/banner}" width="100%" scrolling="no" style="border: none; display: block;"></iframe>
+<!-- <iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block;"></iframe> -->
+<iframe id="navbar-frame" th:src="@{/navbar}" width="100%" style="border: none; display: block; height: 90px;"></iframe>
+
+
+<h1>Список билетов</h1>
+
+<div class="top-buttons">
+    <a th:if="${roles.contains('ROLE_ADMIN')}" th:href="@{/tickets/add}">
+        <button>Добавить билет ➕</button>
+    </a>
+    
+</div>
+
+<style>
+  form {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 25px 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+    align-items: end;
+  }
+
+  label {
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  input[type="text"],
+  input[type="date"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #bbb;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  input[type="text"]:focus,
+  input[type="date"]:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+    outline: none;
+  }
+
+  button {
+    grid-column: span 2;
+    padding: 14px 0;
+    background-color: #28a745;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #1e7e34;
+  }
+
+  /* Для лейблов, которые связаны с input */
+  .field-group {
+    display: flex;
+    flex-direction: column;
+  }
+</style>
+
+<form action="/tickets/search" method="get" onsubmit="return validateCities()">
+    <div class="field-group">
+      <label for="origin">Откуда:</label>
+      <input type="text" id="origin" name="origin" th:value="${param.origin}" />
+    </div>
+
+    <div class="field-group">
+      <label for="destination">Куда:</label>
+      <input type="text" id="destination" name="destination" th:value="${param.destination}" />
+    </div>
+
+    <div class="field-group">
+      <label for="departureDate">Отправление:</label>
+      <input type="date" id="departureDate" name="departureDate" th:value="${param.departureDate}" />
+    </div>
+
+    <div class="field-group">
+      <label for="arrivalDate">Прибытие:</label>
+      <input type="date" id="arrivalDate" name="arrivalDate" th:value="${param.arrivalDate}" />
+    </div>
+
+    <button type="submit">Искать</button>
+</form>
+
+<!-- Модальное окно Bootstrap -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="errorModalLabel">Ошибка</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Закрыть">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Пожалуйста, введите хотя бы одно из полей: «Откуда» или «Куда».
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Ок</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS скрипт -->
+<script>
+  function validateCities() {
+    const origin = document.getElementById("origin").value.trim();
+    const destination = document.getElementById("destination").value.trim();
+
+    if (!origin && !destination) {
+      $('#errorModal').modal('show'); // Показываем модалку
+      return false; // Остановить отправку формы
+    }
+    return true;
+  }
+</script>
+
+<h2 style="text-align: center;">Список доступных билетов</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>№ Поезда</th>
+            <th>Город отправления</th>
+            <th>Город назначения</th>
+            <th>Дата отправления</th>
+            <th>Стоимость</th>
+            <th>Детали</th>
+            <th th:if="${roles.contains('ROLE_ADMIN')}">Редактировать</th>
+            <th th:if="${roles.contains('ROLE_ADMIN')}">Удалить</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="ticket : ${tickets}">
+            <td th:text="${ticket.trainNumber}">123</td>
+            <td th:text="${ticket.departureCity}">Москва</td>
+            <td th:text="${ticket.destinationCity}">Сочи</td>
+            <td th:text="${ticket.departureDate}">2025-05-20</td>
+            <td th:text="${ticket.price + ' ₽'}">1500 ₽</td>
+            <td>
+                <a th:href="@{'/tickets/details/' + ${ticket.ticketId}}" class="btn btn-info btn-sm">Открыть</a>
+            </td>
+            <td th:if="${roles.contains('ROLE_ADMIN')}">
+                <a th:href="@{'/tickets/edit/' + ${ticket.ticketId}}" class="btn btn-warning btn-sm">✏️</a>
+            </td>
+            <td th:if="${roles.contains('ROLE_ADMIN')}">
+                <a th:href="@{'/tickets/delete/' + ${ticket.ticketId}}"
+                   onclick="return confirm('Вы уверены, что хотите удалить этот билет?');"
+                   class="btn btn-danger btn-sm">🗑️</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<!-- Подвал  оjs влияет-->
+<iframe id="footer-frame" th:src="@{/footer}" width="100%" style="border: none; display: block; margin-top: 40px;"></iframe>
+
+ <div class="mt-4" th:if="${roles.contains('ROLE_ADMIN')}">
+        <a th:href="@{'/flights/new'}" class="btn btn-success">Добавить новый рейс</a>
+        <a th:href="@{'/flights/import'}" class="btn btn-secondary ml-2">Импортировать рейсы</a>
+    </div>
+
+<!-- JS скрипты -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/public/js/scripts.js"></script>
+
+
+</body>
+</html>

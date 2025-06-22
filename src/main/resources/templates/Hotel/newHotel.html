@@ -116,11 +116,20 @@
 <h2>Новый отель</h2>
 <form th:action="@{'/hotels/new'}" th:object="${hotel}" method="post" enctype="multipart/form-data">
   <label>Название: <input type="text" th:field="*{name}"/></label><br/>
-  <label>Название: <input type="text" th:field="*{country}"/></label><br/>
+  <label>Страна: <input type="text" th:field="*{country}"/></label><br/>
   <label>Область: <input type="text" th:field="*{region}"/></label><br/>
   <label>Город: <input type="text" th:field="*{city}"/></label><br/>
   <label>Улица: <input type="text" th:field="*{street}"/></label><br/>
   <label>Дом: <input type="text" th:field="*{house}"/></label><br/>
+  <label>Тип отеля:
+  <select th:field="*{type}" class="form-control">
+    <option value="" disabled selected>Выберите тип</option>
+    <option value="Гостиница">Гостиница</option>
+    <option value="Тур база">Тур база</option>
+    <option value="Гостевой дом">Гостевой дом</option>
+  </select>
+</label><br/>
+
 
 
   <label  >Select Photos:</label>
